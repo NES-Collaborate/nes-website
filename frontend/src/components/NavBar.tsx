@@ -16,14 +16,14 @@ export const NavBar = () => {
 
   return (
     <div className="navbar bg-base-100 shadow-md">
-      <div className="navbar-start">
+      <div className="navbar-start gap-3">
         <LandingPageDropDown />
+        <ThemeToggle />
       </div>
       <div className="navbar-center">
         <Logo type={windowWidth < 410 ? "circle" : "horizontal"} size={40} />
       </div>
       <div className="navbar-end gap-3">
-        <ThemeToggle />
         <LogInOutButtom />
       </div>
     </div>

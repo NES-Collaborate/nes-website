@@ -44,7 +44,7 @@ const Login = ({ csrfToken }: Props) => {
   }
 
   return (
-    <div className="w-screen h-[500px] flex justify-center items-center">
+    <div className="h-screen flex justify-center items-center">
       <div className="shadow-xl flex flex-col justify-between gap-5 p-5 rounded-md md:w-1/5">
         <h1 className="text-3xl text-center">Login</h1>
         {errors.length > 0 && (
