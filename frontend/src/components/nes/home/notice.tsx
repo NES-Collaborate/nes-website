@@ -1,10 +1,11 @@
-import { News } from "@/data/constants"
+import Image from "next/image"
+import { Notice } from "@/data/constants"
 
-const News = (obj: News) => {
+const Notice = (obj: Notice) => {
   return (
     <>
       <a className="card w-96 bg-base-100 shadow-xl hover:bg-zinc-500/75" href={obj.targetUrl} target="_blank">
-        <img src={obj.imageUrl}/>
+        <Image src={obj.imageUrl} width={500} height={500} alt=""/>
         <div className="card-body">
           <h2 className="card-title">{obj.title}</h2>
           <span>{obj.subtitle}</span>
@@ -14,4 +15,4 @@ const News = (obj: News) => {
   )
 }
 
-export default News
+export default Notice

@@ -10,7 +10,7 @@ type LandingPage = {
   icon: IconType
 }
 
-export type News = {
+export type Notice = {
   targetUrl: string
   imageUrl: string
   title: string
@@ -44,9 +44,41 @@ export const LOGOS = {
   },
 }
 
-export const DEFAULT_NEWS: News = {
-  targetUrl: "https://globoplay.globo.com/v/12067813/",
-  imageUrl: "https://lh3.googleusercontent.com/proxy/DopkzTmH0exoPyCwqPaZki-sleBMqYX3J-jyV_lPilZ04YxmfDvmCXkpgrjbURfySDj8s442q8eHflHtvyLW5-M7IAYrm-5R",
-  title: "AL TV 1ª Edição | Instituto de Matemática prepara talentos na área de exatas, ciências e computação | Globoplay",
-  subtitle: "Projeto reúne alunos do ensino médio."
-}
+export const NOTICES: Notice[] = [
+  {
+    targetUrl: "https://globoplay.globo.com/v/12067813/",
+    imageUrl: "/img/banner.png",
+    title: "AL TV 1ª Edição | Instituto de Matemática prepara talentos na área de exatas, ciências e computação | Globoplay",
+    subtitle: "Projeto reúne alunos do ensino médio."
+  },
+  {
+    targetUrl: "https://globoplay.globo.com/v/12067813/",
+    imageUrl: "/img/banner.png",
+    title: "AL TV 1ª Edição | Instituto de Matemática prepara talentos na área de exatas, ciências e computação | Globoplay",
+    subtitle: "Projeto reúne alunos do ensino médio."
+  },
+  {
+    targetUrl: "https://globoplay.globo.com/v/12067813/",
+    imageUrl: "/img/banner.png",
+    title: "AL TV 1ª Edição | Instituto de Matemática prepara talentos na área de exatas, ciências e computação | Globoplay",
+    subtitle: "Projeto reúne alunos do ensino médio."
+  },
+  {
+    targetUrl: "https://globoplay.globo.com/v/12067813/",
+    imageUrl: "/img/banner.png",
+    title: "AL TV 1ª Edição | Instituto de Matemática prepara talentos na área de exatas, ciências e computação | Globoplay",
+    subtitle: "Projeto reúne alunos do ensino médio."
+  },
+  {
+    targetUrl: "https://globoplay.globo.com/v/12067813/",
+    imageUrl: "/img/banner.png",
+    title: "AL TV 1ª Edição | Instituto de Matemática prepara talentos na área de exatas, ciências e computação | Globoplay",
+    subtitle: "Projeto reúne alunos do ensino médio."
+  },
+  {
+    targetUrl: "https://globoplay.globo.com/v/12067813/",
+    imageUrl: "/img/banner.png",
+    title: "AL TV 1ª Edição | Instituto de Matemática prepara talentos na área de exatas, ciências e computação | Globoplay",
+    subtitle: "Projeto reúne alunos do ensino médio."
+  }
+];
