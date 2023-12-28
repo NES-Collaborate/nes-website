@@ -1,7 +1,7 @@
 import Image from "next/image"
 import { Notice } from "@/data/constants"
 
-const Notice = (obj: Notice) => {
+export const NoticeCard = (obj: Notice) => {
   return (
     <>
       <a className="card w-96 bg-base-100 shadow-xl hover:bg-zinc-500/75" href={obj.targetUrl} target="_blank">
@@ -14,5 +14,3 @@ const Notice = (obj: Notice) => {
     </>
   )
 }
-
-export default Notice

@@ -1,7 +1,7 @@
 import Link from "next/link"
 import Image from "next/image"
-import Footer from "@/components/nes/footer"
-import Notice from "@/components/nes/home/notice"
+import { Footer } from "@/components/nes/footer"
+import { NoticeCard } from "@/components/nes/home/notice"
 import { NOTICES } from "@/data/constants"
 
 const Home = () => {
@@ -27,7 +27,7 @@ const Home = () => {
         <h1 className="text-purple-700 text-2xl stroke-1 my-8">Notícias</h1>
         <div className="flex flex-wrap justify-center gap-2">
           {NOTICES.map((notice, i) => {
-            return  <Notice 
+            return  <NoticeCard 
                       key={i}
                       targetUrl={notice.targetUrl} 
                       imageUrl={notice.imageUrl}

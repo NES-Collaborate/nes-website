@@ -1,6 +1,6 @@
 import Link from "next/link"
 
-const Footer = () => {
+export const Footer = () => {
   return (
     <div className="w-full flex flex-col items-center bg-purple-700">
       <Link href={"/nes/about"} className="btn btn-ghost text-2xl text-gray-300 hover:bg-purple-700 mt-4 mb-2">
@@ -12,5 +12,3 @@ const Footer = () => {
     </div>      
   )
 }
-
-export default Footer
