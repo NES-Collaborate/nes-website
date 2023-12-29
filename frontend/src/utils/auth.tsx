@@ -1,7 +1,17 @@
 import { AxiosError } from "axios"
-import { redirect } from "next/navigation"
+import { GetServerSidePropsContext } from "next"
 import { useEffect, useState } from "react"
 import { axiosSesh } from "./axiosClient"
+
+export const getMe = async (token: string) => {
+  return (
+    await axiosSesh.get("/api/me", {
+      headers: {
+        Authorization: token,
+      },
+    })
+  ).data
+}
 
 export const GetSession = () => {
   const [session, setSession] = useState(null)
@@ -14,41 +24,11 @@ export const GetSession = () => {
     if (tokenDeclaration) {
       const token = tokenDeclaration.split("=")[1]
 
-      axiosSesh
-        .get("/api/me", {
-          headers: {
-            Authorization: token,
-          },
-        })
-        .then((res) => {
-          setSession(res.data)
-        })
-        .catch(() => {
-          setSession(null)
-        })
+      getMe(token).then((user) => setSession(user))
     }
   }, [])
 
   return session
-}
-
-export const withAuth = async (Component: any) => {
-  const useWrapper = (props: any) => {
-    const session = GetSession()
-    useEffect(() => {
-      if (!session) {
-        redirect("/login")
-      }
-    }, [session])
-
-    if (!session) {
-      return null
-    }
-
-    return <Component {...props} />
-  }
-
-  return useWrapper
 }
 
 export const signIn = async ({
@@ -86,7 +66,43 @@ export const getCsrfToken = async () => {
   try {
     return (await axiosSesh.get("/csrfToken")).data
   } catch (e) {
-    console.error(e)
+    const error = e as AxiosError
+    console.log("Falha ao obter o CSRF-Token do Backend:", error.cause?.message)
   }
   return "csrfToken" // TODO: remove this and put a proper error
+}
+
+const getSession = (req: GetServerSidePropsContext["req"]) => {
+  const token = req.cookies._token
+
+  if (!token) {
+    return { user: null }
+  }
+
+  return { user: getMe(token) }
+}
+
+export function withAuth<P>(
+  handler: (context: GetServerSidePropsContext) => Promise<{ props: P }>
+) {
+  return async (context: GetServerSidePropsContext) => {
+    const session = getSession(context.req)
+
+    if (!session.user) {
+      return {
+        redirect: {
+          destination: "/auth/login",
+          permanent: false,
+        },
+      }
+    }
+
+    return await handler(context)
+  }
+}
+
+export const simpleWithAuth = () => {
+  return withAuth(async () => ({
+    props: {},
+  }))
 }

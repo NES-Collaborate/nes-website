@@ -1,57 +1,30 @@
-import { useSession } from "@/contexts/session"
-import { LANDING_PAGES } from "@/data/constants"
-import Image from "next/image"
-import Link from "next/link"
-import { usePathname } from "next/navigation"
-import { IoIosLogIn, IoIosLogOut } from "react-icons/io"
-import { RiMenu2Fill } from "react-icons/ri"
+import { useEffect, useState } from "react"
+import { LandingPageDropDown } from "./LandingPageDropDown"
+import { LogInOutButtom } from "./LogInOutButtom"
+import { Logo } from "./Logo"
+import { ThemeToggle } from "./ThemeToggle"
 
 export const NavBar = () => {
-  const session = useSession()
-  const pathname = usePathname()
+  const [windowWidth, setWindowWidth] = useState(1080)
+
+  useEffect(() => {
+    setWindowWidth(window.innerWidth)
+    const handleResize = () => setWindowWidth(window.innerWidth)
+    window.addEventListener("resize", handleResize)
+    return () => window.removeEventListener("resize", handleResize)
+  }, [])
 
   return (
     <div className="navbar bg-base-100 shadow-md">
       <div className="navbar-start">
-        <div className="dropdown dropdown-hover">
-          <div tabIndex={0} role="button" className="btn btn-ghost btn-circle">
-            <RiMenu2Fill />
-          </div>
-          <ul className="menu menu-sm dropdown-content p-2 shadow bg-base-100 rounded-box w-52 z-[1]">
-            {LANDING_PAGES.map((page, i) => (
-              <li key={i}>
-                <Link href={page.url}>
-                  <page.icon /> {page.name}
-                </Link>
-              </li>
-            ))}
-          </ul>
-        </div>
+        <LandingPageDropDown />
       </div>
       <div className="navbar-center">
-        <Image
-          alt="Logo"
-          src="/img/NES - Horizontal Branco.png"
-          width={(756 / 266) * 40}
-          height={40}
-        />
+        <Logo type={windowWidth < 410 ? "circle" : "horizontal"} size={40} />
       </div>
-      <div className="navbar-end">
-        {pathname !== "/auth/login" && (
-          <button className="btn btn-primary">
-            {session.user ? (
-              <>
-                <IoIosLogOut />
-                <Link href="/auth/logout">Sair</Link>
-              </>
-            ) : (
-              <>
-                <IoIosLogIn />
-                <Link href="/auth/login">Entrar</Link>
-              </>
-            )}
-          </button>
-        )}
+      <div className="navbar-end gap-3">
+        <ThemeToggle />
+        <LogInOutButtom />
       </div>
     </div>
   )

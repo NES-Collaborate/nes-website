@@ -1,6 +1,8 @@
-// This route will verify if the user is logged in or not and redirect to the correct page
-const Main = () => {
-  return <div>Redirect.</div>
-}
+import { useSession } from "@/contexts/session"
+import { redirect } from "next/navigation"
 
+const Main = () => {
+  const session = useSession()
+  return redirect(session.user ? "/app" : "/nes")
+}
 export default Main
