@@ -2,7 +2,6 @@ import { apiWithAuth } from "@/utils/auth"
 import { deleteNoticeData } from "@/utils/notice"
 import { NextApiHandler } from "next"
 
-
 /**
  * [Protected] Delete a notice
  * @param notice_id ID of the notice
