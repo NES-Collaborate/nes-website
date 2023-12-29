@@ -20,4 +20,8 @@ export const SessionProvider = ({ children }: { children: React.ReactNode }) => 
   return <sessionContext.Provider value={session}>{children}</sessionContext.Provider>
 }
 
+/**
+ * Get User's Session (hook)
+ * @returns User's Session (if logged)
+ */
 export const useSession = () => useContext(sessionContext)

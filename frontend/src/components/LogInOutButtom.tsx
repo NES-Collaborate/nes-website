@@ -3,6 +3,10 @@ import Link from "next/link"
 import { usePathname } from "next/navigation"
 import { IoIosLogIn, IoIosLogOut } from "react-icons/io"
 
+/**
+ * Conditional Button to Login or Logout based on current session
+ * @returns {JSX.Element} Buttom to Login or Logout
+ */
 export const LogInOutButtom = () => {
   const pathname = usePathname()
   const session = useSession()

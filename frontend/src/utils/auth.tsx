@@ -67,7 +67,7 @@ export const getCsrfToken = async () => {
     return (await axiosSesh.get("/csrfToken")).data
   } catch (e) {
     const error = e as AxiosError
-    console.log("Falha ao obter o CSRF-Token do Backend:", error.cause?.message)
+    console.error("Falha ao obter o CSRF-Token do Backend:", error.cause?.message)
   }
   return "csrfToken" // TODO: remove this and put a proper error
 }

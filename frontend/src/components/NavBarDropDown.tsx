@@ -2,7 +2,11 @@ import { LANDING_PAGES } from "@/data/constants"
 import Link from "next/link"
 import { RiMenu2Fill } from "react-icons/ri"
 
-export const LandingPageDropDown = () => {
+/**
+ * Dropdown with links to landing pages. (links from `data/constants.ts`)
+ * @returns {JSX.Element} DropDown for Landing Page
+ */
+export const NavBarDropDown = () => {
   return (
     <div className="dropdown dropdown-hover">
       <div tabIndex={0} role="button" className="btn btn-ghost btn-circle">

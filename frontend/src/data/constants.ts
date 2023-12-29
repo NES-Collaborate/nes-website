@@ -1,22 +1,12 @@
-import { IconType } from "react-icons"
+import { Image, LandingPage, Notice } from "@/types/constants"
 import { FaClipboardList, FaHandHoldingHeart } from "react-icons/fa"
 import { FaCircleInfo } from "react-icons/fa6"
 import { IoIosMail, IoMdHome } from "react-icons/io"
 import { IoDocumentText } from "react-icons/io5"
 
-type LandingPage = {
-  name: string
-  url: string
-  icon: IconType
-}
-
-export type Notice = {
-  targetUrl: string
-  imageUrl: string
-  title: string
-  subtitle: string
-}
-
+/**
+ * Landing Pages of the project
+ */
 export const LANDING_PAGES: LandingPage[] = [
   { name: "Home", url: "/nes", icon: IoMdHome },
   { name: "Processo Seletivo", url: "/nes/subscription", icon: FaClipboardList },
@@ -26,7 +16,10 @@ export const LANDING_PAGES: LandingPage[] = [
   { name: "Sobre o NES", url: "/nes/about", icon: FaCircleInfo },
 ]
 
-export const LOGOS = {
+/**
+ * Some default images to use
+ */
+export const LOGOS: Record<string, Image> = {
   circle: {
     src: "/img/circle.png",
     width: 561,
@@ -42,43 +35,63 @@ export const LOGOS = {
     width: 752,
     height: 266,
   },
+  banner: {
+    src: "/img/banner.png",
+    width: 2611,
+    height: 1003,
+  },
+  bannerProcessoSeletivo: {
+    src: "/img/banner-processo-seletivo.gif",
+    width: 1280,
+    height: 326,
+  },
 }
 
+// TODO: Remove this constante and loads from backend (json)
+/**
+ * The notices to show on Home
+ */
 export const NOTICES: Notice[] = [
   {
     targetUrl: "https://globoplay.globo.com/v/12067813/",
     imageUrl: "/img/banner.png",
-    title: "AL TV 1ª Edição | Instituto de Matemática prepara talentos na área de exatas, ciências e computação | Globoplay",
-    subtitle: "Projeto reúne alunos do ensino médio."
+    title:
+      "AL TV 1ª Edição | Instituto de Matemática prepara talentos na área de exatas, ciências e computação | Globoplay",
+    subtitle: "Projeto reúne alunos do ensino médio.",
   },
   {
     targetUrl: "https://globoplay.globo.com/v/12067813/",
     imageUrl: "/img/banner.png",
-    title: "AL TV 1ª Edição | Instituto de Matemática prepara talentos na área de exatas, ciências e computação | Globoplay",
-    subtitle: "Projeto reúne alunos do ensino médio."
+    title:
+      "AL TV 1ª Edição | Instituto de Matemática prepara talentos na área de exatas, ciências e computação | Globoplay",
+    subtitle: "Projeto reúne alunos do ensino médio.",
   },
   {
     targetUrl: "https://globoplay.globo.com/v/12067813/",
     imageUrl: "/img/banner.png",
-    title: "AL TV 1ª Edição | Instituto de Matemática prepara talentos na área de exatas, ciências e computação | Globoplay",
-    subtitle: "Projeto reúne alunos do ensino médio."
+    title:
+      "AL TV 1ª Edição | Instituto de Matemática prepara talentos na área de exatas, ciências e computação | Globoplay",
+    subtitle: "Projeto reúne alunos do ensino médio.",
   },
   {
     targetUrl: "https://globoplay.globo.com/v/12067813/",
     imageUrl: "/img/banner.png",
-    title: "AL TV 1ª Edição | Instituto de Matemática prepara talentos na área de exatas, ciências e computação | Globoplay",
-    subtitle: "Projeto reúne alunos do ensino médio."
+    title:
+      "AL TV 1ª Edição | Instituto de Matemática prepara talentos na área de exatas, ciências e computação | Globoplay",
+    subtitle: "Projeto reúne alunos do ensino médio.",
   },
   {
     targetUrl: "https://globoplay.globo.com/v/12067813/",
     imageUrl: "/img/banner.png",
-    title: "AL TV 1ª Edição | Instituto de Matemática prepara talentos na área de exatas, ciências e computação | Globoplay",
-    subtitle: "Projeto reúne alunos do ensino médio."
+    title:
+      "AL TV 1ª Edição | Instituto de Matemática prepara talentos na área de exatas, ciências e computação | Globoplay",
+    subtitle: "Projeto reúne alunos do ensino médio.",
   },
   {
     targetUrl: "https://globoplay.globo.com/v/12067813/",
     imageUrl: "/img/banner.png",
-    title: "AL TV 1ª Edição | Instituto de Matemática prepara talentos na área de exatas, ciências e computação | Globoplay",
-    subtitle: "Projeto reúne alunos do ensino médio."
-  }
-];
+    title:
+      "AL TV 1ª Edição | Instituto de Matemática prepara talentos na área de exatas, ciências e computação | Globoplay",
+    subtitle: "Projeto reúne alunos do ensino médio.",
+  },
+]

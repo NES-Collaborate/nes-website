@@ -1,9 +1,13 @@
 import { useEffect, useState } from "react"
-import { LandingPageDropDown } from "./LandingPageDropDown"
 import { LogInOutButtom } from "./LogInOutButtom"
 import { Logo } from "./Logo"
+import { NavBarDropDown } from "./NavBarDropDown"
 import { ThemeToggle } from "./ThemeToggle"
 
+/**
+ * NavBar component for Landing Page
+ * @returns {JSX.Element} Navbar
+ */
 export const NavBar = () => {
   const [windowWidth, setWindowWidth] = useState(1080)
 
@@ -17,7 +21,7 @@ export const NavBar = () => {
   return (
     <div className="navbar bg-base-100 shadow-md">
       <div className="navbar-start gap-3">
-        <LandingPageDropDown />
+        <NavBarDropDown />
         <ThemeToggle />
       </div>
       <div className="navbar-center">
