@@ -13,6 +13,7 @@ export type LandingPage = {
  * Notice type that appears on Landing Page
  */
 export type Notice = {
+  id: number
   targetUrl: string
   imageUrl: string
   title: string

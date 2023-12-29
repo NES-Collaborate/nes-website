@@ -1,5 +1,10 @@
 import { AxiosError } from "axios"
-import { GetServerSidePropsContext } from "next"
+import {
+  GetServerSidePropsContext,
+  NextApiHandler,
+  NextApiRequest,
+  NextApiResponse,
+} from "next"
 import { useEffect, useState } from "react"
 import { axiosSesh } from "./axiosClient"
 
@@ -106,3 +111,15 @@ export const simpleWithAuth = async () => {
     props: {},
   }))
 }
+
+export const apiWithAuth =
+  (callback: NextApiHandler) => async (req: NextApiRequest, res: NextApiResponse) => {
+    const session = await getSession(req)
+
+    if (!session.user) {
+      res.status(401).json({ error: "Unauthorized" })
+      return
+    }
+
+    return callback(req, res)
+  }
