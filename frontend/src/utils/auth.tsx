@@ -72,21 +72,21 @@ export const getCsrfToken = async () => {
   return "csrfToken" // TODO: remove this and put a proper error
 }
 
-const getSession = (req: GetServerSidePropsContext["req"]) => {
+export const getSession = async (req: GetServerSidePropsContext["req"]) => {
   const token = req.cookies._token
 
   if (!token) {
     return { user: null }
   }
 
-  return { user: getMe(token) }
+  return { user: await getMe(token) }
 }
 
-export function withAuth<P>(
+export async function withAuth<P>(
   handler: (context: GetServerSidePropsContext) => Promise<{ props: P }>
 ) {
   return async (context: GetServerSidePropsContext) => {
-    const session = getSession(context.req)
+    const session = await getSession(context.req)
 
     if (!session.user) {
       return {
@@ -101,8 +101,8 @@ export function withAuth<P>(
   }
 }
 
-export const simpleWithAuth = () => {
-  return withAuth(async () => ({
+export const simpleWithAuth = async () => {
+  return await withAuth(async () => ({
     props: {},
   }))
 }
