@@ -1,4 +1,4 @@
-import { createContext, useContext, useState } from "react"
+import { createContext, useContext, useEffect, useState } from "react"
 
 type ThemeContext = {
   theme: string
@@ -11,16 +11,23 @@ export const themeContext = createContext<ThemeContext>({
 })
 
 export const ThemeProvider = ({ children }: { children: React.ReactNode }) => {
-  const [theme, setTheme] = useState(() => {
-    if (typeof window !== "undefined") {
-      return localStorage.getItem("theme") || "dark"
-    }
-    return "dark"
-  })
+  const [theme, setTheme] = useState("dark")
+
+  useEffect(() => {
+    setTheme(localStorage.getItem("theme") || "dark")
+  }, [])
+
+  useEffect(() => {
+    localStorage.setItem("theme", theme)
+  }, [theme])
 
   return (
     <themeContext.Provider value={{ theme, setTheme }}>{children}</themeContext.Provider>
   )
 }
 
+/**
+ * The hook to get the current theme state
+ * @returns Current user's theme
+ */
 export const useTheme = () => useContext(themeContext)
