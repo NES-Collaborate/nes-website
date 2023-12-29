@@ -10,7 +10,9 @@ const getNotices: NextApiHandler = async (req, res) => {
     return
   }
   const notices = await getNoticesData()
-  res.status(200).json({ notices, status: true })
+  setTimeout(() => {
+    res.status(200).json({ notices, status: true })
+  }, 2000)
 }
 
 export default getNotices

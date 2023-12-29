@@ -3,7 +3,6 @@ import { Footer } from "@/components/nes/Footer"
 import { Brief } from "@/components/nes/home/Brief"
 import { MoreInfos } from "@/components/nes/home/MoreInfos"
 import { Notices } from "@/components/nes/home/Notices"
-import { NOTICES } from "@/data/constants"
 import Link from "next/link"
 
 const Home = () => {
@@ -19,7 +18,7 @@ const Home = () => {
         <Logo type="bannerProcessoSeletivo" size={500} className="mx-auto w-4/5" />
       </Link>
 
-      <Notices notices={NOTICES} />
+      <Notices />
 
       <MoreInfos />
 
