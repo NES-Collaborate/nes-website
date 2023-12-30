@@ -1,8 +1,7 @@
 from daos import user
 from fastapi import Depends, HTTPException, status
-from fastapi.responses import JSONResponse
 from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
-from jose import jwt
+from jose import JWTError, jwt
 from services.db import get_session
 from sqlalchemy.orm import Session
 
@@ -25,9 +24,15 @@ class UserService:
     async def create_access_token(data: dict[str, str]):
         to_encode = data.copy()
         # Sem tempo de expiração no momento
-        encoded_jwt = jwt.encode(to_encode,
-                                 settings.SECRET_KEY,
-                                 algorithm=settings.ALGORITHM)
+        try:
+            encoded_jwt = jwt.encode(to_encode,
+                                     settings.SECRET_KEY,
+                                     algorithm=settings.ALGORITHM)
+        except JWTError:
+            raise HTTPException(
+                status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+                detail="Unable to generate token",
+            )
         return encoded_jwt
 
     @staticmethod
@@ -38,18 +43,16 @@ class UserService:
                                                     session)
 
         if not _user:
-            raise HTTPException(status_code=401,
+            raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST,
                                 detail="Incorrect cpf or password")
 
         access_token = await UserService.create_access_token(
             data={"sub": _user.cpf})
 
-        content = {"ok": True, "message": "Login realizado com sucesso!"}
-        response = JSONResponse(content=content)
-
-        response.set_cookie(key="*_token", value=access_token)
-
-        return response
+        return dict(
+            access_token=access_token,
+            token_type="bearer",
+        )
 
     @staticmethod
     async def get_current_user(session: Session = Depends(get_session),
