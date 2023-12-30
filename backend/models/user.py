@@ -45,9 +45,10 @@ class Email(BaseTable):
     __tablename__ = "emails"
 
     value: Mapped[str]
-    user_id: Mapped[int] = mapped_column(sa.Integer, sa.ForeignKey("users.id"))
-    school_id: Mapped[int] = mapped_column(sa.Integer,
-                                           sa.ForeignKey("schools.id"))
+    user_id: Mapped[Optional[int]] = mapped_column(sa.Integer,
+                                                   sa.ForeignKey("users.id"))
+    school_id: Mapped[Optional[int]] = mapped_column(
+        sa.Integer, sa.ForeignKey("schools.id"))
 
     user: Mapped["User"] = relationship(back_populates="emails")
 
@@ -58,9 +59,10 @@ class PhoneNumber(BaseTable):
 
     value: Mapped[str]
     isEmergency: Mapped[bool]
-    user_id: Mapped[int] = mapped_column(sa.Integer, sa.ForeignKey("users.id"))
-    school_id: Mapped[int] = mapped_column(sa.Integer,
-                                           sa.ForeignKey("schools.id"))
+    user_id: Mapped[Optional[int]] = mapped_column(sa.Integer,
+                                                   sa.ForeignKey("users.id"))
+    school_id: Mapped[Optional[int]] = mapped_column(
+        sa.Integer, sa.ForeignKey("schools.id"))
 
     user: Mapped["User"] = relationship(back_populates="phones")
 
@@ -76,9 +78,10 @@ class Address(BaseTable):
     city: Mapped[str]
     state: Mapped[char2 | None]
     cep: Mapped[str10 | None]
-    user_id: Mapped[int] = mapped_column(sa.Integer, sa.ForeignKey("users.id"))
-    school_id: Mapped[int] = mapped_column(sa.Integer,
-                                           sa.ForeignKey("schools.id"))
+    user_id: Mapped[Optional[int]] = mapped_column(sa.Integer,
+                                                   sa.ForeignKey("users.id"))
+    school_id: Mapped[Optional[int]] = mapped_column(
+        sa.Integer, sa.ForeignKey("schools.id"))
 
 
 class School(BaseTable):
