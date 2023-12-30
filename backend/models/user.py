@@ -1,5 +1,5 @@
-from datetime import date, datetime
-from typing import List, Literal, Optional, get_args
+from datetime import date
+from typing import List, Optional, get_args
 
 import sqlalchemy as sa
 from models.enum import AttachType, Serie, UserType
@@ -21,12 +21,14 @@ class User(BaseTable):
     serie: Mapped[Serie] = mapped_column(sa.Enum(*get_args(Serie)))
     type: Mapped[UserType] = mapped_column(sa.Enum(*get_args(UserType)))
 
-    photo: Mapped["Attatch"] = relationship()
-    emails: Mapped[List["Email"]] = relationship(back_populates="user")
-    phones: Mapped[List["PhoneNumber"]] = relationship(back_populates="user")
-    address: Mapped["Address"] = relationship()
+    photo: Mapped[Optional["Attatch"]] = relationship()
+    emails: Mapped[Optional[List["Email"]]] = relationship(
+        back_populates="user")
+    phones: Mapped[Optional[List["PhoneNumber"]]] = relationship(
+        back_populates="user")
+    address: Mapped[Optional["Address"]] = relationship()
 
-    def verify_password(self, password):
+    def verify_password(self, password: str | bytes):
         return hash.bcrypt.verify(password, self.password)
 
 

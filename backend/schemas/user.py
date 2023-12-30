@@ -1,5 +1,5 @@
-from datetime import date, datetime
-from typing import List, Literal, Optional
+from datetime import date
+from typing import List, Optional
 
 from models.base import char2, str10
 from models.enum import AttachType, Serie, UserType
@@ -37,10 +37,10 @@ class Address(BaseModel):
 
 class UserBase(BaseModel):
     name: str
-    photo: Attatch
-    emails: List[Email]
-    phones: List[PhoneNumber]
-    address: Address
+    photo: Optional[Attatch]
+    emails: Optional[List[Email]]
+    phones: Optional[List[PhoneNumber]]
+    address: Optional[Address]
     cpf: str
     birthdate: date
     scholarship: float
