@@ -8,7 +8,7 @@ from sqlalchemy.orm import Session
 router = APIRouter()
 
 
-@router.get("/login", status_code=status.HTTP_200_OK)
+@router.post("/login", status_code=status.HTTP_200_OK)
 async def get_token(form_data: OAuth2PasswordRequestForm = Depends(),
                     session: Session = Depends(get_session)):
     return await UserService.login(form_data, session)
@@ -16,4 +16,5 @@ async def get_token(form_data: OAuth2PasswordRequestForm = Depends(),
 
 @router.get("/me", status_code=status.HTTP_200_OK)
 async def get_user(current_user=Depends(UserService.get_current_user)):
+    #return current_user.__dict__
     return UserOut.model_validate(current_user, from_attributes=True)
