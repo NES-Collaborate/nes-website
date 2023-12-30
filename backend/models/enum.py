@@ -1,22 +1,5 @@
-from sqlalchemy import Enum
+from typing import Literal
 
-
-class Serie(Enum):
-    EF_9 = '9º EF'
-    EM_1 = '1º EM'
-    EM_2 = '2º EM'
-    EM_3 = '3º EM'
-
-
-class AttatchTypes(Enum):
-
-    FILE = "file"
-    LINK = "link"
-
-
-class UserType(Enum):
-
-    ADMIN = "admin"
-    USER = "user"
-    STUDENT = "student"
-    RESPONSIBLE = "responsible"
+UserType = Literal['admin', 'user', 'student', 'responsible']
+Serie = Literal['9º EF', '1º EM', '2º EM', '3º EM']
+AttachType = Literal['file', 'link']

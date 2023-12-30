@@ -2,18 +2,15 @@ from datetime import date, datetime
 from typing import List, Literal, Optional
 
 from models.base import char2, str10
+from models.enum import AttachType, Serie, UserType
 from pydantic import BaseModel, EmailStr
-
-UserType = Literal['admin', 'user', 'student', 'responsible']
-Serie = Literal['9º EF', '1º EM', '2º EM', '3º EM']
-attachType = Literal['file', 'link']
 
 
 class Attatch(BaseModel):
 
     name: str
     location: str
-    type: attachType
+    type: AttachType
 
 
 class Email(BaseModel):

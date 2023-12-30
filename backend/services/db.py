@@ -1,4 +1,4 @@
-from settings import settings
+from services.settings import settings
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 
