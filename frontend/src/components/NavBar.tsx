@@ -1,6 +1,7 @@
-import { getUserSession } from "@/utils/auth"
-import { GetServerSidePropsContext } from "next"
+import { useSession } from "@/contexts/session"
+import Link from "next/link"
 import { useEffect, useState } from "react"
+import { IoHome } from "react-icons/io5"
 import { LogInOutButtom } from "./LogInOutButtom"
 import { Logo } from "./Logo"
 import { NavBarDropDown } from "./NavBarDropDown"
@@ -11,6 +12,7 @@ import { ThemeToggle } from "./ThemeToggle"
  * @returns {JSX.Element} Navbar
  */
 export const NavBar = () => {
+  const session = useSession()
   const [windowWidth, setWindowWidth] = useState(1080)
 
   useEffect(() => {
@@ -30,15 +32,13 @@ export const NavBar = () => {
         <Logo type={windowWidth < 410 ? "circle" : "horizontal"} size={40} />
       </div>
       <div className="navbar-end gap-3">
+        {session.user && (
+          <Link href="/app">
+            <IoHome size={20} />
+          </Link>
+        )}
         <LogInOutButtom />
       </div>
     </div>
   )
-}
-
-export const getServerSideProps = ({ req }: GetServerSidePropsContext) => {
-  const user = getUserSession(req)
-  return {
-    props: { serverUser: user },
-  }
 }

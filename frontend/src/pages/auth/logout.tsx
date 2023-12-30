@@ -1,4 +1,5 @@
 import { useSession } from "@/contexts/session"
+import { withAuth } from "@/utils/auth"
 import { GetServerSidePropsContext } from "next"
 import { useRouter } from "next/navigation"
 import { useEffect } from "react"
@@ -9,7 +10,7 @@ const LogOut = () => {
   const session = useSession()
 
   useEffect(() => {
-    session.logOut && session.logOut()
+    session.logOut()
     router.push("/auth/login")
   }, [router, session])
 
@@ -22,7 +23,4 @@ const LogOut = () => {
 
 export default LogOut
 
-export const getServerSideProps = ({ req, res }: GetServerSidePropsContext) => {
-  res.setHeader("Set-Cookie", "token=; Path=/; Expires=Thu, 01 Jan 1970 00:00:00 GMT;")
-  return { props: {} }
-}
+export const getServerSideProps = withAuth()
