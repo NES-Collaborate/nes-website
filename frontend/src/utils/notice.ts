@@ -1,12 +1,14 @@
 import { Notice } from "@/types/constants"
 import { readJsonFile, writeJsonFile } from "./json"
 
+const NOTICE_FILE = "src/data/notices.json"
+
 /**
  * Load the Notices data from JSON file
  * @returns List of Notices
  */
 export const getNoticesData = async (): Promise<Notice[]> => {
-  return await readJsonFile("src/data/notices.json")
+  return await readJsonFile(NOTICE_FILE)
 }
 
 /**
@@ -18,7 +20,7 @@ export const addNoticeData = async (notice: Notice) => {
   const notices = (await getNoticesData()) || []
   notice.id = notices.length + 1
   notices.push(notice)
-  return await writeJsonFile("src/data/notices.json", notices)
+  return await writeJsonFile(NOTICE_FILE, notices)
 }
 
 export const deleteNoticeData = async (id: number) => {
@@ -32,7 +34,7 @@ export const deleteNoticeData = async (id: number) => {
   }
 
   return await writeJsonFile(
-    "src/data/notices.json",
+    NOTICE_FILE,
     notices.filter((notice) => notice.id !== id)
   )
 }
