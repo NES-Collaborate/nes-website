@@ -1,56 +1,36 @@
+import { SessionContext } from "@/contexts/session"
+import { User } from "@/types/user"
 import { AxiosError } from "axios"
 import {
   GetServerSidePropsContext,
+  GetServerSidePropsResult,
   NextApiHandler,
   NextApiRequest,
   NextApiResponse,
 } from "next"
-import { useEffect, useState } from "react"
-import { axiosSesh } from "./axiosClient"
-
-export const getMe = async (token: string) => {
-  return (
-    await axiosSesh.get("/api/me", {
-      headers: {
-        Authorization: token,
-      },
-    })
-  ).data
-}
-
-export const GetSession = () => {
-  const [session, setSession] = useState(null)
-
-  useEffect(() => {
-    const tokenDeclaration = document.cookie
-      .split("; ")
-      .find((c) => c.startsWith("_token="))
-
-    if (tokenDeclaration) {
-      const token = tokenDeclaration.split("=")[1]
-
-      getMe(token).then((user) => setSession(user))
-    }
-  }, [])
-
-  return session
-}
+import { axiosApi } from "./axiosClient"
 
 export const signIn = async ({
   username,
   password,
+  session,
 }: {
   username: string
   password: string
+  session: SessionContext
 }) => {
   if (!username.trim() || !password.trim()) {
     return { ok: false, error: "Preencha todos os campos." }
   }
 
-  // Is expected that the backend will set the cookie (_token)
+  // username is a CPF
+  if (username.trim().length !== 11) {
+    return { ok: false, error: "CPF Inválido." }
+  }
+
   try {
-    const res = await axiosSesh.post(
-      "/api/login",
+    const res = await axiosApi.post(
+      "/auth/login",
       { username, password },
       {
         headers: {
@@ -58,31 +38,61 @@ export const signIn = async ({
         },
       }
     )
-    return res.data
+
+    if (session.setToken) {
+      session.setToken(res.data.access_token)
+    }
+
+    return { ok: true, ...res.data }
   } catch (error) {
     const e = error as AxiosError
-    // TODO: Add better error handling (for example, by status code 422)
-    return { ok: false, error: e.message }
+    if (e.response) {
+      switch (e.response.status) {
+        case 400:
+          return { ok: false, error: "CPF ou senha inválido." }
+        case 500:
+          return {
+            ok: false,
+            error: "Houve algum erro no servidor. Tente novamente mais tarde.",
+          }
+        default:
+          return {
+            ok: false,
+            error: "Houve algum erro desconhecido. Tente novamente mais tarde.",
+          }
+      }
+    } else {
+      return {
+        ok: false,
+        error: e.message ?? "Houve algum erro desconhecido. Tente novamente mais tarde.",
+      }
+    }
   }
 }
 
-export const getSession = async (req: GetServerSidePropsContext["req"]) => {
+export const getUserSession = async (req: GetServerSidePropsContext["req"]) => {
   const token = req.cookies._token
+  if (!token) return null
+  try {
+    const res = await axiosApi.get("/auth/me", {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    })
 
-  if (!token) {
-    return { user: null }
+    return res.data as User
+  } catch (err) {
+    return null
   }
-
-  return { user: await getMe(token) }
 }
 
-export async function withAuth<P>(
-  handler: (context: GetServerSidePropsContext) => Promise<{ props: P }>
-) {
-  return async (context: GetServerSidePropsContext) => {
-    const session = await getSession(context.req)
+export const withAuth = (
+  callback?: (context: GetServerSidePropsContext) => GetServerSidePropsResult<any>
+) => {
+  return async (ctx: GetServerSidePropsContext) => {
+    const user = await getUserSession(ctx.req)
 
-    if (!session.user) {
+    if (!user) {
       return {
         redirect: {
           destination: "/auth/login",
@@ -91,21 +101,15 @@ export async function withAuth<P>(
       }
     }
 
-    return await handler(context)
+    return callback ? callback(ctx) : { props: {} }
   }
-}
-
-export const simpleWithAuth = async () => {
-  return await withAuth(async () => ({
-    props: {},
-  }))
 }
 
 export const apiWithAuth =
   (callback: NextApiHandler) => async (req: NextApiRequest, res: NextApiResponse) => {
-    const session = await getSession(req)
+    const user = getUserSession(req)
 
-    if (!session.user) {
+    if (!user) {
       res.status(401).json({ error: "Unauthorized" })
       return
     }

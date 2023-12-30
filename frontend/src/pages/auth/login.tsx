@@ -20,7 +20,7 @@ const Login = () => {
       setErrors([`Você já está logado como ${session.user.name}.`])
       setInterval(() => {
         setErrors([])
-        router.push("/")
+        router.push("/app")
       }, 3000)
     }
   }, [session, router])
@@ -30,13 +30,15 @@ const Login = () => {
     const result = await signIn({
       username,
       password,
+      session,
     })
 
-    if (!result?.ok) {
+    if (result.ok) {
+      router.push("/app")
+    } else {
       setIsLoggingIn(false)
-      setErrors([...errors, result?.error ?? "Falha na autenticação."])
+      setErrors([...errors, result.error ?? "Falha na autenticação."])
     }
-
     setIsLoggingIn(false)
   }
 
@@ -65,12 +67,12 @@ const Login = () => {
           </div>
           <input
             type="text"
-            placeholder="Seu usuário"
+            placeholder="Seu CPF"
             className={clsx(
               "input input-accent w-full",
               isLoggingIn && "cursor-not-allowed"
             )}
-            onChange={(e) => setUsername(e.target.value)}
+            onChange={(e) => setUsername(e.target.value.replace(/\D/g, ""))}
             onClick={() => setErrors([])}
             value={username}
             disabled={isLoggingIn}
@@ -82,7 +84,7 @@ const Login = () => {
             <span className="label-text">Senha</span>
           </div>
           <input
-            type="text"
+            type="password"
             placeholder="Sua senha"
             className={clsx(
               "input input-accent w-full",

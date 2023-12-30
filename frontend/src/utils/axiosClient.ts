@@ -1,9 +1,5 @@
 import axios from "axios"
 
-export const axiosSesh = axios.create({
-  baseURL: process.env.NEXT_PUBLIC_BACKEND_URL,
-})
-
 export const axiosApi = axios.create({
-  baseURL: "/api",
+  baseURL: `${process.env.NEXT_PUBLIC_BASE_URL}/api`,
 })

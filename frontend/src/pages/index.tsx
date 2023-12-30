@@ -1,4 +1,4 @@
-import { getSession } from "@/utils/auth"
+import { getUserSession } from "@/utils/auth"
 import { GetServerSidePropsContext } from "next"
 import { Loading } from "react-daisyui"
 
@@ -13,10 +13,10 @@ const Main = () => {
 export default Main
 
 export const getServerSideProps = async ({ req, res }: GetServerSidePropsContext) => {
-  const session = await getSession(req)
+  const user = await getUserSession(req)
   return {
     redirect: {
-      destination: session.user ? "/app" : "/nes",
+      destination: user ? "/app" : "/nes",
       permanent: false,
     },
   }

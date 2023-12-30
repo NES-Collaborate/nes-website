@@ -1,27 +1,52 @@
 import { User } from "@/types/user"
-import { GetSession } from "@/utils/auth"
-import { createContext, useContext, useState } from "react"
+import { axiosApi } from "@/utils/axiosClient"
+import { createContext, useContext, useEffect, useState } from "react"
 
-type SessionContext = {
-  user: User | null | undefined
-  logOut: () => void
+export type SessionContext = {
+  user: User | null
+  setUser?: (newUser: User | null) => void
+  logOut?: () => void
+  token?: string
+  setToken?: (newToken: string) => void
 }
 
-const sessionContext = createContext<SessionContext>({ user: null, logOut: () => {} })
+const sessionContext = createContext<SessionContext>({ user: null })
 
-export const SessionProvider = ({ children }: { children: React.ReactNode }) => {
-  const [user, setUser] = useState<User | null | undefined>(GetSession())
+export const SessionProvider = ({
+  children,
+  serverUser,
+}: {
+  children: React.ReactNode
+  serverUser?: User | null
+}) => {
+  const [user, setUser] = useState<User | null>(serverUser || null)
+  const [token, setToken] = useState<string>("")
+
+  useEffect(() => {
+    axiosApi
+      .get("/auth/me", {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      })
+      .then((res) => {
+        setUser(res.data)
+      })
+      .catch((err) => null)
+  }, [token])
 
   const session = {
     user,
-    logOut: () => setUser(null),
+    setUser,
+    logOut: () => {
+      setUser(null)
+      setToken("")
+    },
+    token,
+    setToken,
   }
 
   return <sessionContext.Provider value={session}>{children}</sessionContext.Provider>
 }
 
-/**
- * Get User's Session (hook)
- * @returns User's Session (if logged)
- */
 export const useSession = () => useContext(sessionContext)

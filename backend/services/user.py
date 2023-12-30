@@ -56,9 +56,7 @@ class UserService:
                                     access_type="bearer",
                                 ))
 
-        response.set_cookie(key="_token",
-                            value=access_token,
-                            path=settings.COOKIE_PATH)
+        response.set_cookie(key="_token", value=access_token, path="/")
 
         return response
 

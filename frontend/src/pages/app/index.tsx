@@ -1,4 +1,4 @@
-import { simpleWithAuth } from "@/utils/auth"
+import { withAuth } from "@/utils/auth"
 
 const App = () => {
   return "Protected Route for Logged Users"
@@ -6,4 +6,4 @@ const App = () => {
 
 export default App
 
-export const getServerSideProps = simpleWithAuth()
+export const getServerSideProps = withAuth()

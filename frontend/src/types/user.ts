@@ -1,6 +1,13 @@
 export type User = {
   id: number
   name: string
-  username: string
+  photo?: string
+  emails: string[]
+  phones: string[]
+  address?: string
+  cpf: string
+  birthdate: string
+  scolarship: number
+  serie?: string
+  type: string
 }
-// TODO: Review this type definition

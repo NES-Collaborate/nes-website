@@ -6,7 +6,7 @@ import type { AppProps } from "next/app"
 
 export default function App({ Component, pageProps }: AppProps) {
   return (
-    <SessionProvider>
+    <SessionProvider serverUser={pageProps.serverUser}>
       <ThemeProvider>
         <NavBar />
         <Component {...pageProps} />

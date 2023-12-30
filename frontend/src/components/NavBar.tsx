@@ -1,3 +1,5 @@
+import { getUserSession } from "@/utils/auth"
+import { GetServerSidePropsContext } from "next"
 import { useEffect, useState } from "react"
 import { LogInOutButtom } from "./LogInOutButtom"
 import { Logo } from "./Logo"
@@ -32,4 +34,11 @@ export const NavBar = () => {
       </div>
     </div>
   )
+}
+
+export const getServerSideProps = ({ req }: GetServerSidePropsContext) => {
+  const user = getUserSession(req)
+  return {
+    props: { serverUser: user },
+  }
 }
