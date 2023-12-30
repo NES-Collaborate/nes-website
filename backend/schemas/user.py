@@ -44,7 +44,7 @@ class UserBase(BaseModel):
     cpf: str
     birthdate: date
     scholarship: float
-    serie: Serie
+    serie: Optional[Serie]
     type: UserType
 
     class Config:

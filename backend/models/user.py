@@ -18,7 +18,7 @@ class User(BaseTable):
     cpf: Mapped[str] = mapped_column(sa.String, unique=True, index=True)
     birthdate: Mapped[date]
     scholarship: Mapped[float]
-    serie: Mapped[Serie] = mapped_column(sa.Enum(*get_args(Serie)))
+    serie: Mapped[Optional[Serie]] = mapped_column(sa.Enum(*get_args(Serie)))
     type: Mapped[UserType] = mapped_column(sa.Enum(*get_args(UserType)))
 
     photo: Mapped[Optional["Attatch"]] = relationship()
