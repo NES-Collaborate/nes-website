@@ -1,0 +1,23 @@
+{
+  "[python]": {
+    "editor.defaultFormatter": "eeyore.yapf",
+    "diffEditor.ignoreTrimWhitespace": false,
+    "editor.formatOnSaveMode": "file",
+    "editor.formatOnType": false,
+    "editor.wordBasedSuggestions": "off",
+    "editor.formatOnPaste": false,
+    "editor.formatOnSave": true,
+    "editor.insertSpaces": true,
+    "editor.tabSize": 4,
+    "editor.codeActionsOnSave": {
+      "source.organizeImports": "explicit"
+    }
+  },
+  "isort.args": ["--profile", "black"],
+  "isort.check": true,
+  "editor.codeActionsOnSave": {
+    "source.sortImports": "explicit"
+  },
+  "python.analysis.typeCheckingMode": "basic",
+  "python.analysis.autoImportCompletions": true
+}
