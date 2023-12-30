@@ -17,7 +17,7 @@ const Login = () => {
 
   useEffect(() => {
     if (session.user) {
-      setErrors([`Você já está logado como ${session.user.username}.`])
+      setErrors([`Você já está logado como ${session.user.name}.`])
       setInterval(() => {
         setErrors([])
         router.push("/")

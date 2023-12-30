@@ -54,13 +54,14 @@ export const signIn = async ({
       { username, password },
       {
         headers: {
-          Accept: "application/json",
+          "Content-Type": "application/x-www-form-urlencoded",
         },
       }
     )
     return res.data
   } catch (error) {
     const e = error as AxiosError
+    // TODO: Add better error handling (for example, by status code 422)
     return { ok: false, error: e.message }
   }
 }
