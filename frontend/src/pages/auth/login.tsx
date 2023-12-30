@@ -1,16 +1,13 @@
 import { useSession } from "@/contexts/session"
-import { getCsrfToken, signIn } from "@/utils/auth"
+import { signIn } from "@/utils/auth"
 import clsx from "clsx"
 import { useRouter } from "next/navigation"
 import { useEffect, useState } from "react"
+import { Loading } from "react-daisyui"
 import { AiFillWarning } from "react-icons/ai"
 import { IoIosLogIn } from "react-icons/io"
 
-type Props = {
-  csrfToken: string
-}
-
-const Login = ({ csrfToken }: Props) => {
+const Login = () => {
   const [username, setUsername] = useState("")
   const [password, setPassword] = useState("")
   const [isLoggingIn, setIsLoggingIn] = useState(false)
@@ -33,13 +30,13 @@ const Login = ({ csrfToken }: Props) => {
     const result = await signIn({
       username,
       password,
-      csrfToken,
     })
 
     if (!result?.ok) {
       setIsLoggingIn(false)
       setErrors([...errors, result?.error ?? "Falha na autenticação."])
     }
+
     setIsLoggingIn(false)
   }
 
@@ -106,8 +103,17 @@ const Login = ({ csrfToken }: Props) => {
           onClick={handleSubmit}
           disabled={isLoggingIn}
         >
-          <IoIosLogIn />
-          Entrar
+          {isLoggingIn && (
+            <>
+              <Loading /> Carregando...
+            </>
+          )}
+          {!isLoggingIn && (
+            <>
+              <IoIosLogIn />
+              Entrar
+            </>
+          )}
         </button>
       </div>
     </div>
@@ -115,13 +121,3 @@ const Login = ({ csrfToken }: Props) => {
 }
 
 export default Login
-
-export const getServerSideProps = async () => {
-  const csrfToken = await getCsrfToken()
-
-  return {
-    props: {
-      csrfToken,
-    },
-  }
-}

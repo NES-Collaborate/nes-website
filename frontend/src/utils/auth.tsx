@@ -39,11 +39,9 @@ export const GetSession = () => {
 export const signIn = async ({
   username,
   password,
-  csrfToken,
 }: {
   username: string
   password: string
-  csrfToken: string
 }) => {
   if (!username.trim() || !password.trim()) {
     return { ok: false, error: "Preencha todos os campos." }
@@ -52,8 +50,8 @@ export const signIn = async ({
   // Is expected that the backend will set the cookie (_token)
   try {
     const res = await axiosSesh.post(
-      "/login",
-      { username, password, csrfToken },
+      "/api/login",
+      { username, password },
       {
         headers: {
           Accept: "application/json",
@@ -65,16 +63,6 @@ export const signIn = async ({
     const e = error as AxiosError
     return { ok: false, error: e.message }
   }
-}
-
-export const getCsrfToken = async () => {
-  try {
-    return (await axiosSesh.get("/csrfToken")).data
-  } catch (e) {
-    const error = e as AxiosError
-    console.error("Falha ao obter o CSRF-Token do Backend:", error.cause?.message)
-  }
-  return "csrfToken" // TODO: remove this and put a proper error
 }
 
 export const getSession = async (req: GetServerSidePropsContext["req"]) => {
