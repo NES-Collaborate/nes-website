@@ -1,6 +1,7 @@
 from fastapi import APIRouter, Depends, status
 from fastapi.security import OAuth2PasswordRequestForm
-from schemas.user import UserIn, UserOut
+from models.user import User
+from schemas.user import UserOut
 from services.db import get_session
 from services.user import UserService
 from sqlalchemy.orm import Session
@@ -15,6 +16,6 @@ async def get_token(form_data: OAuth2PasswordRequestForm = Depends(),
 
 
 @router.get("/me", status_code=status.HTTP_200_OK)
-async def get_user(current_user=Depends(UserService.get_current_user)):
+async def get_user(current_user: User = Depends(UserService.get_current_user)):
     #return current_user.__dict__
     return UserOut.model_validate(current_user, from_attributes=True)

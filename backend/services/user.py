@@ -1,5 +1,3 @@
-from datetime import datetime, timedelta
-
 from daos import user
 from fastapi import Depends, HTTPException, status
 from fastapi.responses import JSONResponse
@@ -24,7 +22,7 @@ class UserService:
         return _user
 
     @staticmethod
-    async def create_access_token(data: dict):
+    async def create_access_token(data: dict[str, str]):
         to_encode = data.copy()
         # Sem tempo de expiração no momento
         encoded_jwt = jwt.encode(to_encode,
