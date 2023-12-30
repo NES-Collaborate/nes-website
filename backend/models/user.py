@@ -1,9 +1,9 @@
 from datetime import date, datetime
-from typing import List, Optional
+from typing import List, Literal, Optional, get_args
 
-import models.enum as enum
+import sqlalchemy as sa
+from models.enum import AttachType, Serie, UserType
 from passlib import hash
-from sqlalchemy import sa
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from .base import BaseTable, char2, str10
@@ -18,8 +18,8 @@ class User(BaseTable):
     cpf: Mapped[str] = mapped_column(sa.String, unique=True, index=True)
     birthdate: Mapped[date]
     scholarship: Mapped[float]
-    serie: Mapped[sa.Enum] = mapped_column(sa.Enum(enum.Serie))
-    type: Mapped[sa.Enum] = mapped_column(sa.Enum(enum.UserType))
+    serie: Mapped[Serie] = mapped_column(sa.Enum(*get_args(Serie)))
+    type: Mapped[UserType] = mapped_column(sa.Enum(*get_args(UserType)))
 
     photo: Mapped["Attatch"] = relationship()
     emails: Mapped[List["Email"]] = relationship(back_populates="user")
@@ -36,7 +36,7 @@ class Attatch(BaseTable):
 
     name: Mapped[str]
     location: Mapped[str]
-    type: Mapped[sa.Enum] = mapped_column(sa.Enum(enum.AttatchTypes))
+    type: Mapped[AttachType] = mapped_column(sa.Enum(*get_args(AttachType)))
     user_id: Mapped[int] = mapped_column(sa.Integer, sa.ForeignKey("users.id"))
 
 
