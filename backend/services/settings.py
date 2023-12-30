@@ -1,19 +1,15 @@
-from functools import lru_cache
+class Settings:
 
-from pydantic_settings import BaseSettings
-
-
-class Settings(BaseSettings):
-
-    DATABASE_URL: str = ""
-    SECRET_KEY: str = ""
-    ALGORITHM: str = ""
-
-    class Config:
-        env_file = "./.env"
+    DATABASE_URL: str = "sqlite:///./db.sqlite"
+    SECRET_KEY: str = "something here (recommend: openssl rand -hex 32)"
+    ALGORITHM: str = "HS256"
+    COOKIE_PATH: str = "http://localhost:8000"
+    DEFAULT_PASS: str = "default"
+    ORIGINS: list[str] = [
+        "http://localhost:3000",
+    ]
 
 
-@lru_cache
 def get_settings():
     return Settings()
 
