@@ -15,8 +15,6 @@ SessionFactory = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 
 def create_default_user():
 
-    print("Creating default user...")
-
     password = hash.bcrypt.hash("admin")
     cpf = "00000000000"
 
@@ -26,7 +24,6 @@ def create_default_user():
         "cpf": cpf,
         "birthdate": date.today(),
         "scholarship": 0,
-        "serie": "1º EM",
         "type": "admin"
     }
 

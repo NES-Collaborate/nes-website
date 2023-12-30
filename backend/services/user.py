@@ -1,5 +1,6 @@
 from daos import user
 from fastapi import Depends, HTTPException, status
+from fastapi.responses import JSONResponse
 from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
 from jose import JWTError, jwt
 from services.db import get_session
@@ -31,7 +32,7 @@ class UserService:
         except JWTError:
             raise HTTPException(
                 status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-                detail="Unable to generate token",
+                detail="Erro ao gerar o token de acesso",
             )
         return encoded_jwt
 
@@ -44,15 +45,22 @@ class UserService:
 
         if not _user:
             raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST,
-                                detail="Incorrect cpf or password")
+                                detail="CPF ou senha incorretos")
 
         access_token = await UserService.create_access_token(
             data={"sub": _user.cpf})
 
-        return dict(
-            access_token=access_token,
-            token_type="bearer",
-        )
+        response = JSONResponse(status_code=status.HTTP_200_OK,
+                                content=dict(
+                                    access_token=access_token,
+                                    access_type="bearer",
+                                ))
+
+        response.set_cookie(key="_token",
+                            value=access_token,
+                            path=settings.COOKIE_PATH)
+
+        return response
 
     @staticmethod
     async def get_current_user(session: Session = Depends(get_session),
@@ -67,7 +75,7 @@ class UserService:
         except:
             raise HTTPException(
                 status_code=status.HTTP_401_UNAUTHORIZED,
-                detail="Could not validate credentials",
+                detail="Não foi possível validar as credenciais",
                 headers={"WWW-Authenticate": "Bearer"},
             )
         return _user
