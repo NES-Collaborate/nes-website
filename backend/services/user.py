@@ -6,8 +6,9 @@ from fastapi.responses import JSONResponse
 from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
 from jose import jwt
 from services.db import get_session
-from services.settings import settings
 from sqlalchemy.orm import Session
+
+from .settings import settings
 
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/api/login")
 

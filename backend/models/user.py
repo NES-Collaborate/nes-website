@@ -3,7 +3,7 @@ from typing import List, Literal, Optional, get_args
 
 import sqlalchemy as sa
 from models.enum import AttachType, Serie, UserType
-from passlib import hash
+from passlib import hash  # type: ignore
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from .base import BaseTable, char2, str10
