@@ -2,7 +2,14 @@ from datetime import date
 from typing import List, Optional
 
 from models.base import char2, str10
-from models.enum import AttachType, Serie, UserType
+from models.enum import (
+    AchievementStatus,
+    AchievementType,
+    AttachType,
+    MedalType,
+    Serie,
+    UserType,
+)
 from pydantic import BaseModel, EmailStr
 
 
@@ -35,6 +42,18 @@ class Address(BaseModel):
     cep: str10
 
 
+class Achievement(BaseModel):
+
+    name: str
+    type: AchievementType
+    olympic_acronym: str
+    year: int
+    medal: MedalType
+    link: Optional[str]
+    other_info: Optional[str]
+    status: AchievementStatus
+
+
 class UserBase(BaseModel):
     name: str
     photo: Optional[Attatch]
@@ -46,6 +65,7 @@ class UserBase(BaseModel):
     scholarship: float
     serie: Optional[Serie]
     type: UserType
+    achievements: Optional[List[Achievement]]
 
     class Config:
         from_atributes = True

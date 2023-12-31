@@ -2,7 +2,14 @@ from datetime import date
 from typing import List, Optional, get_args
 
 import sqlalchemy as sa
-from models.enum import AttachType, Serie, UserType
+from models.enum import (
+    AchievementStatus,
+    AchievementType,
+    AttachType,
+    MedalType,
+    Serie,
+    UserType,
+)
 from passlib import hash  # type: ignore
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
@@ -21,25 +28,29 @@ class User(BaseTable):
     serie: Mapped[Optional[Serie]] = mapped_column(sa.Enum(*get_args(Serie)))
     type: Mapped[UserType] = mapped_column(sa.Enum(*get_args(UserType)))
 
-    photo: Mapped[Optional["Attatch"]] = relationship()
+    photo: Mapped[Optional["Attach"]] = relationship()
     emails: Mapped[Optional[List["Email"]]] = relationship(
         back_populates="user")
     phones: Mapped[Optional[List["PhoneNumber"]]] = relationship(
         back_populates="user")
     address: Mapped[Optional["Address"]] = relationship()
+    achievements: Mapped[Optional[List["Achievement"]]] = relationship()
 
     def verify_password(self, password: str | bytes):
         return hash.bcrypt.verify(password, self.password)
 
 
-class Attatch(BaseTable):
+class Attach(BaseTable):
 
     __tablename__ = "attatches"
 
     name: Mapped[str]
     location: Mapped[str]
     type: Mapped[AttachType] = mapped_column(sa.Enum(*get_args(AttachType)))
-    user_id: Mapped[int] = mapped_column(sa.Integer, sa.ForeignKey("users.id"))
+    user_id: Mapped[Optional[int]] = mapped_column(sa.Integer,
+                                                   sa.ForeignKey("users.id"))
+    achievement_id: Mapped[Optional[int]] = mapped_column(
+        sa.Integer, sa.ForeignKey("achievements.id"))
 
 
 class Email(BaseTable):
@@ -94,3 +105,22 @@ class School(BaseTable):
     phones: Mapped[List["PhoneNumber"]] = relationship()
     address: Mapped["Address"] = relationship()
     emails: Mapped[List["Email"]] = relationship()
+
+
+class Achievement(BaseTable):
+
+    __tablename__ = "achievements"
+
+    name: Mapped[str]
+    type: Mapped[AchievementType] = mapped_column(
+        sa.Enum(*get_args(AchievementType)))
+    olympic_acronym: Mapped[str]
+    year: Mapped[int]
+    medal: Mapped[MedalType] = mapped_column(sa.Enum(*get_args(MedalType)))
+    link: Mapped[Optional[str]]
+    other_info: Mapped[Optional[str]]
+    status: Mapped[AchievementStatus] = mapped_column(
+        sa.Enum(*get_args(AchievementStatus)))
+    user_id: Mapped[int] = mapped_column(sa.Integer, sa.ForeignKey("users.id"))
+
+    images: Mapped[Optional[List["Attach"]]] = relationship()
