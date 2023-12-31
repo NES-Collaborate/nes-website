@@ -1,7 +1,7 @@
 import Link from "next/link"
 import { Logo } from "@/components/Logo"
 import { Footer } from "@/components/nes/Footer"
-import { Content } from "@/components/nes/about/Content"
+import { Content } from "@/components/nes/about/learn-more/Content"
 
 const Home = () => {
   return (

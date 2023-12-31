@@ -4,7 +4,7 @@ import Image from "next/image"
 import { useEffect, useState } from "react"
 
 type Props = {
-  type: "circle" | "horizontal" | "banner" | "bannerProcessoSeletivo" | "obmepMedals" | "mathBanner"
+  type: "circle" | "horizontal" | "banner" | "bannerProcessoSeletivo" | "obmepMedals" | "mathBanner" | "library"
   size?: number
   alt?: string
   className?: string

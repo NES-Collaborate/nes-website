@@ -55,4 +55,9 @@ export const LOGOS: Record<string, Image> = {
     width: 6000,
     height: 4000,
   },
+  library: {
+    src: "/img/library.jpg",
+    width: 3840,
+    height: 5760,
+  },
 }

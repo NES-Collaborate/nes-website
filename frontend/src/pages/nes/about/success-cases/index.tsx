@@ -1,6 +1,6 @@
 import { Logo } from "@/components/Logo"
-import { Brief } from "@/components/nes/about/Brief"
-import { SuccessCase } from "@/components/nes/about/SuccessCase"
+import { Brief } from "@/components/nes/about/success-cases/Brief"
+import { SuccessCase } from "@/components/nes/about/success-cases/SuccessCase"
 import { Footer } from "@/components/nes/Footer"
 
 const Home = () => {
