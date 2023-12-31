@@ -4,7 +4,6 @@ from fastapi.security import OAuth2PasswordRequestForm
 from models.user import User
 from schemas.user import UserOut
 from services.db import get_session
-from services.settings import settings
 from services.user import UserService
 from sqlalchemy.orm import Session
 
@@ -28,6 +27,6 @@ async def logout():
     response = JSONResponse(status_code=status.HTTP_200_OK,
                             content={"message": "logout realizado"})
 
-    response.set_cookie(key="_token", value="", path=settings.COOKIE_PATH)
+    response.set_cookie(key="_token", value="", path="/")
 
     return response
