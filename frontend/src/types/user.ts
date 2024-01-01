@@ -9,5 +9,5 @@ export type User = {
   birthdate: string
   scolarship: number
   serie?: string
-  type: string
+  type: "admin" | "other" | "student" | "responsible"
 }
