@@ -19,5 +19,16 @@
     "source.sortImports": "explicit"
   },
   "python.analysis.typeCheckingMode": "strict",
-  "python.analysis.autoImportCompletions": true
+  "python.analysis.autoImportCompletions": true,
+
+  // Prettier Configurations:
+  "editor.defaultFormatter": "esbenp.prettier-vscode",
+  "editor.tabSize": 2,
+  "editor.insertSpaces": true,
+  "prettier.tabWidth": 2,
+  "prettier.printWidth": 90,
+  "prettier.semi": false,
+  
+  // Auto save:
+  "editor.formatOnSave": true,
 }
