@@ -45,4 +45,19 @@ export const LOGOS: Record<string, Image> = {
     width: 1280,
     height: 326,
   },
+  obmepMedals: {
+    src: "/img/obmep-medals.jpg",
+    width: 3744,
+    height: 2494,
+  },
+  mathBanner: {
+    src: "/img/math-banner.jpg",
+    width: 6000,
+    height: 4000,
+  },
+  library: {
+    src: "/img/library.jpg",
+    width: 3840,
+    height: 5760,
+  },
 }

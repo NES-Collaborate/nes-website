@@ -12,5 +12,14 @@ const config: Config = {
   daisyui: {
     themes: ["light", "dark", "sunset"],
   },
+  theme: {
+    extend: {
+      colors: {
+        'purple-nes': 'rgb(126, 34, 206)',
+        'hover-purple-nes': 'rgb(107, 33, 168)',
+        'green-nes': 'rgb(22 163 74)',
+      },
+    },
+  },
 }
 export default config
