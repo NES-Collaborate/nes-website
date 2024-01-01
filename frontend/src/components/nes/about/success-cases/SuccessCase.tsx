@@ -1,14 +1,15 @@
-import Image from "next/image";
-import { useEffect, useState } from "react";
+import clsx from "clsx"
+import Image from "next/image"
+import { useEffect, useState } from "react"
 
 type Props = {
-  imagePath: string,
-  name: string,
-  city: string,
-  results: string,
-  difficulties: string,
-  phrase: string,
-  type?: "reverse",
+  imagePath: string
+  name: string
+  city: string
+  results: string
+  difficulties: string
+  phrase: string
+  type?: "reverse"
 }
 
 /**
@@ -21,26 +22,36 @@ type Props = {
  * @param {string} phrase Personal phrase
  * @returns {JSX.Element} SuccessCase
  */
-export const SuccessCase = ({ imagePath, name, city, results, difficulties, phrase, type }: Props) => {
-  const [direction, setDirection] = useState("");
+export const SuccessCase = ({
+  imagePath,
+  name,
+  city,
+  results,
+  difficulties,
+  phrase,
+  type,
+}: Props) => {
+  const [direction, setDirection] = useState("")
 
   useEffect(() => {
     if (type === "reverse") {
-      setDirection(`hero-content flex-col md:flex-row-reverse`);
+      setDirection(`hero-content flex-col md:flex-row-reverse`)
     } else {
       setDirection(`hero-content flex-col md:flex-row`)
     }
   }, [type])
 
   return (
-    <div className="hero bg-base-200 mb-4 p-2">
-      <div className={direction}>
-        <Image 
-          alt=""
+    <div className="hero bg-base-200 mb-4 p-2 rounded-lg">
+      <div
+        className={clsx(direction, "py-8 px-4 w-full flex justify-center items-center")}
+      >
+        <Image
+          alt="foto aluno"
           width={500}
           height={500}
-          src={imagePath} 
-          className="max-w-sm rounded-lg shadow-2xl" 
+          src={imagePath}
+          className="max-w-sm rounded-lg shadow-2xl"
         />
         <div className="px-4">
           <h1 className="text-5xl text-purple-nes font-bold">{name}</h1>
@@ -56,7 +67,9 @@ export const SuccessCase = ({ imagePath, name, city, results, difficulties, phra
             </div>
           </div>
           <div className="w-full flex justify-center items-center mt-8">
-            <p className="text-xl text-green-nes font-serif italic text-center">"{phrase}"</p>
+            <p className="text-xl text-green-nes font-serif italic text-center">
+              &quot;{phrase}&quot;
+            </p>
           </div>
         </div>
       </div>

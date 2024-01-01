@@ -7,10 +7,14 @@ const Home = () => {
   return (
     <>
       <div className="mb-4 max-h-96 overflow-hidden">
-        <Logo type="obmepMedals" className="w-full max-h-96 object-cover object-center" alt="Banner do NES" />
+        <Logo
+          type="obmepMedals"
+          className="w-full max-h-96 object-cover object-center"
+          alt="Banner do NES"
+        />
       </div>
 
-      <Brief/>
+      <Brief />
 
       <SuccessCase
         imagePath="/img/circle.png"
@@ -20,7 +24,7 @@ const Home = () => {
         difficulties="Esse é um texto dizendo um monte de coisa que dificultou a vida do Irineu"
         phrase="Essa frase é emocionante! Essa frase é emocionante! Essa frase é emocionante! Essa frase é emocionante!"
       />
-      <SuccessCase 
+      <SuccessCase
         imagePath="/img/circle.png"
         name="Irineuza Cabral da Silva"
         city="Maceió, Alagoas, Brasil"
