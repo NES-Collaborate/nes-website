@@ -1,4 +1,5 @@
 import { IconType } from "react-icons"
+import { User } from "./user"
 
 /**
  * Landing Page Representation
@@ -27,4 +28,14 @@ export type Image = {
   src: string
   width: number
   height: number
+}
+
+/**
+ * Type for Logged User Page
+ */
+export type UserPage = {
+  name: string
+  url: string
+  icon: IconType
+  allowedUserTypes: User["type"][]
 }

@@ -1,6 +1,7 @@
-import { Image, LandingPage, Notice } from "@/types/constants"
-import { FaClipboardList, FaHandHoldingHeart } from "react-icons/fa"
+import { Image, LandingPage, UserPage } from "@/types/constants"
+import { FaClipboardList, FaHandHoldingHeart, FaUser } from "react-icons/fa"
 import { FaCircleInfo } from "react-icons/fa6"
+import { FiBook, FiLogOut, FiSettings, FiUsers } from "react-icons/fi"
 import { IoIosMail, IoMdHome } from "react-icons/io"
 import { IoDocumentText } from "react-icons/io5"
 
@@ -8,7 +9,7 @@ import { IoDocumentText } from "react-icons/io5"
  * Landing Pages of the project
  */
 export const LANDING_PAGES: LandingPage[] = [
-  { name: "Home", url: "/nes", icon: IoMdHome },
+  { name: "Início", url: "/nes", icon: IoMdHome },
   { name: "Processo Seletivo", url: "/nes/subscription", icon: FaClipboardList },
   { name: "Material Gratuito", url: "/nes/material", icon: IoDocumentText },
   { name: "Contatos", url: "/nes/contact", icon: IoIosMail },
@@ -61,3 +62,45 @@ export const LOGOS: Record<string, Image> = {
     height: 5760,
   },
 }
+
+/**
+ * Logged User Dropdown
+ */
+export const USER_PAGES: UserPage[] = [
+  {
+    name: "Home",
+    url: "/app",
+    icon: IoMdHome,
+    allowedUserTypes: ["admin", "other", "student"],
+  },
+  {
+    name: "Perfil",
+    url: "/app/profile",
+    icon: FaUser,
+    allowedUserTypes: ["admin", "other", "student"],
+  },
+  {
+    name: "Turmas",
+    url: "/app/classroom",
+    icon: FiUsers,
+    allowedUserTypes: ["admin", "other"],
+  },
+  {
+    name: "Matérias",
+    url: "/app/subject",
+    icon: FiBook,
+    allowedUserTypes: ["student"],
+  },
+  {
+    name: "Administração",
+    url: "/app/admin",
+    icon: FiSettings,
+    allowedUserTypes: ["admin"],
+  },
+  {
+    name: "Sair",
+    url: "/auth/logout",
+    icon: FiLogOut,
+    allowedUserTypes: ["admin", "other", "student"],
+  },
+]
