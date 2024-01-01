@@ -8,10 +8,10 @@ import { RiMenu2Fill } from "react-icons/ri"
  */
 export const NavBarDropDown = () => {
   return (
-    <div className="dropdown dropdown-hover">
-      <div tabIndex={0} role="button" className="btn btn-ghost btn-circle">
+    <details className="dropdown dropdown-hover">
+      <summary className="btn btn-ghost btn-circle">
         <RiMenu2Fill />
-      </div>
+      </summary>
       <ul className="menu menu-sm dropdown-content p-2 shadow bg-base-100 rounded-box w-52 z-[1]">
         {LANDING_PAGES.map((page, i) => (
           <li key={i}>
@@ -21,6 +21,6 @@ export const NavBarDropDown = () => {
           </li>
         ))}
       </ul>
-    </div>
+    </details>
   )
 }

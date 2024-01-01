@@ -1,8 +1,7 @@
 import { useSession } from "@/contexts/session"
-import Link from "next/link"
 import { useEffect, useState } from "react"
-import { IoHome } from "react-icons/io5"
-import { LogInOutButtom } from "./LogInOutButtom"
+import LoggedUserDropDown from "./LoggedUserDropDown"
+import { LoginButtom } from "./LoginButtom"
 import { Logo } from "./Logo"
 import { NavBarDropDown } from "./NavBarDropDown"
 import { ThemeToggle } from "./ThemeToggle"
@@ -32,12 +31,7 @@ export const NavBar = () => {
         <Logo type={windowWidth < 410 ? "circle" : "horizontal"} size={40} />
       </div>
       <div className="navbar-end gap-3">
-        {session.user && (
-          <Link href="/app">
-            <IoHome size={20} />
-          </Link>
-        )}
-        <LogInOutButtom />
+        {session.user ? <LoggedUserDropDown /> : <LoginButtom />}
       </div>
     </div>
   )
