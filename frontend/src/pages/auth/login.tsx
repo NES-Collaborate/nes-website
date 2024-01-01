@@ -1,13 +1,19 @@
 import { useSession } from "@/contexts/session"
-import { signIn } from "@/utils/auth"
+import { User } from "@/types/user"
+import { getUserSession, signIn } from "@/utils/auth"
 import clsx from "clsx"
+import { GetServerSidePropsContext } from "next"
 import { useRouter } from "next/navigation"
 import { useEffect, useState } from "react"
 import { Loading } from "react-daisyui"
 import { AiFillWarning } from "react-icons/ai"
 import { IoIosLogIn } from "react-icons/io"
 
-const Login = () => {
+type Props = {
+  userSession: User
+}
+
+const Login = ({ userSession }: Props) => {
   const [username, setUsername] = useState("")
   const [password, setPassword] = useState("")
   const [isLoggingIn, setIsLoggingIn] = useState(false)
@@ -16,14 +22,12 @@ const Login = () => {
   const router = useRouter()
 
   useEffect(() => {
-    if (session.user) {
-      setErrors([`Você já está logado como ${session.user.name}.`])
-      setInterval(() => {
-        setErrors([])
-        router.push("/app")
-      }, 3000)
+    if (userSession) {
+      setIsLoggingIn(true)
+      setErrors([`Você já está logado como ${userSession.name}.`])
+      setTimeout(() => router.push("/app"), 3000)
     }
-  }, [session, router])
+  }, [router, userSession])
 
   const handleSubmit = async () => {
     setIsLoggingIn(true)
@@ -123,3 +127,10 @@ const Login = () => {
 }
 
 export default Login
+
+export const getServerSideProps = async ({ req }: GetServerSidePropsContext) => {
+  const userSession = await getUserSession(req)
+  return {
+    props: { userSession },
+  }
+}

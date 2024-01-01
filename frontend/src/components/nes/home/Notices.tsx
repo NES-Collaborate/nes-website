@@ -6,7 +6,7 @@ import { NoticeCard } from "./NoticeCard"
 
 /**
  * Get a notice lists from backend and show them.
- * @returns
+ * @returns {JSX.Element} Notices list
  */
 export const Notices = () => {
   const [notices, setNotices] = useState<Notice[]>([])

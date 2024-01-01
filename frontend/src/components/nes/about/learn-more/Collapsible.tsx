@@ -7,7 +7,7 @@ type Props = {
  * Collapsible item
  * @param title Title of the collapsible
  * @param children Children of the collapsible (the content)
- * @returns
+ * @returns {JSX.Element} Collapsible
  */
 export const Collapsible = ({ title, children }: Props) => {
   return (

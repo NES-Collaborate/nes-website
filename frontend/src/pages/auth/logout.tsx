@@ -1,6 +1,5 @@
 import { useSession } from "@/contexts/session"
 import { withAuth } from "@/utils/auth"
-import { GetServerSidePropsContext } from "next"
 import { useRouter } from "next/navigation"
 import { useEffect } from "react"
 import { Loading } from "react-daisyui"

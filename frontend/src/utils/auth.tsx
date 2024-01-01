@@ -10,6 +10,13 @@ import {
 } from "next"
 import { axiosApi } from "./axiosClient"
 
+/**
+ * Sign in the user with username and password and set the session token
+ * @param {string} username Username
+ * @param {string} password Password
+ * @param {SessionContext} session Session context
+ * @returns {object} { ok: boolean, error?: string }
+ */
 export const signIn = async ({
   username,
   password,
@@ -70,6 +77,11 @@ export const signIn = async ({
   }
 }
 
+/**
+ * A server-side function to get the logged user
+ * @param req Request
+ * @returns {SessionContext}
+ */
 export const getUserSession = async (req: GetServerSidePropsContext["req"]) => {
   const token = req.cookies._token
   if (!token) return null
@@ -86,6 +98,11 @@ export const getUserSession = async (req: GetServerSidePropsContext["req"]) => {
   }
 }
 
+/**
+ * A decorator to handle authentication
+ * @param callback The `getServerSideProps` callback (optional)
+ * @returns callback(ctx) if logged user else redirect to login
+ */
 export const withAuth = (
   callback?: (context: GetServerSidePropsContext) => GetServerSidePropsResult<any>
 ) => {
@@ -105,6 +122,11 @@ export const withAuth = (
   }
 }
 
+/**
+ * A decorator to handle authentication for API's
+ * @param callback The `NextApiHandler` callback
+ * @returns callback(req, res) if logged user else 401
+ */
 export const apiWithAuth =
   (callback: NextApiHandler) => async (req: NextApiRequest, res: NextApiResponse) => {
     const user = getUserSession(req)
