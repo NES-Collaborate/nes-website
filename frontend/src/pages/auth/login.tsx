@@ -105,7 +105,6 @@ const Login = ({ userSession }: Props) => {
         <Button
           type="action"
           style="outline"
-          color="primary"
           className=""
           onClick={handleSubmit}
           disabled={isLoggingIn}

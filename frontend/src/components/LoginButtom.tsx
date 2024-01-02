@@ -14,7 +14,6 @@ export const LoginButtom = () => {
   <Button
     type="navigation"
     style="fill" 
-    color="primary"
     href="/auth/login"
   >
     <IoIosLogIn />

@@ -10,7 +10,6 @@ export const Footer = () => {
       <Button
         type="navigation"
         style="ghost"
-        color="primary"
         className="text-2xl mt-4 mb-2"
         href="/nes/about"
       >
@@ -19,7 +18,6 @@ export const Footer = () => {
       <Button
         type="navigation"
         style="link"
-        color="primary"
         className="text-lg mb-4"
         href="mailto:nes.alagoas@gmail.com"
       >

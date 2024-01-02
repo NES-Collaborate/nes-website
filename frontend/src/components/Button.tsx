@@ -5,7 +5,6 @@ import { useEffect, useState } from "react"
 type Props = {
   type: "navigation" | "action"
   style: "fill" | "outline" | "ghost" | "link" 
-  color?: "primary" | "secondary"
   className?: string
   href?: string
   onClick?: React.MouseEventHandler<HTMLButtonElement>
@@ -17,7 +16,6 @@ type Props = {
  * Button component.
  * @param {string} type Type of the button
  * @param {number} style The style of the button
- * @param {string} color The color of the button
  * @param {string} className Additional classes
  * @param {string} href The reference of the button
  * @param {React.MouseEventHandler<HTMLButtonElement>} onClick Function to call when click
@@ -27,11 +25,10 @@ type Props = {
  */
 export const Button = ({type, 
                         style, 
-                        color, 
                         className = "", 
                         href="", 
                         onClick,
-                        disabled,
+                        disabled=false,
                         children }: Props) => {
   const [buttonStyle, setButtonStyle] = useState("")
 
@@ -39,26 +36,11 @@ export const Button = ({type,
     let styleClasses: string = ""
 
     if (style === "fill") {
-      styleClasses += "btn text-gray-300  "
-      if (color === "primary") {
-        styleClasses += "bg-primary hover:bg-accent "
-      } else if (color === "secondary") {
-        styleClasses += "bg-secondary hover:bg-neutral "
-      }
+      styleClasses += "btn text-gray-300 bg-primary hover:bg-secondary "
     } else if (style === "outline") {
-      styleClasses += "btn btn-outline "
-      if (color === "primary") {
-        styleClasses += "text-primary hover:bg-primary hover:text-gray-300 "
-      } else if (color === "secondary") {
-        styleClasses += "text-secondary hover:bg-secondary hover:text-gray-300 "
-      }
+      styleClasses += "btn btn-outline text-primary hover:bg-primary hover:text-gray-300 "
     } else if (style === "ghost") {
-      styleClasses += "btn btn-ghost text-gray-300 "
-      if (color === "primary") {
-        styleClasses += "hover:bg-primary "
-      } else if (color === "secondary") {
-        styleClasses += "hover:bg-secondary "
-      }
+      styleClasses += "btn btn-ghost text-gray-300 hover:bg-primary "
     } else if (style === "link") {
       styleClasses += "btn-link text-gray-300 hover:bg-primary "
     }
@@ -67,7 +49,7 @@ export const Button = ({type,
 
     setButtonStyle(styleClasses)
 
-  }, [style, color, className])  
+  }, [style, className])  
 
   return (
     <>

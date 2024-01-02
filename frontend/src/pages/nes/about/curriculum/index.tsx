@@ -23,7 +23,6 @@ const Home = () => {
         <Button
           type="navigation"
           style="fill"
-          color="primary"
           className="btn-lg my-4"
           href="/nes/about"
         >

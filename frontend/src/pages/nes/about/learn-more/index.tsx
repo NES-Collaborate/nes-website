@@ -20,8 +20,7 @@ const Home = () => {
         <Button
           type="navigation"
           style="fill"
-          color="secondary"
-          className="btn-lg w-2/5 my-4"
+          className="btn-lg w-2/5 my-4 !pl-4"
           href="/nes/about/success-cases"
         >
           Conheça Histórias de Sucesso
@@ -29,7 +28,6 @@ const Home = () => {
         <Button
           type="navigation"
           style="fill"
-          color="secondary"
           className="btn-lg w-2/5 my-4"
           href="/nes/about/curriculum"
         >

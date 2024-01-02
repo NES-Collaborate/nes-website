@@ -12,7 +12,6 @@ export const Scroll = () => {
         <Button
           type="navigation"
           style="fill"
-          color="secondary"
           className="btn-lg w-2/5 my-4"
           href="#FuncionamentoPedagogico"
         >
@@ -21,7 +20,6 @@ export const Scroll = () => {
         <Button
           type="navigation"
           style="fill"
-          color="secondary"
           className="btn-lg w-2/5 my-4"
           href="#Modulos"
         >
