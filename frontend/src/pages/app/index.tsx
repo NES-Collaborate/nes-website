@@ -1,13 +1,17 @@
+import { Classrooms } from "@/components/app/Classrooms"
+import { Posts } from "@/components/app/Posts"
 import { useSession } from "@/contexts/session"
 import { withAuth } from "@/utils/auth"
 
 const App = () => {
   const session = useSession()
-  return (
-    <div className="text-3xl h-screen flex justify-center items-center">
-      Welcome, {session.user?.name}
-    </div>
-  )
+
+  switch (session.user?.type) {
+    case "student":
+      return <Posts />
+    default:
+      return <Classrooms />
+  }
 }
 
 export default App

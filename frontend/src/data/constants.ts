@@ -110,4 +110,5 @@ export const USER_PAGES: UserPage[] = [
  */
 export const BREADCRUMB_NAMES: Record<string, string> = {
   app: "Home",
+  classrooms: "Turmas",
 }
