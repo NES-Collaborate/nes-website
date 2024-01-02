@@ -1,8 +1,8 @@
+import { Loading } from "@/components/Loading"
 import { useSession } from "@/contexts/session"
 import { withAuth } from "@/utils/auth"
 import { useRouter } from "next/navigation"
 import { useEffect } from "react"
-import { Loading } from "react-daisyui"
 
 const LogOut = () => {
   const router = useRouter()
@@ -14,8 +14,8 @@ const LogOut = () => {
   }, [router, session])
 
   return (
-    <div className="text-3xl flex justify-center items-center h-screen gap-3">
-      <Loading /> <span>Saindo...</span>
+    <div className="h-screen">
+      <Loading text="Saindo..." textClassName="text-3xl" />
     </div>
   )
 }

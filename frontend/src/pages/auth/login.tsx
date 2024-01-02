@@ -1,3 +1,4 @@
+import { Loading } from "@/components/Loading"
 import { useSession } from "@/contexts/session"
 import { User } from "@/types/user"
 import { getUserSession, signIn } from "@/utils/auth"
@@ -5,7 +6,6 @@ import clsx from "clsx"
 import { GetServerSidePropsContext } from "next"
 import { useRouter } from "next/navigation"
 import { useEffect, useState } from "react"
-import { Loading } from "react-daisyui"
 import { AiFillWarning } from "react-icons/ai"
 import { IoIosLogIn } from "react-icons/io"
 
@@ -109,11 +109,7 @@ const Login = ({ userSession }: Props) => {
           onClick={handleSubmit}
           disabled={isLoggingIn}
         >
-          {isLoggingIn && (
-            <>
-              <Loading /> Carregando...
-            </>
-          )}
+          {isLoggingIn && <Loading text="Carregando..." textClassName="text-white" />}
           {!isLoggingIn && (
             <>
               <IoIosLogIn />
