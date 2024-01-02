@@ -1,3 +1,4 @@
+import { Breadcrumb } from "@/components/Breadcrumb"
 import { NavBar } from "@/components/NavBar"
 import { SessionProvider } from "@/contexts/session"
 import { ThemeProvider } from "@/contexts/theme"
@@ -9,6 +10,7 @@ export default function App({ Component, pageProps }: AppProps) {
     <SessionProvider>
       <ThemeProvider>
         <NavBar />
+        <Breadcrumb />
         <Component {...pageProps} />
       </ThemeProvider>
     </SessionProvider>
