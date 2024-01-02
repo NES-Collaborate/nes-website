@@ -7,7 +7,7 @@ import Image from "next/image"
 export const Content = () => {
   return (
     <div className="w-full p-8">
-      <h1 id="FuncionamentoPedagogico" className="text-3xl text-purple-nes mb-4">
+      <h1 id="FuncionamentoPedagogico" className="text-3xl text-primary mb-4">
         Funcionamento Pedagógico
       </h1>
       <div>
@@ -55,7 +55,7 @@ export const Content = () => {
         </ol>
       </div>
 
-      <h1 id="Modulos" className="text-3xl text-purple-nes mb-4">
+      <h1 id="Modulos" className="text-3xl text-primary mb-4">
         Módulos
       </h1>
       <div className="flex justify-center w-full">

@@ -2,7 +2,7 @@ import { Logo } from "@/components/Logo"
 import { Footer } from "@/components/nes/Footer"
 import { Content } from "@/components/nes/about/curriculum/Content"
 import { Scroll } from "@/components/nes/about/curriculum/Scroll"
-import Link from "next/link"
+import { Button } from "@/components/Button"
 
 const Home = () => {
   return (
@@ -20,12 +20,15 @@ const Home = () => {
       <Content />
 
       <div className="flex flex-wrap w-full justify-evenly mb-4">
-        <Link
+        <Button
+          type="navigation"
+          style="fill"
+          color="primary"
+          className="btn-lg my-4"
           href="/nes/about"
-          className="btn btn-lg bg-purple-nes text-gray-300 hover:bg-hover-purple-nes my-4"
         >
           Saiba mais sobre o NES
-        </Link>
+        </Button>
       </div>
 
       <Footer />

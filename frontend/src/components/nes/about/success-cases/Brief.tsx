@@ -1,4 +1,4 @@
-import Link from "next/link"
+import { Button } from "@/components/Button"
 
 /**
  * Page Explanation
@@ -7,17 +7,20 @@ import Link from "next/link"
 export const Brief = () => {
   return (
     <div className="w-full flex flex-col items-center my-4">
-      <h1 className="text-purple-nes text-3xl stroke-1 mb-4">Casos de Sucesso</h1>
+      <h1 className="text-primary text-3xl stroke-1 mb-4">Casos de Sucesso</h1>
       <p className="text-lg italic text-center w-3/4 mb-4">
         Estes são alguns casos de sucesso de alunos do NES que fizeram grandes conquistas
         no decorrer de sua trajetória
       </p>
-      <Link
+      <Button
+        type="navigation"
+        style="fill"
+        color="primary"
+        className="btn-lg my-4"
         href="/nes/about"
-        className="btn btn-lg bg-purple-nes text-gray-300 hover:bg-hover-purple-nes my-4"
       >
         Saiba mais sobre o NES
-      </Link>
+      </Button>
     </div>
   )
 }

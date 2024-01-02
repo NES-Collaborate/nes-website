@@ -1,6 +1,6 @@
-import Link from "next/link"
 import { usePathname } from "next/navigation"
 import { IoIosLogIn } from "react-icons/io"
+import { Button } from "./Button"
 
 /**
  * Buttom to redirect user to login page
@@ -11,9 +11,14 @@ export const LoginButtom = () => {
   if (pathname === "/auth/login") return null
 
   return (
-    <Link className="btn btn-primary" href="/auth/login">
-      <IoIosLogIn />
-      Entrar
-    </Link>
+  <Button
+    type="navigation"
+    style="fill" 
+    color="primary"
+    href="/auth/login"
+  >
+    <IoIosLogIn />
+    Entrar
+  </Button>
   )
 }
