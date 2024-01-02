@@ -17,8 +17,8 @@ export const Breadcrumb = () => {
   }, [render, pathname, splitedPath.length])
 
   return (
-    <>
-      <div className={clsx(render && "flex justify-around pt-1", !render && "hidden")}>
+    <div className={clsx(!render && "hidden")}>
+      <div className="flex justify-around pt-1">
         <Breadcrumbs>
           {splitedPath.map((x, i) => {
             const url = `/${splitedPath.slice(0, i + 1).join("/")}`
@@ -32,6 +32,6 @@ export const Breadcrumb = () => {
         </Breadcrumbs>
       </div>
       <Divider color="accent" className="m-0" />
-    </>
+    </div>
   )
 }
