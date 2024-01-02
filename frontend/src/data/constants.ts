@@ -104,3 +104,11 @@ export const USER_PAGES: UserPage[] = [
     allowedUserTypes: ["admin", "other", "student"],
   },
 ]
+
+/**
+ * Friendly Names for Breadcrumb Items
+ */
+export const BREADCRUMB_NAMES: Record<string, string> = {
+  app: "Home",
+  classrooms: "Turmas",
+}

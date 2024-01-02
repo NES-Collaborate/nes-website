@@ -1,5 +1,6 @@
 import { User } from "@/types/user"
 import { axiosApi } from "@/utils/axiosClient"
+import Cookies from "js-cookie"
 import { createContext, useContext, useEffect, useState } from "react"
 
 export type SessionContext = {
@@ -23,14 +24,14 @@ export const SessionProvider = ({ children }: { children: React.ReactNode }) => 
   const [token, setToken] = useState<string>("")
 
   useEffect(() => {
-    const token = localStorage.getItem("token")
+    const token = Cookies.get("_token")
     if (!token) return
     setToken(token)
   }, [])
 
   useEffect(() => {
     if (!token) return
-    localStorage.setItem("token", token)
+    Cookies.set("_token", token)
     axiosApi
       .get("/auth/me", {
         headers: {
@@ -49,7 +50,7 @@ export const SessionProvider = ({ children }: { children: React.ReactNode }) => 
     logOut: () => {
       setUser(null)
       setToken("")
-      localStorage.setItem("token", "")
+      Cookies.remove("_token")
       axiosApi
         .get("/auth/logout")
         .then(() => {})

@@ -1,7 +1,7 @@
+import { Loading } from "@/components/Loading"
 import { Notice } from "@/types/constants"
 import { axiosApi } from "@/utils/axiosClient"
 import { useEffect, useState } from "react"
-import { Loading } from "react-daisyui"
 import { NoticeCard } from "./NoticeCard"
 
 /**
@@ -32,8 +32,8 @@ export const Notices = () => {
       <h1 className="text-primary text-2xl stroke-1 my-8">Notícias</h1>
       <div className="flex flex-wrap justify-center gap-3">
         {isLoading && (
-          <div className="w-full flex items-center gap-3">
-            <Loading /> <span className="text-lg">Carregando notícias...</span>
+          <div className="w-full">
+            <Loading text="Carregando notícias..." textClassName="text-lg" center />
           </div>
         )}
         {notices.map((notice, i) => {
