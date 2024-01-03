@@ -1,4 +1,4 @@
-import Link from "next/link"
+import { Button } from "../Button"
 
 /**
  * Footer of the project (should only be used on the landing page)
@@ -6,19 +6,23 @@ import Link from "next/link"
  */
 export const Footer = () => {
   return (
-    <div className="w-full flex flex-col items-center bg-purple-nes">
-      <Link
+    <div className="w-full flex flex-col items-center bg-primary">
+      <Button
+        type="navigation"
+        style="ghost"
+        className="text-2xl mt-4 mb-2"
         href="/nes/about"
-        className="btn btn-ghost text-2xl text-gray-300 hover:bg-purple-nes mt-4 mb-2"
       >
         Contato
-      </Link>
-      <Link
+      </Button>
+      <Button
+        type="navigation"
+        style="link"
+        className="text-lg mb-4"
         href="mailto:nes.alagoas@gmail.com"
-        className="btn-link text-lg text-gray-300 hover:bg-purple-nes mb-4"
       >
         nes.alagoas@gmail.com
-      </Link>
+      </Button>
     </div>
   )
 }

@@ -1,4 +1,4 @@
-import Link from "next/link"
+import { Button } from "@/components/Button"
 
 /**
  * More informations about the project, like mission, vision, etc.
@@ -7,7 +7,7 @@ import Link from "next/link"
 export const MoreInfos = () => {
   return (
     <div className="w-full flex flex-col items-center mb-4">
-      <h1 className="text-purple-nes text-2xl stroke-1 my-8">Missão do Projeto</h1>
+      <h1 className="text-primary text-2xl stroke-1 my-8">Missão do Projeto</h1>
       <p className="text-base italic font-mono text-center w-3/4 mb-4">
         CRIAR UM CENTRO DE EXCELÊNCIA NA FORMAÇÃO DE TALENTOS PARA AS ÁREAS DE EXATAS
       </p>
@@ -19,12 +19,9 @@ export const MoreInfos = () => {
         COM O OBJETIVO DE FORMÁ-LOS PARA CONTINUAREM SEUS ESTUDOS NAS MELHORES
         UNIVERSIDADES DO MUNDO
       </p>
-      <Link
-        href="/nes/about"
-        className="btn btn-lg bg-purple-nes text-gray-300 hover:bg-hover-purple-nes my-4"
-      >
+      <Button type="navigation" style="fill" className="btn-lg my-4" href="/nes/about">
         Saiba mais sobre o NES
-      </Link>
+      </Button>
     </div>
   )
 }

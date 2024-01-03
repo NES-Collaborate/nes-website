@@ -109,7 +109,7 @@ export const Content = () => {
       </Collapsible>
 
       <Collapsible title="Colaboradores dentro e fora de Alagoas">
-        <h3 className="mb-4 text-xl font-medium text-green-nes">Coordenação:</h3>
+        <h3 className="mb-4 text-xl font-medium text-secondary">Coordenação:</h3>
         <ul className="list-disc list-inside ml-8">
           <li className="mb-4">
             <span className="font-medium">
@@ -134,7 +134,7 @@ export const Content = () => {
             Physics - Itália
           </li>
         </ul>
-        <h3 className="mb-4 text-xl font-medium text-green-nes">
+        <h3 className="mb-4 text-xl font-medium text-secondary">
           Colaboradores Acadêmicos:
         </h3>
         <ul className="list-disc list-inside ml-8">

@@ -35,39 +35,39 @@ export const SuccessCase = ({
 
   useEffect(() => {
     if (type === "reverse") {
-      setDirection(`hero-content flex-col md:flex-row-reverse`)
+      setDirection(`md:flex-row-reverse`)
     } else {
-      setDirection(`hero-content flex-col md:flex-row`)
+      setDirection(`md:flex-row`)
     }
   }, [type])
 
   return (
     <div className="hero bg-base-200 mb-4 p-2 rounded-lg">
       <div
-        className={clsx(direction, "py-8 px-4 w-full flex justify-center items-center")}
+        className={clsx(direction, "hero-content flex-col py-8 px-4 w-full flex justify-center items-center")}
       >
         <Image
           alt="foto aluno"
           width={500}
           height={500}
           src={imagePath}
-          className="max-w-sm rounded-lg shadow-2xl"
+          className="max-w-xs rounded-lg shadow-2xl"
         />
         <div className="px-4">
-          <h1 className="text-5xl text-purple-nes font-bold">{name}</h1>
-          <h2 className="text-2xl mb-8 text-green-nes">{city}</h2>
+          <h1 className="text-5xl text-primary font-bold">{name}</h1>
+          <h2 className="text-2xl mb-8 text-secondary">{city}</h2>
           <div className="flex flex-row flex-wrap justify-evenly">
             <div className="flex flex-col w-2/5">
-              <span className="font-bold text-purple-nes">Conquistas:</span>
+              <span className="font-bold text-primary">Conquistas:</span>
               <p>{results}</p>
             </div>
             <div className="flex flex-col w-2/5">
-              <span className="font-bold text-purple-nes">Dificuldades:</span>
+              <span className="font-bold text-primary">Dificuldades:</span>
               <p>{difficulties}</p>
             </div>
           </div>
           <div className="w-full flex justify-center items-center mt-8">
-            <p className="text-xl text-green-nes font-serif italic text-center">
+            <p className="text-xl text-secondary font-serif italic text-center">
               &quot;{phrase}&quot;
             </p>
           </div>

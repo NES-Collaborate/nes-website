@@ -1,4 +1,5 @@
 import { Loading } from "@/components/Loading"
+import { Button } from "@/components/Button"
 import { useSession } from "@/contexts/session"
 import { User } from "@/types/user"
 import { getUserSession, signIn } from "@/utils/auth"
@@ -101,11 +102,10 @@ const Login = ({ userSession }: Props) => {
           />
         </label>
 
-        <button
-          className={clsx(
-            "btn btn-outline btn-primary",
-            isLoggingIn && "cursor-not-allowed"
-          )}
+        <Button
+          type="action"
+          style="outline"
+          className=""
           onClick={handleSubmit}
           disabled={isLoggingIn}
         >
@@ -116,7 +116,7 @@ const Login = ({ userSession }: Props) => {
               Entrar
             </>
           )}
-        </button>
+        </Button>
       </div>
     </div>
   )
