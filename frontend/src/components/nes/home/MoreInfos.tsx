@@ -19,12 +19,7 @@ export const MoreInfos = () => {
         COM O OBJETIVO DE FORMÁ-LOS PARA CONTINUAREM SEUS ESTUDOS NAS MELHORES
         UNIVERSIDADES DO MUNDO
       </p>
-      <Button
-        type="navigation"
-        style="fill"
-        className="btn-lg my-4"
-        href="/nes/about"
-      >
+      <Button type="navigation" style="fill" className="btn-lg my-4" href="/nes/about">
         Saiba mais sobre o NES
       </Button>
     </div>
