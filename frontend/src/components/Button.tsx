@@ -33,22 +33,22 @@ export const Button = ({type,
   const [buttonStyle, setButtonStyle] = useState("")
 
   useEffect(() => {
-    let styleClasses: string = ""
-
-    if (style === "fill") {
-      styleClasses += "btn text-gray-300 bg-primary hover:bg-secondary "
-    } else if (style === "outline") {
-      styleClasses += "btn btn-outline text-primary hover:bg-primary hover:text-gray-300 "
-    } else if (style === "ghost") {
-      styleClasses += "btn btn-ghost text-gray-300 hover:bg-primary "
-    } else if (style === "link") {
-      styleClasses += "btn-link text-gray-300 hover:bg-primary "
+    switch (style) {
+      case "fill":
+        setButtonStyle("btn text-gray-300 bg-primary hover:bg-secondary")
+        break;
+      case "outline":
+        setButtonStyle("btn btn-outline text-primary hover:bg-primary hover:text-gray-300")
+        break;
+      case "ghost":
+        setButtonStyle("btn btn-ghost text-gray-300 hover:bg-primary")
+        break;
+      case "link":
+        setButtonStyle("btn-link text-gray-300 hover:bg-primary")
+        break;
     }
 
-    styleClasses += className
-
-    setButtonStyle(styleClasses)
-
+    setButtonStyle((currentStyle) => `${currentStyle} ${className}`)
   }, [style, className])  
 
   return (
