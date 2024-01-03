@@ -39,3 +39,14 @@ export type UserPage = {
   icon: IconType
   allowedUserTypes: User["type"][]
 }
+
+
+export type SuccessCase = {
+  id: number
+  imagePath: string
+  name: string
+  city: string
+  results: string
+  difficulties: string
+  phrase: string
+}

@@ -1,5 +1,5 @@
 import { Notice } from "@/types/constants"
-import { apiWithAuth } from "@/utils/auth"
+import { apiWithAuth, getUserSession } from "@/utils/auth"
 import { addNoticeData } from "@/utils/notice"
 import { NextApiHandler } from "next"
 
@@ -10,6 +10,13 @@ import { NextApiHandler } from "next"
 const addNotice: NextApiHandler = async (req, res) => {
   if (req.method !== "POST") {
     res.status(405).json({ error: "Method not allowed" })
+    return
+  }
+
+  const user = await getUserSession(req)
+
+  if (!user || user.type !== "admin") {
+    res.status(401).json({ error: "Unauthorized" })
     return
   }
 

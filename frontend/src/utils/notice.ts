@@ -23,6 +23,11 @@ export const addNoticeData = async (notice: Notice) => {
   return await writeJsonFile(NOTICE_FILE, notices)
 }
 
+/**
+ * Delete a Notice from JSON file
+ * @param id Notice ID
+ * @returns null if success or string|null if an error occurs
+ */
 export const deleteNoticeData = async (id: number) => {
   const notices = await getNoticesData()
   if (!notices) {

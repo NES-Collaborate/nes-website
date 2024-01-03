@@ -122,6 +122,8 @@ export const withAuth = (
   }
 }
 
+
+// TODO: Add "alowed_user_types" param.
 /**
  * A decorator to handle authentication for API's
  * @param callback The `NextApiHandler` callback

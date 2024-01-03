@@ -1,9 +1,29 @@
+import { Loading } from "@/components/Loading"
 import { Logo } from "@/components/Logo"
 import { Brief } from "@/components/nes/about/success-cases/Brief"
 import { SuccessCase } from "@/components/nes/about/success-cases/SuccessCase"
 import { Footer } from "@/components/nes/Footer"
+import { SuccessCase as SuccessCaseType } from "@/types/constants"
+import { axiosApi } from "@/utils/axiosClient"
+import { useEffect, useState } from "react"
 
 const Home = () => {
+  const [successCases, setSuccessCases] = useState<SuccessCaseType[]>([])
+  const [isLoading, setIsLoading] = useState(true)
+
+  useEffect(() => {
+    setIsLoading(true)
+    axiosApi
+      .get("/success-case/all")
+      .then((res) => {
+        setSuccessCases(res.data.successCases || [])
+      })
+      .catch((err) => {
+        console.log(err)
+      })
+    setIsLoading(false)
+  }, [])
+
   return (
     <>
       <div className="mb-4 max-h-96 overflow-hidden">
@@ -16,23 +36,16 @@ const Home = () => {
 
       <Brief />
 
-      <SuccessCase
-        imagePath="/img/circle.png"
-        name="Irineu da Silva Cabral"
-        city="Boca da Mata, Alagoas, Brasil"
-        results="Esse é um texto dizendo um monte de coisa que o Irineu ganhou ou fez na vida"
-        difficulties="Esse é um texto dizendo um monte de coisa que dificultou a vida do Irineu"
-        phrase="Essa frase é emocionante! Essa frase é emocionante! Essa frase é emocionante! Essa frase é emocionante!"
-      />
-      <SuccessCase
-        imagePath="/img/circle.png"
-        name="Irineuza Cabral da Silva"
-        city="Maceió, Alagoas, Brasil"
-        results="Esse é um texto dizendo um monte de coisa que o Irineuza ganhou ou fez na vida"
-        difficulties="Esse é um texto dizendo um monte de coisa que dificultou a vida da Irineuza"
-        phrase="Uma frase muito bonita! Uma frase muito bonita! Uma frase muito bonita! Uma frase muito bonita!"
-        type="reverse"
-      />
+      {isLoading && (
+        <div className="flex justify-center items-center h-48">
+          <Loading text="Carregando Casos de Sucesso..." textClassName="ml-3 text-2xl" />
+        </div>
+      )}
+
+      {!isLoading &&
+        successCases.map((successCase) => (
+          <SuccessCase key={successCase.id} {...successCase} />
+        ))}
 
       <Footer />
     </>
