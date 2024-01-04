@@ -43,3 +43,21 @@ export const deleteNoticeData = async (id: number) => {
     notices.filter((notice) => notice.id !== id)
   )
 }
+
+/**
+ * Update a Notice in JSON file
+ * @param id Notice ID
+ * @param notice Notice data to update
+ */
+export const updateNoticeData = async (id: number, notice: Notice) => {
+  const notices = (await getNoticesData()) || []
+  const index = notices.findIndex((notice) => notice.id === id)
+  if (index === -1) {
+    return "Notice not found"
+  }
+
+  // Security check
+  notice.id = id
+  notices[index] = notice
+  return await writeJsonFile(NOTICE_FILE, notices)
+}
