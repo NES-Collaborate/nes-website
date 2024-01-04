@@ -1,4 +1,5 @@
 import { Image, LandingPage, UserPage } from "@/types/constants"
+import path from "path"
 import { FaClipboardList, FaHandHoldingHeart, FaUser } from "react-icons/fa"
 import { FaCircleInfo } from "react-icons/fa6"
 import { FiBook, FiLogOut, FiSettings, FiUsers } from "react-icons/fi"
@@ -115,3 +116,8 @@ export const BREADCRUMB_NAMES: Record<string, string> = {
   lp: "Landing Page",
   notices: "Notícias",
 }
+
+/**
+ * Path to Cache directory to save small files
+ */
+export const CACHE_DIR = path.join(process.cwd(), "public", "cache")

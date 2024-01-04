@@ -1,5 +1,6 @@
 import { Notice } from "@/types/constants"
-import axios, { AxiosError } from "axios"
+import { AxiosError } from "axios"
+import { downloadToCache } from "./downloadFile"
 import { readJsonFile, writeJsonFile } from "./json"
 
 const NOTICE_FILE = "src/data/notices.json"
@@ -20,6 +21,20 @@ export const getNoticesData = async (): Promise<Notice[]> => {
 export const addNoticeData = async (notice: Notice) => {
   const notices = (await getNoticesData()) || []
   notice.id = notices.length + 1
+
+  // Download image
+  if (notice.image.startsWith("http")) {
+    try {
+      const imageUrl = await downloadToCache(notice.image)
+      notice.image = imageUrl
+    } catch (error) {
+      if (error instanceof AxiosError) {
+        return error.message
+      }
+      return "Failed to download image"
+    }
+  }
+
   notices.push(notice)
   return await writeJsonFile(NOTICE_FILE, notices)
 }
@@ -63,16 +78,13 @@ export const updateNoticeData = async (id: number, notice: Notice) => {
   // Download image and save in cache folder
   if (notice.image.startsWith("http")) {
     try {
-      const res = await axios.get(notice.image, { responseType: "arraybuffer" })
-      const b64 = Buffer.from(res.data).toString("base64")
-      notice.image = `data:image/png;base64,${b64}` // TODO: Find a better way to do this
+      const imageUrl = await downloadToCache(notice.image)
+      notice.image = imageUrl
     } catch (error) {
-      if (typeof error === "string") return error
-      else if (error instanceof AxiosError) {
-        const data = error.response?.data
-        if (data) return data.error
+      if (error instanceof AxiosError) {
+        return error.message
       }
-      return "Erro ao baixar imagem. Tente novamente mais tarde."
+      return "Failed to download image"
     }
   }
 

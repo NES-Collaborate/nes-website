@@ -21,7 +21,7 @@ const addNotice: NextApiHandler = async (req, res) => {
   }
 
   // TODO: Add validations here
-  const { notice } = req.body as { notice: Notice }
+  const notice = req.body as Notice
 
   const result = await addNoticeData(notice)
 

@@ -38,4 +38,4 @@ next-env.d.ts
 
 # some files
 src/data/*.json
-public/cached/
+public/cache/
