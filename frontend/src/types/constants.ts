@@ -15,10 +15,10 @@ export type LandingPage = {
  */
 export type Notice = {
   id: number
-  targetUrl: string
-  imageUrl: string
+  url: string
+  image: string
   title: string
-  subtitle: string
+  description: string
 }
 
 /**
@@ -39,7 +39,6 @@ export type UserPage = {
   icon: IconType
   allowedUserTypes: User["type"][]
 }
-
 
 export type SuccessCase = {
   id: number

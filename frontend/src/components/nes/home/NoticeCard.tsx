@@ -13,14 +13,14 @@ type Props = {
 export const NoticeCard = ({ notice }: Props) => {
   return (
     <>
-      <a href={notice.targetUrl} target="_blank">
+      <a href={notice.url} target="_blank">
         <div className="card card-compact w-96 bg-base-100 shadow-xl hover:bg-zinc-500/75">
           <figure>
-            <Image src={notice.imageUrl} alt={notice.title} width={500} height={500} />
+            <Image src={notice.image} alt={notice.title} width={500} height={500} />
           </figure>
           <div className="card-body">
             <h2 className="card-title">{notice.title}</h2>
-            <p>{notice.subtitle}</p>
+            <p>{notice.description}</p>
           </div>
         </div>
       </a>
