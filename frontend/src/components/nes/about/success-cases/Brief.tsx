@@ -1,4 +1,4 @@
-import { Button } from "@/components/Button"
+import { ButtonNES } from "@/components/ButtonNES"
 
 /**
  * Page Explanation
@@ -12,14 +12,9 @@ export const Brief = () => {
         Estes são alguns casos de sucesso de alunos do NES que fizeram grandes conquistas
         no decorrer de sua trajetória
       </p>
-      <Button
-        type="navigation"
-        style="fill"
-        className="btn-lg my-4"
-        href="/nes/about"
-      >
+      <ButtonNES type="navigation" style="fill" className="btn-lg my-4" href="/nes/about">
         Saiba mais sobre o NES
-      </Button>
+      </ButtonNES>
     </div>
   )
 }

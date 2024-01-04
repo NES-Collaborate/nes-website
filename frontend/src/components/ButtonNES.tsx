@@ -2,8 +2,8 @@ import Link from "next/link"
 import { useEffect, useState } from "react"
 
 type Props = {
-  type: "navigation" | "action"
-  style: "fill" | "outline" | "ghost" | "link"
+  type?: "navigation" | "action"
+  style?: "fill" | "outline" | "ghost" | "link"
   className?: string
   href?: string
   onClick?: React.MouseEventHandler<HTMLButtonElement>
@@ -12,9 +12,9 @@ type Props = {
 }
 
 /**
- * Button component.
- * @param {string} type Type of the button
- * @param {number} style The style of the button
+ * Personalized buttom component
+ * @param {string} type Type of the button. Defaults to action
+ * @param {number} style The style of the button. Defaults to fill
  * @param {string} className Additional classes
  * @param {string} href The reference of the button
  * @param {React.MouseEventHandler<HTMLButtonElement>} onClick Function to call when click
@@ -22,9 +22,9 @@ type Props = {
  * @param {React.ReactNode} children The content inside the button
  * @returns {Link | button} Button
  */
-export const Button = ({
-  type,
-  style,
+export const ButtonNES = ({
+  type = "action",
+  style = "fill",
   className = "",
   href = "",
   onClick,

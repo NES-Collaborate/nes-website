@@ -1,5 +1,5 @@
+import { ButtonNES } from "@/components/ButtonNES"
 import { Loading } from "@/components/Loading"
-import { Button } from "@/components/Button"
 import { useSession } from "@/contexts/session"
 import { User } from "@/types/user"
 import { getUserSession, signIn } from "@/utils/auth"
@@ -102,7 +102,7 @@ const Login = ({ userSession }: Props) => {
           />
         </label>
 
-        <Button
+        <ButtonNES
           type="action"
           style="outline"
           className=""
@@ -116,7 +116,7 @@ const Login = ({ userSession }: Props) => {
               Entrar
             </>
           )}
-        </Button>
+        </ButtonNES>
       </div>
     </div>
   )

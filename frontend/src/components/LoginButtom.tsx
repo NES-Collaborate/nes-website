@@ -1,6 +1,6 @@
 import { usePathname } from "next/navigation"
 import { IoIosLogIn } from "react-icons/io"
-import { Button } from "./Button"
+import { ButtonNES } from "./ButtonNES"
 
 /**
  * Buttom to redirect user to login page
@@ -11,13 +11,9 @@ export const LoginButtom = () => {
   if (pathname === "/auth/login") return null
 
   return (
-  <Button
-    type="navigation"
-    style="fill" 
-    href="/auth/login"
-  >
-    <IoIosLogIn />
-    Entrar
-  </Button>
+    <ButtonNES type="navigation" style="fill" href="/auth/login">
+      <IoIosLogIn />
+      Entrar
+    </ButtonNES>
   )
 }
