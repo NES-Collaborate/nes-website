@@ -1,6 +1,8 @@
 from datetime import date
 from typing import List, Optional
 
+from pydantic import BaseModel, EmailStr
+
 from models.base import char2, str10
 from models.enum import (
     AchievementStatus,
@@ -10,7 +12,6 @@ from models.enum import (
     Serie,
     UserType,
 )
-from pydantic import BaseModel, EmailStr
 
 
 class Attatch(BaseModel):
@@ -68,7 +69,7 @@ class UserBase(BaseModel):
     achievements: Optional[List[Achievement]]
 
     class Config:
-        from_atributes = True
+        from_attributes = True
 
 
 class UserIn(UserBase):
@@ -77,3 +78,13 @@ class UserIn(UserBase):
 
 class UserOut(UserBase):
     id: int
+
+
+class UserPoster(BaseModel):
+
+    name: str
+    emails: Optional[List[Email]]
+    photo: Optional[Attatch]
+
+    class Config:
+        from_attributes = True
