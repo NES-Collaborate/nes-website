@@ -2,6 +2,9 @@ from datetime import date
 from typing import List, Optional, get_args
 
 import sqlalchemy as sa
+from passlib import hash  # type: ignore
+from sqlalchemy.orm import Mapped, mapped_column, relationship
+
 from models.enum import (
     AchievementStatus,
     AchievementType,
@@ -10,8 +13,6 @@ from models.enum import (
     Serie,
     UserType,
 )
-from passlib import hash  # type: ignore
-from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from .base import BaseTable, char2, str10
 
@@ -35,6 +36,9 @@ class User(BaseTable):
         back_populates="user")
     address: Mapped[Optional["Address"]] = relationship()
     achievements: Mapped[Optional[List["Achievement"]]] = relationship()
+    classroom_id: Mapped[Optional[int]] = mapped_column(
+        sa.Integer, sa.ForeignKey("classrooms.id"))
+    classroom = relationship("Classroom", back_populates="students")
 
     def verify_password(self, password: str | bytes):
         return hash.bcrypt.verify(password, self.password)
