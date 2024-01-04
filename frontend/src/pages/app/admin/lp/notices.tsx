@@ -1,28 +1,19 @@
 import { Loading } from "@/components/Loading"
+import { CreateNoticeModal } from "@/components/app/admin/lp/notices/CreateNoticeModal"
 import { EditNoticeModal } from "@/components/app/admin/lp/notices/EditNoticeModal"
 import { Notice } from "@/types/constants"
 import { withAuth } from "@/utils/auth"
 import { axiosApi } from "@/utils/axiosClient"
-import Image from "next/image"
 import Link from "next/link"
 import { useEffect, useState } from "react"
-import {
-  Alert,
-  Button,
-  FileInput,
-  Input,
-  Modal,
-  Table,
-  Textarea,
-  Tooltip,
-} from "react-daisyui"
-import { FaEdit, FaTrash } from "react-icons/fa"
-import { IoMdClose } from "react-icons/io"
+import { Alert, Button, Table, Tooltip } from "react-daisyui"
+import { FaEdit, FaPlus, FaTrash } from "react-icons/fa"
 import { MdErrorOutline } from "react-icons/md"
 
 const Notices = () => {
   const [notices, setNotices] = useState<Notice[]>([])
-  const [targetNoticeEdit, setTargetNoticeEdit] = useState<Notice | null>(null)
+  const [NoticeEdit, setNoticeEdit] = useState<Notice | null>(null)
+  const [createNotice, setCreateNotice] = useState(false)
   const [error, setError] = useState("")
   const [isLoading, setIsLoading] = useState(true)
 
@@ -34,6 +25,16 @@ const Notices = () => {
       .catch(() => setError("Erro ao buscar notícias"))
       .finally(() => setIsLoading(false))
   }, [])
+
+  // TODO: Add feeedback when deleting and when the notice is deleted
+  const deleteNotice = async (notice: Notice) => {
+    try {
+      await axiosApi.delete(`/notice/${notice.id}`)
+      setNotices(notices.filter((n) => n.id !== notice.id))
+    } catch (error) {
+      setError("Erro ao deletar notícias")
+    }
+  }
 
   return (
     <>
@@ -76,7 +77,7 @@ const Notices = () => {
                 <span className="flex gap-2">
                   <Tooltip message="Editar">
                     <Button
-                      onClick={() => setTargetNoticeEdit(notice)}
+                      onClick={() => setNoticeEdit(notice)}
                       color="primary"
                       size="sm"
                     >
@@ -85,7 +86,7 @@ const Notices = () => {
                   </Tooltip>
 
                   <Tooltip message="Excluir">
-                    <Button color="error" size="sm">
+                    <Button color="error" size="sm" onClick={() => deleteNotice(notice)}>
                       <FaTrash />
                     </Button>
                   </Tooltip>
@@ -95,7 +96,18 @@ const Notices = () => {
           </Table.Body>
         </Table>
 
-        <EditNoticeModal notice={targetNoticeEdit} setNotice={setTargetNoticeEdit} />
+        <EditNoticeModal notice={NoticeEdit} setNotice={setNoticeEdit} />
+        <CreateNoticeModal open={createNotice} setOpen={setCreateNotice} />
+
+        <Tooltip message="Adicionar notícias" className="fixed bottom-16 right-16">
+          <Button
+            onClick={() => setCreateNotice(true)}
+            color="success"
+            className="fixed bottom-5 right-5"
+          >
+            <FaPlus />
+          </Button>
+        </Tooltip>
       </div>
     </>
   )

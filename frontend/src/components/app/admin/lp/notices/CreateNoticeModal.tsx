@@ -3,53 +3,58 @@ import { Loading } from "@/components/Loading"
 import { Notice } from "@/types/constants"
 import { axiosApi } from "@/utils/axiosClient"
 import { AxiosError } from "axios"
-// import Image from "next/image"
 import { useEffect, useState } from "react"
 import { Alert, Button, Input, Modal, Textarea } from "react-daisyui"
 import { IoMdClose } from "react-icons/io"
 
 type Props = {
-  notice: Notice | null
-  setNotice: (notice: Notice | null) => void
+  open: boolean
+  setOpen: (b: boolean) => void
 }
 
-export const EditNoticeModal = ({ notice, setNotice }: Props) => {
-  const isOpen = notice !== null
+export const CreateNoticeModal = ({ open, setOpen }: Props) => {
   const [error, setError] = useState("")
   const [isLoading, setIsLoading] = useState(false)
+  const [notice, setNotice] = useState<Notice>({
+    id: 0,
+    title: "",
+    description: "",
+    url: "",
+    image: "",
+  })
 
   const handleClick = async () => {
     setIsLoading(true)
     try {
-      await axiosApi.put(`/notice/${notice?.id}`, notice)
+      await axiosApi.post(`/notice/add`, { notice })
     } catch (error) {
       if (typeof error === "string") setError(error)
       else if (error instanceof AxiosError) {
         const data = error.response?.data
         if (data) setError(data.error)
-      } else setError("Erro ao editar notícia. Tente novamente mais tarde.")
+      } else setError("Erro ao criar notícia. Tente novamente mais tarde.")
     }
     setIsLoading(false)
   }
 
   useEffect(() => {
     setError("")
-  }, [isOpen])
+  }, [open])
 
   if (!notice) return
 
   return (
-    <Modal.Legacy open={isOpen}>
+    <Modal.Legacy open={open}>
       <Button
         size="xs"
         shape="circle"
         className="absolute right-2 top-2"
-        onClick={() => setNotice(null)}
+        onClick={() => setOpen(false)}
       >
         <IoMdClose />
       </Button>
 
-      <Modal.Header>Editar Notícia {notice.id}</Modal.Header>
+      <Modal.Header>Criar Nova Notícia</Modal.Header>
 
       <Modal.Body className="flex flex-col items-center gap-3">
         {error && (
@@ -57,19 +62,6 @@ export const EditNoticeModal = ({ notice, setNotice }: Props) => {
             {error}
           </Alert>
         )}
-
-        {
-          // TODO: Download image and show
-          /* {isOpen && (
-          <Image
-            src={notice.image}
-            alt={notice.title}
-            width={300}
-            height={400}
-            className="w-full max-w-sm rounded-lg h-48"
-          />
-        )} */
-        }
 
         <label className="form-control w-full max-w-xs">
           <div className="label">
@@ -133,7 +125,7 @@ export const EditNoticeModal = ({ notice, setNotice }: Props) => {
           onClick={handleClick}
           disabled={isLoading}
         >
-          {isLoading ? <Loading text="Editando..." /> : "Editar"}
+          {isLoading ? <Loading text="Criando..." /> : "Criar"}
         </ButtonNES>
       </Modal.Body>
     </Modal.Legacy>
