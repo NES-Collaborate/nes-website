@@ -1,4 +1,5 @@
 import { Notice } from "@/types/constants"
+import axios, { AxiosError } from "axios"
 import { readJsonFile, writeJsonFile } from "./json"
 
 const NOTICE_FILE = "src/data/notices.json"
@@ -58,6 +59,23 @@ export const updateNoticeData = async (id: number, notice: Notice) => {
 
   // Security check
   notice.id = id
+
+  // Download image and save in cache folder
+  if (notice.image.startsWith("http")) {
+    try {
+      const res = await axios.get(notice.image, { responseType: "arraybuffer" })
+      const b64 = Buffer.from(res.data).toString("base64")
+      notice.image = `data:image/png;base64,${b64}` // TODO: Find a better way to do this
+    } catch (error) {
+      if (typeof error === "string") return error
+      else if (error instanceof AxiosError) {
+        const data = error.response?.data
+        if (data) return data.error
+      }
+      return "Erro ao baixar imagem. Tente novamente mais tarde."
+    }
+  }
+
   notices[index] = notice
   return await writeJsonFile(NOTICE_FILE, notices)
 }

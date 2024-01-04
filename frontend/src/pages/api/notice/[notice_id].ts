@@ -36,6 +36,8 @@ const updateNotice: NextApiHandler = async (req, res) => {
     res.status(404).json({ error: "An error occurred" })
     return
   }
+
+  res.status(200).json({ notice, status: true })
 }
 
 /**
