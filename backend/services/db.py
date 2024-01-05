@@ -1,9 +1,11 @@
 from datetime import date
 
-from models.user import User
 from passlib import hash
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
+
+from models.classroom import Classroom, Subject
+from models.user import User
 
 from .settings import settings
 
@@ -30,6 +32,53 @@ def create_default_user():
     _user = User(**user_data)
 
     session = SessionFactory()
+
+    if session.query(User).filter_by(cpf=cpf).first():
+        return
+
+    session.add(_user)
+    session.commit()
+    session.refresh(_user)
+
+
+def create_test_student():
+
+    session = SessionFactory()
+
+    class_data = {
+        "name": "test 2024",
+    }
+
+    _class = Classroom(**class_data)
+
+    if not session.query(Classroom).filter_by(name="test 2024").first():
+        session.add(_class)
+        session.commit()
+        session.refresh(_class)
+
+    subject_data = {"name": "materia", "classroom_id": 1}
+
+    _subject = Subject(**subject_data)
+
+    if not session.query(Subject).filter_by(name="materia").first():
+        session.add(_subject)
+        session.commit()
+        session.refresh(_subject)
+
+    password = hash.bcrypt.hash("student")
+    cpf = "11111111111"
+
+    user_data = {
+        "name": "Tercio",
+        "password": password,
+        "cpf": cpf,
+        "birthdate": date.today(),
+        "scholarship": 0,
+        "type": "student",
+        "classroom_id": 1
+    }
+
+    _user = User(**user_data)
 
     if session.query(User).filter_by(cpf=cpf).first():
         return
