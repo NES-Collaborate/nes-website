@@ -165,4 +165,4 @@ const Notices = () => {
 
 export default Notices
 
-export const getServerSideProps = withAuth()
+export const getServerSideProps = withAuth({ allowedUsers: ["admin"] })

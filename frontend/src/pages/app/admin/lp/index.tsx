@@ -40,4 +40,4 @@ const LandingPage = () => {
 
 export default LandingPage
 
-export const getServerSideProps = withAuth()
+export const getServerSideProps = withAuth({ allowedUsers: ["admin"] })
