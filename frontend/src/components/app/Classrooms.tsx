@@ -16,6 +16,7 @@ export const Classrooms = () => {
 
   useEffect(() => {
     setIsLoading(true)
+    setError(null)
     const fetchClassrooms = async () => {
       try {
         const res = await axiosApi("/teacher/classrooms", {
@@ -49,6 +50,10 @@ export const Classrooms = () => {
       {!isLoading && (
         <div className="flex justify-center items-center">
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+            {!classrooms.length && (
+              <p className="text-xl my-4">Nenhuma turma encontrada</p>
+            )}
+
             {classrooms.map((classroom) => (
               <div className="card w-96 bg-base-100 shadow-xl" key={classroom.id}>
                 <div className="card-body">
