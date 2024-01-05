@@ -98,30 +98,45 @@ export const getUserSession = async (req: GetServerSidePropsContext["req"]) => {
   }
 }
 
+type WithAuthProps = {
+  callback?: (
+    context: GetServerSidePropsContext
+  ) => Promise<GetServerSidePropsResult<any>> | GetServerSidePropsResult<any>
+  allowedUsers?: User["type"][]
+}
+
+const defaultCallback = async (
+  ctx: GetServerSidePropsContext
+): Promise<GetServerSidePropsResult<any>> => {
+  return { props: {} }
+}
+
 /**
  * A decorator to handle authentication
  * @param callback The `getServerSideProps` callback (optional)
+ * @param allowedUsers Allowed user types
  * @returns callback(ctx) if logged user else redirect to login
  */
-export const withAuth = (
-  callback?: (context: GetServerSidePropsContext) => GetServerSidePropsResult<any>
-) => {
+export const withAuth = (props: WithAuthProps = {}) => {
+  const { callback = defaultCallback, allowedUsers = ["admin", "student", "other"] } =
+    props
+
   return async (ctx: GetServerSidePropsContext) => {
     const user = await getUserSession(ctx.req)
 
-    if (!user) {
+    const isAllowed = user && allowedUsers.includes(user.type as User["type"])
+    if (!isAllowed) {
       return {
         redirect: {
-          destination: "/auth/login",
+          destination: "/nes",
           permanent: false,
         },
       }
     }
 
-    return callback ? callback(ctx) : { props: {} }
+    return callback(ctx)
   }
 }
-
 
 // TODO: Add "alowed_user_types" param.
 /**
