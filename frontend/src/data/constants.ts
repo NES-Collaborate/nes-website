@@ -121,3 +121,13 @@ export const BREADCRUMB_NAMES: Record<string, string> = {
  * Path to Cache directory to save small files
  */
 export const CACHE_DIR = path.join(process.cwd(), "public", "cache")
+
+/**
+ * Translatiosns of the `PostType`s
+ */
+export const POST_TYPE_TRANSLATIONS = {
+  Notice: "Aviso",
+  ClassMaterial: "Material de Aula",
+  Test: "Prova",
+  Activity: "Atividade",
+}
