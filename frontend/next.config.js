@@ -4,11 +4,7 @@ const nextConfig = {
   rewrites: () => {
     return [
       {
-        source: "/api/auth/:path*",
-        destination: "http://localhost:8000/api/:path*",
-      },
-      {
-        source: "/api/:path*",
+        source: "/api/server/:path*",
         destination: "http://localhost:8000/api/:path*",
       },
     ]

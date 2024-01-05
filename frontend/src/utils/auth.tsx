@@ -8,7 +8,7 @@ import {
   NextApiRequest,
   NextApiResponse,
 } from "next"
-import { axiosApi } from "./axiosClient"
+import { axiosServer } from "./axiosClient"
 
 /**
  * Sign in the user with username and password and set the session token
@@ -36,8 +36,8 @@ export const signIn = async ({
   }
 
   try {
-    const res = await axiosApi.post(
-      "/auth/login",
+    const res = await axiosServer.post(
+      "/login",
       { username, password },
       {
         headers: {
@@ -86,7 +86,7 @@ export const getUserSession = async (req: GetServerSidePropsContext["req"]) => {
   const token = req.cookies._token
   if (!token) return null
   try {
-    const res = await axiosApi.get("/auth/me", {
+    const res = await axiosServer.get("/me", {
       headers: {
         Authorization: `Bearer ${token}`,
       },

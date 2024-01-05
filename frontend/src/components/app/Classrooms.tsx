@@ -1,7 +1,7 @@
 import { Loading } from "@/components/Loading"
 import { useSession } from "@/contexts/session"
 import { Classroom } from "@/types/entities"
-import { axiosApi } from "@/utils/axiosClient"
+import { axiosServer } from "@/utils/axiosClient"
 import Link from "next/link"
 import { useEffect, useState } from "react"
 import { Alert } from "react-daisyui"
@@ -19,7 +19,7 @@ export const Classrooms = () => {
     setError(null)
     const fetchClassrooms = async () => {
       try {
-        const res = await axiosApi("/teacher/classrooms", {
+        const res = await axiosServer.get("/teacher/classrooms", {
           headers: {
             Authorization: `Bearer ${session.token}`,
             Accept: "application/json",

@@ -1,5 +1,5 @@
 import { User } from "@/types/user"
-import { axiosApi } from "@/utils/axiosClient"
+import { axiosServer } from "@/utils/axiosClient"
 import Cookies from "js-cookie"
 import { createContext, useContext, useEffect, useState } from "react"
 
@@ -32,8 +32,8 @@ export const SessionProvider = ({ children }: { children: React.ReactNode }) => 
   useEffect(() => {
     if (!token) return
     Cookies.set("_token", token)
-    axiosApi
-      .get("/auth/me", {
+    axiosServer
+      .get("/me", {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -51,8 +51,8 @@ export const SessionProvider = ({ children }: { children: React.ReactNode }) => 
       setUser(null)
       setToken("")
       Cookies.remove("_token")
-      axiosApi
-        .get("/auth/logout")
+      axiosServer
+        .get("/logout")
         .then(() => {})
         .catch(() => {})
     },
