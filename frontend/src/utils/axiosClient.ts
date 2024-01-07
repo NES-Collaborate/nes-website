@@ -5,5 +5,5 @@ export const axiosApi = axios.create({
 })
 
 export const axiosServer = axios.create({
-  baseURL: `${process.env.NEXT_PUBLIC_BASE_URL}/api/server`,
+  baseURL: `${process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:3000"}/api/server`,
 })
