@@ -1,11 +1,12 @@
 import { Loading } from "@/components/Loading"
+import Toast from "@/components/Toast"
 import { NoticeModal } from "@/components/app/admin/lp/NoticeModal"
 import { Notice } from "@/types/constants"
 import { withAuth } from "@/utils/auth"
 import { axiosApi } from "@/utils/axiosClient"
 import Link from "next/link"
 import { useEffect, useState } from "react"
-import { Alert, Button, Table, Toast, Tooltip } from "react-daisyui"
+import { Alert, Button, Table, Tooltip } from "react-daisyui"
 import { FaEdit, FaPlus, FaTrash } from "react-icons/fa"
 import { MdErrorOutline } from "react-icons/md"
 
@@ -17,11 +18,6 @@ const Notices = () => {
 
   const [modalAction, setModalAction] = useState<"edit" | "create">("edit")
   const [targetNoticeIndex, setTargetNoticeIndex] = useState<number>(-1)
-
-  // Toast "Animation"
-  useEffect(() => {
-    setTimeout(() => setToast(""), 3000)
-  }, [toast])
 
   // Load Notices
   useEffect(() => {
@@ -143,13 +139,7 @@ const Notices = () => {
         </Button>
       </Tooltip>
 
-      {toast && (
-        <Toast horizontal="center" vertical="bottom">
-          <div className="alert alert-success">
-            <span>{toast}</span>
-          </div>
-        </Toast>
-      )}
+      <Toast message={toast} setMessage={setToast} vertical="top" />
 
       <NoticeModal
         action={modalAction}
