@@ -16,7 +16,6 @@ export const Classrooms = () => {
 
   useEffect(() => {
     setIsLoading(true)
-    setError(null)
     const fetchClassrooms = async () => {
       try {
         const res = await axiosServer.get("/teacher/classrooms", {
@@ -26,6 +25,7 @@ export const Classrooms = () => {
           },
         })
         setClassrooms(res.data)
+        setError(null)
       } catch {
         setError("Erro ao carregar turmas. Tente novamente mais tarde.")
       }
