@@ -30,9 +30,9 @@ const PropertyList = ({ query = "" }: Props) => {
     if (!session.token) return
 
     axiosServer
-      .get("/admin/properties", {
+      .get("/admin/property", {
         params: {
-          debouncedQuery,
+          q: debouncedQuery,
         },
         headers: {
           Authorization: `Bearer ${session.token}`,
@@ -46,7 +46,7 @@ const PropertyList = ({ query = "" }: Props) => {
 
   const deleteNotice = (propertyId: number) => {
     axiosServer
-      .delete(`/admin/properties/${propertyId}`)
+      .delete(`/admin/property/${propertyId}`)
       .then(() => setData(data.filter((p) => p.id !== propertyId)))
       .catch(() => setData([]))
   }
