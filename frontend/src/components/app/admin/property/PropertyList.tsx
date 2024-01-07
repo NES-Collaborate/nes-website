@@ -1,9 +1,11 @@
+import Toast from "@/components/Toast"
 import { useSession } from "@/contexts/session"
 import { Property } from "@/types/entities"
 import { axiosServer } from "@/utils/axiosClient"
 import { useEffect, useState } from "react"
 import { Button, Table, Tooltip } from "react-daisyui"
 import { FaEdit, FaPlus, FaTrash } from "react-icons/fa"
+import { PropertyModal } from "./PropertyModal"
 
 type Props = {
   query: string
@@ -14,6 +16,10 @@ const PropertyList = ({ query = "" }: Props) => {
   const session = useSession()
   const [debouncedQuery, setDebouncedQuery] = useState(query)
   const debounceDelay = 500
+
+  const [modelAction, setModelAction] = useState<"create" | "edit">("edit")
+  const [targetIndex, setTargetIndex] = useState(-1)
+  const [toast, setToast] = useState("")
 
   useEffect(() => {
     const timer = setTimeout(() => setDebouncedQuery(query), debounceDelay)
@@ -46,11 +52,13 @@ const PropertyList = ({ query = "" }: Props) => {
   }
 
   const openEditModal = (propertyId: number) => {
-    // TODO: Implement edit modal
+    setTargetIndex(propertyId)
+    setModelAction("edit")
   }
 
   const openCreateModal = () => {
-    // TODO: Implement create modal
+    setTargetIndex(-1)
+    setModelAction("create")
   }
 
   return (
@@ -105,6 +113,17 @@ const PropertyList = ({ query = "" }: Props) => {
           <FaPlus />
         </Button>
       </Tooltip>
+
+      <Toast message={toast} setMessage={setToast} vertical="top" />
+
+      <PropertyModal
+        properties={data}
+        setProperties={setData}
+        action={modelAction}
+        index={targetIndex}
+        setIndex={setTargetIndex}
+        setToast={setToast}
+      />
     </div>
   )
 }
