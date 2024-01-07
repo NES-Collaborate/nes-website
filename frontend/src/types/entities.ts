@@ -39,3 +39,30 @@ export type Post = {
     name: string
   }
 }
+
+/**
+ * Attach types
+ */
+export type AttachType = "File" | "Link"
+
+/**
+ * Attach Representation
+ */
+export type Attach = {
+  id: number
+  name: string
+  location: string
+  type: AttachType
+}
+
+/**
+ * Property Representation
+ */
+export type Property = {
+  id: number
+  photo?: Attach
+  name: string
+  type: string
+  loanedTo?: User
+  loanDate?: string
+}
