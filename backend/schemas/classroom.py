@@ -1,9 +1,8 @@
 from datetime import date
-from typing import List, Optional
-
-from pydantic import BaseModel
+from typing import Optional
 
 from models.enum import PostType
+from pydantic import BaseModel
 
 from .user import UserPoster
 

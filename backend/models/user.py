@@ -2,9 +2,6 @@ from datetime import date
 from typing import List, Optional, get_args
 
 import sqlalchemy as sa
-from passlib import hash  # type: ignore
-from sqlalchemy.orm import Mapped, mapped_column, relationship
-
 from models.enum import (
     AchievementStatus,
     AchievementType,
@@ -13,6 +10,8 @@ from models.enum import (
     Serie,
     UserType,
 )
+from passlib import hash  # type: ignore
+from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from .base import BaseTable, char2, str10
 
@@ -55,6 +54,8 @@ class Attach(BaseTable):
                                                    sa.ForeignKey("users.id"))
     achievement_id: Mapped[Optional[int]] = mapped_column(
         sa.Integer, sa.ForeignKey("achievements.id"))
+    property_id: Mapped[Optional[int]] = mapped_column(
+        sa.Integer, sa.ForeignKey("properties.id"))
 
 
 class Email(BaseTable):
