@@ -26,10 +26,10 @@ const Home = () => {
 
   return (
     <>
-      <div className="mb-4 max-h-96 overflow-hidden">
+      <div className="mb-4 overflow-hidden">
         <Logo
           type="obmepMedals"
-          className="w-full max-h-96 object-cover object-center"
+          className="w-full max-h-72 object-cover object-center"
           alt="Banner do NES"
         />
       </div>
