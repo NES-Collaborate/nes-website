@@ -1,7 +1,9 @@
 import { useSession } from "@/contexts/session"
 import { Post } from "@/types/entities"
 import { axiosServer } from "@/utils/axiosClient"
-import { useEffect, useState } from "react"
+import { useEffect, useRef, useState } from "react"
+import { Button, Input, Tooltip } from "react-daisyui"
+import { FaSearch } from "react-icons/fa"
 import { useInView } from "react-intersection-observer"
 import Loading from "../Loading"
 import PostCard from "./PostCard"
@@ -13,9 +15,10 @@ const Posts = () => {
   const [hasNextPage, setHasNextPage] = useState(true)
   const [isFetching, setIsFetching] = useState(false)
   const { ref, inView } = useInView()
+  const inputRef = useRef<HTMLInputElement>(null)
 
   useEffect(() => {
-    const getPosts = async (page: number, perPage: number) => {
+    const getPosts = async (page: number, perPage: number, query: string) => {
       try {
         setIsFetching(true)
         const res = await axiosServer.get("/student/posts", {
@@ -25,6 +28,7 @@ const Posts = () => {
           params: {
             p: page,
             pp: perPage,
+            q: query,
           },
         })
 
@@ -40,17 +44,38 @@ const Posts = () => {
     }
 
     if (inView && hasNextPage && !isFetching) {
-      getPosts(page, 2)
+      const query = inputRef.current?.value || ""
+      getPosts(page, 2, query)
       setPage((p) => p + 1)
     }
   }, [inView, hasNextPage, page, session.token, isFetching])
 
+  const reloadPosts = () => {
+    if (inputRef.current) {
+      setPage((_) => 1)
+      setPosts([])
+      setHasNextPage(true)
+    }
+  }
+
   return (
-    <div className="flex flex-col gap-3 mx-auto">
-      <h1 className="text-3xl font-bold text-center mt-2">Postagens</h1>
-      {posts.map((post) => (
-        <PostCard post={post} key={post.id} />
-      ))}
+    <div className="container mx-auto px-4 py-8">
+      <h1 className="text-3xl font-bold text-center mt-2 mb-4">Postagens</h1>
+
+      <div className="flex justify-center mb-8 mt-4 gap-1">
+        <Input placeholder="Pesquisar" className="w-3/4 lg:w-2/4" ref={inputRef} />
+        <Tooltip message="Pesquisar">
+          <Button onClick={reloadPosts} color="primary" disabled={isFetching}>
+            <FaSearch />
+          </Button>
+        </Tooltip>
+      </div>
+
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+        {posts.map((post) => (
+          <PostCard post={post} key={post.id} />
+        ))}
+      </div>
 
       <div className="my-3" ref={ref}>
         {hasNextPage ? (
