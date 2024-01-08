@@ -1,3 +1,5 @@
+from typing import Any
+
 from daos.base import BaseDao
 from models.user import User
 from sqlalchemy.orm import Session
@@ -8,7 +10,7 @@ class UserDao(BaseDao):
     def __init__(self, session: Session):
         super().__init__(session)
 
-    def create(self, user_data: dict[str, str]):
+    def create(self, user_data: dict[str, Any]) -> User | None:
         _user = User(**user_data)
         self.session.add(_user)
         self.session.commit()
