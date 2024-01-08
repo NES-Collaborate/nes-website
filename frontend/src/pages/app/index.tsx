@@ -1,5 +1,5 @@
-import { Classrooms } from "@/components/app/Classrooms"
-import { Posts } from "@/components/app/Posts"
+import Classrooms from "@/components/app/Classrooms"
+import Posts from "@/components/app/Posts"
 import { useSession } from "@/contexts/session"
 import { withAuth } from "@/utils/auth"
 

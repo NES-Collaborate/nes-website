@@ -1,10 +1,10 @@
-import { ButtonNES } from "@/components/ButtonNES"
+import ButtonNES from "@/components/ButtonNES"
 
 /**
  * Page Explanation
  * @returns {JSX.Element} Brief
  */
-export const Brief = () => {
+const Brief = () => {
   return (
     <div className="w-full flex flex-col items-center my-4">
       <h1 className="text-primary text-3xl stroke-1 mb-4">Casos de Sucesso</h1>
@@ -18,3 +18,5 @@ export const Brief = () => {
     </div>
   )
 }
+
+export default Brief

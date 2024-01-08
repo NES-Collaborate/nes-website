@@ -1,10 +1,10 @@
-import { Collapsible } from "./Collapsible"
+import Collapsible from "./Collapsible"
 
 /**
  * The explanation of NES
  * @returns {JSX.Element} Content
  */
-export const Content = () => {
+const Content = () => {
   return (
     <div className="mx-8">
       <Collapsible title="Contexto e Motivação">
@@ -166,3 +166,5 @@ export const Content = () => {
     </div>
   )
 }
+
+export default Content

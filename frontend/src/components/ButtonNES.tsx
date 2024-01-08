@@ -22,7 +22,7 @@ type Props = {
  * @param {React.ReactNode} children The content inside the button
  * @returns {Link | button} Button
  */
-export const ButtonNES = ({
+const ButtonNES = ({
   type = "action",
   style = "fill",
   className = "",
@@ -69,3 +69,5 @@ export const ButtonNES = ({
     </>
   )
 }
+
+export default ButtonNES

@@ -1,8 +1,8 @@
-import { ButtonNES } from "@/components/ButtonNES"
-import { Logo } from "@/components/Logo"
-import { Footer } from "@/components/nes/Footer"
-import { Content } from "@/components/nes/about/curriculum/Content"
-import { Scroll } from "@/components/nes/about/curriculum/Scroll"
+import ButtonNES from "@/components/ButtonNES"
+import Logo from "@/components/Logo"
+import Footer from "@/components/nes/Footer"
+import Content from "@/components/nes/about/curriculum/Content"
+import Scroll from "@/components/nes/about/curriculum/Scroll"
 
 const Home = () => {
   return (

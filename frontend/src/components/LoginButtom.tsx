@@ -1,12 +1,12 @@
 import { usePathname } from "next/navigation"
 import { IoIosLogIn } from "react-icons/io"
-import { ButtonNES } from "./ButtonNES"
+import ButtonNES from "./ButtonNES"
 
 /**
  * Buttom to redirect user to login page
  * @returns {JSX.Element} Buttom
  */
-export const LoginButtom = () => {
+const LoginButtom = () => {
   const pathname = usePathname()
   if (pathname === "/auth/login") return null
 
@@ -17,3 +17,5 @@ export const LoginButtom = () => {
     </ButtonNES>
   )
 }
+
+export default LoginButtom

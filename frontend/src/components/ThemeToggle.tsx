@@ -7,7 +7,7 @@ import { themeChange } from "theme-change"
  * Button to toggle theme
  * @returns {JSX.Element} Theme Toggle Buttom
  */
-export const ThemeToggle = () => {
+const ThemeToggle = () => {
   useEffect(() => {
     themeChange(false)
   }, [])
@@ -29,3 +29,5 @@ export const ThemeToggle = () => {
     </button>
   )
 }
+
+export default ThemeToggle

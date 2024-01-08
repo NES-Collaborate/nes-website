@@ -6,7 +6,7 @@ import { RiMenu2Fill } from "react-icons/ri"
  * Dropdown with links to landing pages. (links from `data/constants.ts`)
  * @returns {JSX.Element} DropDown for Landing Page
  */
-export const NavBarDropDown = () => {
+const NavBarDropDown = () => {
   return (
     <details className="dropdown dropdown-hover">
       <summary className="btn btn-ghost btn-circle">
@@ -24,3 +24,5 @@ export const NavBarDropDown = () => {
     </details>
   )
 }
+
+export default NavBarDropDown

@@ -1,10 +1,10 @@
-import { Loading } from "@/components/Loading"
+import Loading from "@/components/Loading"
 import { useSession } from "@/contexts/session"
 import { Post } from "@/types/entities"
 import { axiosServer } from "@/utils/axiosClient"
 import { useEffect, useState } from "react"
 import { Alert, Pagination } from "react-daisyui" // Removed Button
-import { PostCard } from "./PostCard"
+import PostCard from "./PostCard"
 
 export type PostsPagination = {
   data: Post[]
@@ -14,7 +14,7 @@ export type PostsPagination = {
   total: number
 }
 
-export const Posts = () => {
+const Posts = () => {
   const [postsPagination, setPostsPagination] = useState<PostsPagination>({
     data: [],
     page: 1,
@@ -74,3 +74,5 @@ export const Posts = () => {
     </div>
   )
 }
+
+export default Posts

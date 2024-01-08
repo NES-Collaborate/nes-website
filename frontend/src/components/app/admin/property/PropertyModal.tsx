@@ -13,7 +13,7 @@ type Props = {
   setToast: (toast: string) => void
 }
 
-export const PropertyModal = ({
+const PropertyModal = ({
   properties,
   setProperties,
   action,
@@ -75,3 +75,5 @@ export const PropertyModal = ({
     </Modal>
   )
 }
+
+export default PropertyModal

@@ -1,8 +1,8 @@
-import { Logo } from "@/components/Logo"
-import { Footer } from "@/components/nes/Footer"
-import { Brief } from "@/components/nes/home/Brief"
-import { MoreInfos } from "@/components/nes/home/MoreInfos"
-import { Notices } from "@/components/nes/home/Notices"
+import Logo from "@/components/Logo"
+import Footer from "@/components/nes/Footer"
+import Brief from "@/components/nes/home/Brief"
+import MoreInfos from "@/components/nes/home/MoreInfos"
+import Notices from "@/components/nes/home/Notices"
 import Link from "next/link"
 
 const Home = () => {

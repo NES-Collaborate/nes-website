@@ -1,5 +1,5 @@
-import { Breadcrumb } from "@/components/Breadcrumb"
-import { NavBar } from "@/components/NavBar"
+import Breadcrumb from "@/components/Breadcrumb"
+import NavBar from "@/components/NavBar"
 import { SessionProvider } from "@/contexts/session"
 import { ThemeProvider } from "@/contexts/theme"
 import "@/styles/globals.css"

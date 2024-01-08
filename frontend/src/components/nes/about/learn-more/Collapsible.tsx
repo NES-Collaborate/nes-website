@@ -9,7 +9,7 @@ type Props = {
  * @param children Children of the collapsible (the content)
  * @returns {JSX.Element} Collapsible
  */
-export const Collapsible = ({ title, children }: Props) => {
+const Collapsible = ({ title, children }: Props) => {
   return (
     <div className="collapse collapse-plus mb-4">
       <input type="checkbox" />
@@ -18,3 +18,5 @@ export const Collapsible = ({ title, children }: Props) => {
     </div>
   )
 }
+
+export default Collapsible

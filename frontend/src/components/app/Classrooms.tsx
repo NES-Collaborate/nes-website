@@ -1,4 +1,4 @@
-import { Loading } from "@/components/Loading"
+import Loading from "@/components/Loading"
 import { useSession } from "@/contexts/session"
 import { Classroom } from "@/types/entities"
 import { axiosServer } from "@/utils/axiosClient"
@@ -8,7 +8,7 @@ import { Alert } from "react-daisyui"
 import { FaDoorOpen, FaEdit } from "react-icons/fa"
 import { MdErrorOutline } from "react-icons/md"
 
-export const Classrooms = () => {
+const Classrooms = () => {
   const session = useSession()
   const [isLoading, setIsLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
@@ -85,3 +85,5 @@ export const Classrooms = () => {
     </div>
   )
 }
+
+export default Classrooms

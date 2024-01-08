@@ -2,7 +2,7 @@ import { Notice } from "@/types/constants"
 import { useEffect, useState } from "react"
 import { Button, Modal } from "react-daisyui"
 import { IoMdClose } from "react-icons/io"
-import { NoticeForm } from "./NoticeForm"
+import NoticeForm from "./NoticeForm"
 
 type Props = {
   notices: Notice[]
@@ -13,7 +13,7 @@ type Props = {
   setToast: (toast: string) => void
 }
 
-export const NoticeModal = ({
+const NoticeModal = ({
   notices,
   setNotices,
   action,
@@ -84,3 +84,5 @@ export const NoticeModal = ({
     </Modal>
   )
 }
+
+export default NoticeModal
