@@ -1,6 +1,6 @@
-import { Loading } from "@/components/Loading"
+import Loading from "@/components/Loading"
 import Toast from "@/components/Toast"
-import { NoticeModal } from "@/components/app/admin/lp/NoticeModal"
+import NoticeModal from "@/components/app/admin/lp/NoticeModal"
 import { Notice } from "@/types/constants"
 import { withAuth } from "@/utils/auth"
 import { axiosApi } from "@/utils/axiosClient"

@@ -4,7 +4,7 @@ import Image from "next/image"
  * NES' curricular grade
  * @returns {JSX.Element} Content
  */
-export const Content = () => {
+const Content = () => {
   return (
     <div className="w-full p-8">
       <h1 id="FuncionamentoPedagogico" className="text-3xl text-primary mb-4">
@@ -70,3 +70,5 @@ export const Content = () => {
     </div>
   )
 }
+
+export default Content

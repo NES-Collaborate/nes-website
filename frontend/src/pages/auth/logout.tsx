@@ -1,4 +1,4 @@
-import { Loading } from "@/components/Loading"
+import Loading from "@/components/Loading"
 import { useSession } from "@/contexts/session"
 import { withAuth } from "@/utils/auth"
 import { useRouter } from "next/navigation"

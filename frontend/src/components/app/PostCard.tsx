@@ -3,7 +3,7 @@ import { Post } from "@/types/entities"
 import Image from "next/image"
 import Link from "next/link"
 
-export const PostCard = ({ post }: { post: Post }) => {
+const PostCard = ({ post }: { post: Post }) => {
   // TODO: Add conditional information here (for test and activity)
   return (
     <Link
@@ -51,3 +51,5 @@ export const PostCard = ({ post }: { post: Post }) => {
     </Link>
   )
 }
+
+export default PostCard

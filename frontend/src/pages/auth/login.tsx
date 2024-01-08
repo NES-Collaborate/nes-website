@@ -1,5 +1,5 @@
-import { ButtonNES } from "@/components/ButtonNES"
-import { Loading } from "@/components/Loading"
+import ButtonNES from "@/components/ButtonNES"
+import Loading from "@/components/Loading"
 import { useSession } from "@/contexts/session"
 import { User } from "@/types/user"
 import { getUserSession, signIn } from "@/utils/auth"

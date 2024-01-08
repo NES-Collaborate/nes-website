@@ -2,7 +2,7 @@
  * Project Brief
  * @returns {JSX.Element} Brief
  */
-export const Brief = () => {
+const Brief = () => {
   return (
     <div className="w-full flex flex-col items-center mb-4">
       <h1 className="text-primary text-2xl font-mono stroke-1 my-8">
@@ -15,3 +15,5 @@ export const Brief = () => {
     </div>
   )
 }
+
+export default Brief

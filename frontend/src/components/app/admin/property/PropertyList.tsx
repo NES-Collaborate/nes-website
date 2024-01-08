@@ -5,7 +5,7 @@ import { axiosServer } from "@/utils/axiosClient"
 import { useEffect, useState } from "react"
 import { Button, Table, Tooltip } from "react-daisyui"
 import { FaEdit, FaPlus, FaTrash } from "react-icons/fa"
-import { PropertyModal } from "./PropertyModal"
+import PropertyModal from "./PropertyModal"
 
 type Props = {
   query: string

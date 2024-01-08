@@ -1,10 +1,10 @@
-import { ButtonNES } from "../ButtonNES"
+import ButtonNES from "../ButtonNES"
 
 /**
  * Footer of the project (should only be used on the landing page)
  * @returns {JSX.Element} Footer
  */
-export const Footer = () => {
+const Footer = () => {
   return (
     <div className="w-full flex flex-col items-center bg-primary">
       <ButtonNES style="ghost" className="text-2xl mt-4 mb-2" href="/nes/about">
@@ -21,3 +21,5 @@ export const Footer = () => {
     </div>
   )
 }
+
+export default Footer

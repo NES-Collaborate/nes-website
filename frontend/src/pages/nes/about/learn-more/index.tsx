@@ -1,15 +1,15 @@
-import { ButtonNES } from "@/components/ButtonNES"
-import { Logo } from "@/components/Logo"
-import { Footer } from "@/components/nes/Footer"
-import { Content } from "@/components/nes/about/learn-more/Content"
+import ButtonNES from "@/components/ButtonNES"
+import Logo from "@/components/Logo"
+import Footer from "@/components/nes/Footer"
+import Content from "@/components/nes/about/learn-more/Content"
 
 const Home = () => {
   return (
     <>
-      <div className="mb-2 max-h-96 overflow-hidden">
+      <div className="mb-4 overflow-hidden">
         <Logo
           type="mathBanner"
-          className="w-full object-cover object-center"
+          className="w-full max-h-72 object-cover object-center"
           alt="Banner do NES"
         />
       </div>

@@ -7,10 +7,12 @@ type Props = {
   center?: boolean
 }
 
-export const Loading = ({ text, center, textClassName }: Props) => {
+const Loading = ({ text, center, textClassName }: Props) => {
   return (
     <div className={clsx("flex gap-3", center && "justify-center items-center")}>
       <LoadingDaisyui /> {text && <span className={textClassName}>{text}</span>}
     </div>
   )
 }
+
+export default Loading

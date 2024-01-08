@@ -1,14 +1,14 @@
-import { Loading } from "@/components/Loading"
+import Loading from "@/components/Loading"
 import { Notice } from "@/types/constants"
 import { axiosApi } from "@/utils/axiosClient"
 import { useEffect, useState } from "react"
-import { NoticeCard } from "./NoticeCard"
+import NoticeCard from "./NoticeCard"
 
 /**
  * Get a notice lists from backend and show them.
  * @returns {JSX.Element} Notices list
  */
-export const Notices = () => {
+const Notices = () => {
   const [notices, setNotices] = useState<Notice[]>([])
   const [isLoading, setIsLoading] = useState(true)
 
@@ -47,3 +47,5 @@ export const Notices = () => {
     </div>
   )
 }
+
+export default Notices

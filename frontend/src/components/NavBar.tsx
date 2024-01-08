@@ -1,16 +1,16 @@
 import { useSession } from "@/contexts/session"
 import { useEffect, useState } from "react"
 import LoggedUserDropDown from "./LoggedUserDropDown"
-import { LoginButtom } from "./LoginButtom"
-import { Logo } from "./Logo"
-import { NavBarDropDown } from "./NavBarDropDown"
-import { ThemeToggle } from "./ThemeToggle"
+import LoginButtom from "./LoginButtom"
+import Logo from "./Logo"
+import NavBarDropDown from "./NavBarDropDown"
+import ThemeToggle from "./ThemeToggle"
 
 /**
  * NavBar component for Landing Page
  * @returns {JSX.Element} Navbar
  */
-export const NavBar = () => {
+const NavBar = () => {
   const session = useSession()
   const [windowWidth, setWindowWidth] = useState(1080)
 
@@ -36,3 +36,5 @@ export const NavBar = () => {
     </div>
   )
 }
+
+export default NavBar

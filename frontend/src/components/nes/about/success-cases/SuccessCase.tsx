@@ -22,7 +22,7 @@ type Props = {
  * @param {string} phrase Personal phrase
  * @returns {JSX.Element} SuccessCase
  */
-export const SuccessCase = ({
+const SuccessCase = ({
   imagePath,
   name,
   city,
@@ -44,7 +44,10 @@ export const SuccessCase = ({
   return (
     <div className="hero bg-base-200 mb-4 p-2 rounded-lg">
       <div
-        className={clsx(direction, "hero-content flex-col py-8 px-4 w-full flex justify-center items-center")}
+        className={clsx(
+          direction,
+          "hero-content flex-col py-8 px-4 w-full flex justify-center items-center"
+        )}
       >
         <Image
           alt="foto aluno"
@@ -76,3 +79,5 @@ export const SuccessCase = ({
     </div>
   )
 }
+
+export default SuccessCase

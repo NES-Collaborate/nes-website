@@ -4,7 +4,7 @@ import { usePathname } from "next/navigation"
 import { useEffect, useState } from "react"
 import { Breadcrumbs, Divider } from "react-daisyui"
 
-export const Breadcrumb = () => {
+const Breadcrumb = () => {
   const pathname = usePathname()
   const [splitedPath, setSplitedPath] = useState<string[]>([])
   const [render, setRender] = useState(false)
@@ -35,3 +35,5 @@ export const Breadcrumb = () => {
     </div>
   )
 }
+
+export default Breadcrumb

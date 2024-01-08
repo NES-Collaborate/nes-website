@@ -1,10 +1,10 @@
-import { ButtonNES } from "@/components/ButtonNES"
+import ButtonNES from "@/components/ButtonNES"
 
 /**
  * More informations about the project, like mission, vision, etc.
  * @returns {JSX.Element} Informations
  */
-export const MoreInfos = () => {
+const MoreInfos = () => {
   return (
     <div className="w-full flex flex-col items-center mb-4">
       <h1 className="text-primary text-2xl stroke-1 my-8">Missão do Projeto</h1>
@@ -25,3 +25,5 @@ export const MoreInfos = () => {
     </div>
   )
 }
+
+export default MoreInfos

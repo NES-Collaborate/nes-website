@@ -1,10 +1,10 @@
-import { ButtonNES } from "@/components/ButtonNES"
+import ButtonNES from "@/components/ButtonNES"
 
 /**
  * Buttons to scroll to the sections
  * @returns {JSX.Element} Scroll
  */
-export const Scroll = () => {
+const Scroll = () => {
   return (
     <div className="w-full flex flex-col items-center my-2">
       <h1 className="text-primary text-4xl stroke-1 mb-4">Grade Curricular</h1>
@@ -29,3 +29,5 @@ export const Scroll = () => {
     </div>
   )
 }
+
+export default Scroll

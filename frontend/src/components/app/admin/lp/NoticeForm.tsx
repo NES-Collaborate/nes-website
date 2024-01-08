@@ -13,7 +13,7 @@ type Props = {
   setNotices: (notices: Notice[]) => void
 }
 
-export const NoticeForm = ({
+const NoticeForm = ({
   notice,
   setNotice,
   action,
@@ -138,3 +138,5 @@ export const NoticeForm = ({
     </div>
   )
 }
+
+export default NoticeForm

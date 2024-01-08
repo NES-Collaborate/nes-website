@@ -10,7 +10,7 @@ type Props = {
  * @param {Notice} Notice object to show
  * @returns {JSX.Element} The Card
  */
-export const NoticeCard = ({ notice }: Props) => {
+const NoticeCard = ({ notice }: Props) => {
   return (
     <>
       <a href={notice.url} target="_blank">
@@ -27,3 +27,5 @@ export const NoticeCard = ({ notice }: Props) => {
     </>
   )
 }
+
+export default NoticeCard
