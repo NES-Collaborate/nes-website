@@ -25,7 +25,7 @@ async def get_posts(current_user: User = Depends(UserService.get_current_user),
         Subject, Post.subject_id == Subject.id).join(
             Classroom, Subject.classroom_id == Classroom.id).filter(
                 Classroom.id == current_user.classroom_id).order_by(
-                    Post.created_at)
+                    Post.createdAt)
 
     total = posts_query.count()
     prevPage = p - 1 if p - 1 >= 1 else None

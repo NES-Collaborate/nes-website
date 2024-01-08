@@ -1,4 +1,4 @@
-from datetime import date
+from datetime import date, datetime
 from typing import Optional
 
 from models.enum import PostType
@@ -58,3 +58,4 @@ class PostBase(BaseModel):
 class PostOut(PostBase):
 
     id: int
+    createdAt: datetime
