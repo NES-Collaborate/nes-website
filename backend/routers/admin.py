@@ -1,3 +1,4 @@
+import sqlalchemy as sa
 from fastapi import APIRouter, Depends, HTTPException, status
 from models.admin import Property
 from models.user import User
@@ -13,13 +14,18 @@ router = APIRouter(prefix="/admin", tags=["admin"])
 async def get_properties(
         current_user: User = Depends(UserService.get_current_user),
         session: Session = Depends(get_session),
-        q: str = ""):
+        q: str | None = None):
 
     if current_user.type != "admin":
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED,
                             detail="Usuário não autorizado")
 
-    results = session.query(Property).all()
+    if not q:
+        results = session.query(Property).all()
+    else:
+        results = session.query(Property).filter(
+            sa.or_(Property.id.like(f"%{q}%"), Property.name.like(f"%{q}%"),
+                   Property.loanedTo.has(User.name.like(f"%{q}%")))).all()
 
     properties = [PropertyOut.model_validate(result) for result in results]
 
