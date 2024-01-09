@@ -21,7 +21,7 @@ const Posts = () => {
     const getPosts = async (page: number, perPage: number, query: string) => {
       try {
         setIsFetching(true)
-        const res = await axiosServer.get("/student/posts", {
+        const res = await axiosServer.get("/classroom/posts", {
           headers: {
             Authorization: `Bearer ${session.token}`,
           },
@@ -35,6 +35,8 @@ const Posts = () => {
         if (res.data.data.length > 0) {
           setPosts((prevPosts) => [...prevPosts, ...res.data.data])
           setHasNextPage((_) => res.data.nextPage || false)
+        } else {
+          setHasNextPage((_) => false)
         }
       } catch (err: unknown) {
         console.log(err)
