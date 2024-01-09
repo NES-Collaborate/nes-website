@@ -115,6 +115,12 @@ export const BREADCRUMB_NAMES: Record<string, string> = {
   admin: "Administração",
   lp: "Landing Page",
   notices: "Notícias",
+  bens: "Bens",
+  nes: "NES",
+  auth: "Autenticação",
+  login: "Login",
+  about: "Sobre",
+  "learn-more": "Saiba mais",
 }
 
 /**

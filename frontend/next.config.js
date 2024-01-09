@@ -7,6 +7,10 @@ const nextConfig = {
         source: "/api/server/:path*",
         destination: "http://localhost:8000/api/:path*",
       },
+      {
+        source: "/auth",
+        destination: "/auth/login"
+      }
     ]
   },
 }

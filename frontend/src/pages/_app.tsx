@@ -1,5 +1,4 @@
-import Breadcrumb from "@/components/Breadcrumb"
-import NavBar from "@/components/NavBar"
+import DrawerNES from "@/components/DrawerNES"
 import { SessionProvider } from "@/contexts/session"
 import { ThemeProvider } from "@/contexts/theme"
 import "@/styles/globals.css"
@@ -9,9 +8,9 @@ export default function App({ Component, pageProps }: AppProps) {
   return (
     <SessionProvider>
       <ThemeProvider>
-        <NavBar />
-        <Breadcrumb />
-        <Component {...pageProps} />
+        <DrawerNES>
+          <Component {...pageProps} />
+        </DrawerNES>
       </ThemeProvider>
     </SessionProvider>
   )
