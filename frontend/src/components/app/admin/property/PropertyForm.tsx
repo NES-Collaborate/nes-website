@@ -1,3 +1,4 @@
+import { useSession } from "@/contexts/session"
 import { Property } from "@/types/entities"
 import { axiosServer } from "@/utils/axiosClient"
 import { useState } from "react"
@@ -22,10 +23,15 @@ const PropertyForm = ({
   properties,
 }: Props) => {
   const [isLoading, setIsLoading] = useState(false)
+  const { token } = useSession()
 
   const createProperty = async () => {
     try {
-      const res = await axiosServer.post("/admin/property", property)
+      const res = await axiosServer.post("/admin/property", property, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      })
       setProperties([...properties, res.data.property])
       setToast("Propriedade criada com sucesso!")
     } catch {
@@ -35,7 +41,11 @@ const PropertyForm = ({
 
   const editProperty = async () => {
     try {
-      const res = await axiosServer.put(`/admin/property/${property.id}`, property)
+      const res = await axiosServer.put(`/admin/property/${property.id}`, property, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      })
       setProperties(properties.map((p) => (p.id == property.id ? res.data.property : p)))
       setToast("Propriedade editada com sucesso!")
     } catch {
@@ -86,8 +96,8 @@ const PropertyForm = ({
         <Input
           placeholder="Tipo de Bem (notebook, mesa, etc.)"
           size="md"
-          value={property.name}
-          onChange={(e) => setProperty({ ...property, name: e.target.value })}
+          value={property.type}
+          onChange={(e) => setProperty({ ...property, type: e.target.value })}
           color="primary"
           disabled={isLoading}
           bordered

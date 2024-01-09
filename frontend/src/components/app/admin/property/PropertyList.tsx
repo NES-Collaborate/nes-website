@@ -46,8 +46,15 @@ const PropertyList = ({ query = "" }: Props) => {
 
   const deleteNotice = (propertyId: number) => {
     axiosServer
-      .delete(`/admin/property/${propertyId}`)
-      .then(() => setData(data.filter((p) => p.id !== propertyId)))
+      .delete(`/admin/property/${propertyId}`, {
+        headers: {
+          Authorization: `Bearer ${session.token}`,
+        },
+      })
+      .then((res) => {
+        setData(data.filter((p) => p.id !== propertyId))
+        setToast(res.data.message || "Propriedade excluída com sucesso!")
+      })
       .catch(() => setData([]))
   }
 
@@ -74,20 +81,20 @@ const PropertyList = ({ query = "" }: Props) => {
 
         <Table.Body>
           {data.map((property) => (
-            <Table.Row key={property.id}>
+            <Table.Row key={property.id} className="text-center">
               <span>{property.id}</span>
               <span>{property.name}</span>
               <span>{property.type}</span>
               <span>{property.loanedTo ? "Sim" : "Não"}</span>
               <span>
                 <Tooltip message="Editar">
-                  <Button onClick={() => openEditModal(property.id)}>
+                  <Button onClick={() => openEditModal(property.id)} className="mr-2" color="primary">
                     <FaEdit />
                   </Button>
                 </Tooltip>
 
                 <Tooltip message="Excluir">
-                  <Button onClick={() => deleteNotice(property.id)}>
+                  <Button onClick={() => deleteNotice(property.id)} color="error">
                     <FaTrash />
                   </Button>
                 </Tooltip>
