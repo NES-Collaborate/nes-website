@@ -24,7 +24,7 @@ const Notices = () => {
     setIsLoading(true)
     axiosApi
       .get("/notice/all")
-      .then((res) => setNotices(res.data.notices))
+      .then((res) => setNotices(res.data.notices || []))
       .catch(() => setError("Erro ao buscar notícias"))
       .finally(() => setIsLoading(false))
   }, [])
@@ -116,7 +116,7 @@ const Notices = () => {
           </Table>
         )}
 
-        {notices.length == 0 && (
+        {notices.length == 0 && !error && (
           <div className="flex justify-center items-center h-80">
             <Alert status="info" className="w-full" icon={<MdErrorOutline />}>
               Nenhuma notícia encontrada. Clique no botão abaixo para criar uma :D
