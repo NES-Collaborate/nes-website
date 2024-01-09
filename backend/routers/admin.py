@@ -43,7 +43,7 @@ async def create_property(
     session.commit()
     session.refresh(_property)
 
-    return PropertyOut.model_validate(_property)
+    return {"property": PropertyOut.model_validate(_property)}
 
 
 @router.put("/property/{property_id}")
@@ -70,7 +70,7 @@ async def update_property(
     session.commit()
     session.refresh(_property)
 
-    return PropertyOut.model_validate(_property)
+    return {"property": PropertyOut.model_validate(_property)}
 
 
 @router.delete("/property/{property_id}")
