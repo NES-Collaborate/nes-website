@@ -1,4 +1,5 @@
 from abc import ABC, abstractmethod
+from typing import Any
 
 from models.user import User
 from sqlalchemy.orm import Session
@@ -10,7 +11,7 @@ class BaseDao(ABC):
         self.session = session
 
     @abstractmethod
-    def create(self, user_data: dict[str, str]) -> User | None:
+    def create(self, user_data: Any) -> User | None:
         pass
 
     @abstractmethod

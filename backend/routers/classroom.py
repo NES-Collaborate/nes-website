@@ -1,15 +1,12 @@
 from fastapi import APIRouter, Depends, HTTPException, status
-from fastapi.responses import JSONResponse
-from sqlalchemy import JSON
-from sqlalchemy.orm import Session
-
 from models.classroom import Classroom, Post, Subject
 from models.user import User
 from schemas.classroom import PostOut, SubjectOut
 from services.db import get_session
 from services.user import UserService
+from sqlalchemy.orm import Session
 
-router = APIRouter(prefix="/student", tags=["student"])
+router = APIRouter(prefix="/classroom", tags=["classroom"])
 
 
 @router.get("/posts", status_code=status.HTTP_200_OK)
@@ -28,7 +25,7 @@ async def get_posts(current_user: User = Depends(UserService.get_current_user),
         Subject, Post.subject_id == Subject.id).join(
             Classroom, Subject.classroom_id == Classroom.id).filter(
                 Classroom.id == current_user.classroom_id).order_by(
-                    Post.created_at)
+                    Post.createdAt)
 
     total = posts_query.count()
     prevPage = p - 1 if p - 1 >= 1 else None

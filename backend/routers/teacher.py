@@ -1,15 +1,11 @@
-from pyclbr import Class
-
 from fastapi import APIRouter, Depends, HTTPException, status
-from sqlalchemy import select
-from sqlalchemy.orm import Session
-
 from models.classroom import Classroom, Subject
 from models.relationships import teacher_subject as ts
 from models.user import User
 from schemas.classroom import ClassroomOut
 from services.db import get_session
 from services.user import UserService
+from sqlalchemy.orm import Session
 
 router = APIRouter(prefix="/teacher", tags=["teacher"])
 
