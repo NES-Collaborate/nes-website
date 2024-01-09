@@ -21,7 +21,9 @@ async def get_properties(
 
     results = session.query(Property).all()
 
-    return [PropertyOut.model_validate(result) for result in results]
+    properties = [PropertyOut.model_validate(result) for result in results]
+
+    return {"properties": properties}
 
 
 @router.post("/property")
