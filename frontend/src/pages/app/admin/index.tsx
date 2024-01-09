@@ -9,10 +9,10 @@ const PAGES = [
       "Algumas funcionalidades para modificar a página inicial da aplicação que sera mostrada aos visitantes, novos alunos, possíveis doadores, etc.",
   },
   {
-    name: "Gestão de Propriedades",
+    name: "Gestão de Bens",
     path: "/app/admin/bens",
     description:
-      "Permite criar, editar e deletar propriedades (bens materiais) sobre posse do NES além de atribuir determinadas propriedades aos alunos.",
+      "Permite criar, editar e deletar propriedades (bens materiais) sobre posse do NES além de atribuir determinados bens aos alunos.",
   },
 ]
 
