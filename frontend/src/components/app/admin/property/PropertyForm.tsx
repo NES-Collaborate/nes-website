@@ -29,15 +29,17 @@ const PropertyForm = ({
   const [loanedTo, setLoanedTo] = useState<User | null>(null)
 
   const createProperty = async () => {
-    if (loanedTo)
-      setProperty({ ...property, loanedTo, loanDate: new Date().toISOString() })
-
+    if (loanedTo) setProperty({ ...property, loanedTo: loanedTo })
     try {
-      const res = await axiosServer.post("/admin/property", property, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      })
+      const res = await axiosServer.post(
+        "/admin/property",
+        { ...property, loanedTo },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      )
       setProperties([...properties, res.data.property])
       setToast("Propriedade criada com sucesso!")
     } catch {
@@ -46,12 +48,18 @@ const PropertyForm = ({
   }
 
   const editProperty = async () => {
+    console.log(loanedTo)
+    console.log(property)
     try {
-      const res = await axiosServer.put(`/admin/property/${property.id}`, property, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      })
+      const res = await axiosServer.put(
+        `/admin/property/${property.id}`,
+        { ...property, loanedTo },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      )
       setProperties(properties.map((p) => (p.id == property.id ? res.data.property : p)))
       setToast("Propriedade editada com sucesso!")
     } catch {
