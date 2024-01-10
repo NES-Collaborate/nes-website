@@ -47,7 +47,7 @@ const PropertyModal = ({
   }
 
   return (
-    <Modal open={isOpen} className="w-3/4" responsive>
+    <Modal open={isOpen} responsive>
       <Button
         onClick={closeModal}
         className="absolute right-2 top-2"
