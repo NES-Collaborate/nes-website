@@ -64,5 +64,5 @@ export type Property = {
   name: string
   type: string
   loanedTo?: User
-  loanDate?: string
+  loanedAt?: string
 }
