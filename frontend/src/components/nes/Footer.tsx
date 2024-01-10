@@ -15,6 +15,7 @@ const Footer = () => {
         style="link"
         className="text-lg mb-4"
         href="mailto:nes.alagoas@gmail.com"
+        target="_blank"
       >
         nes.alagoas@gmail.com
       </ButtonNES>

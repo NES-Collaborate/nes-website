@@ -6,6 +6,7 @@ type Props = {
   style?: "fill" | "outline" | "ghost" | "link"
   className?: string
   href?: string
+  target?: "_blank" | "_self"
   onClick?: React.MouseEventHandler<HTMLButtonElement>
   disabled?: boolean
   children?: React.ReactNode
@@ -27,6 +28,7 @@ const ButtonNES = ({
   style = "fill",
   className = "",
   href = "",
+  target = "_self",
   onClick,
   disabled = false,
   children,
@@ -57,7 +59,7 @@ const ButtonNES = ({
   return (
     <>
       {type === "navigation" && (
-        <Link className={buttonStyle} href={href}>
+        <Link className={buttonStyle} href={href} target={target}>
           {children}
         </Link>
       )}
