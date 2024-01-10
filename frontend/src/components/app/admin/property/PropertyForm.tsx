@@ -1,9 +1,11 @@
 import { useSession } from "@/contexts/session"
 import { Property } from "@/types/entities"
+import { User } from "@/types/user"
 import { axiosServer } from "@/utils/axiosClient"
 import { useState } from "react"
 import { Button, Input } from "react-daisyui"
 import { FaEdit, FaPlus } from "react-icons/fa"
+import UserSearchInput from "../../UserSearchInput"
 
 type Props = {
   property: Property
@@ -24,8 +26,12 @@ const PropertyForm = ({
 }: Props) => {
   const [isLoading, setIsLoading] = useState(false)
   const { token } = useSession()
+  const [loanedTo, setLoanedTo] = useState<User | null>(null)
 
   const createProperty = async () => {
+    if (loanedTo)
+      setProperty({ ...property, loanedTo, loanDate: new Date().toISOString() })
+
     try {
       const res = await axiosServer.post("/admin/property", property, {
         headers: {
@@ -104,7 +110,21 @@ const PropertyForm = ({
         />
       </label>
 
-      {/* TODO: Add field "loan" that will receive a string and will load the users on system for set "loanedTo" property */}
+      <label className="form-control w-full max-w-xs">
+        <div className="label">
+          <span className="label-text">Emprestado</span>
+        </div>
+
+        <UserSearchInput
+          placeholder="Emprestado para..."
+          targetUser={loanedTo}
+          setTargetUser={setLoanedTo}
+          size="md"
+          color="primary"
+          disabled={isLoading}
+          bordered
+        />
+      </label>
 
       <Button variant="outline" color="accent" onClick={handleSubmit}>
         {action === "create" ? (
