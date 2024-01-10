@@ -1,8 +1,9 @@
 from typing import Any
 
+from sqlalchemy.orm import Session
+
 from daos.base import BaseDao
 from models.user import User
-from sqlalchemy.orm import Session
 
 
 class UserDao(BaseDao):
