@@ -7,11 +7,11 @@ import Image from "next/image"
  */
 const Contacts = () => {
   return (
-    <div className="flex flex-col items-start ml-8">
+    <div className="flex flex-col items-start">
       <ButtonNES
         type="navigation"
         style="ghost"
-        className="text-primary hover:bg-transparent flex flex-row text-lg mb-2"
+        className="text-primary hover:bg-transparent flex flex-row mb-2"
         href="https://www.instagram.com/nes.ufal/"
         target="_blank"
       >
@@ -27,7 +27,7 @@ const Contacts = () => {
       <ButtonNES
         type="navigation"
         style="ghost"
-        className="text-primary hover:bg-transparent flex flex-row text-lg mb-2"
+        className="text-primary hover:bg-transparent flex flex-row mb-2"
         href="https://www.youtube.com/@novoensinosuplementar"
         target="_blank"
       >
@@ -43,7 +43,7 @@ const Contacts = () => {
       <ButtonNES
         type="navigation"
         style="ghost"
-        className="text-primary hover:bg-transparent flex flex-row text-lg mb-2"
+        className="text-primary hover:bg-transparent flex flex-row mb-2"
         href="mailto:nes.alagoas@gmail.com"
         target="_blank"
       >

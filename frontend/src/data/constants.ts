@@ -137,3 +137,10 @@ export const POST_TYPE_TRANSLATIONS = {
   Test: "Prova",
   Activity: "Atividade",
 }
+
+export type Material = {
+  imageUrl: string
+  title: string
+  description: string
+  url: string
+}
