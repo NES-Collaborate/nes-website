@@ -115,6 +115,9 @@ async def update_property(
         else:
             _property.loanedTo = _user
             _property.loanedAt = datetime.now()
+    elif not property.loanedTo and _property.loanedTo:
+        _property.loanedTo = None
+        _property.loanedAt = None
 
     _property.name = property.name
     _property.type = property.type
