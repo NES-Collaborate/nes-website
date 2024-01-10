@@ -2,7 +2,7 @@ import { useSession } from "@/contexts/session"
 import { Property } from "@/types/entities"
 import { User } from "@/types/user"
 import { axiosServer } from "@/utils/axiosClient"
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { Button, Input } from "react-daisyui"
 import { FaEdit, FaPlus } from "react-icons/fa"
 import UserSearchInput from "../../UserSearchInput"
@@ -28,6 +28,10 @@ const PropertyForm = ({
   const { token } = useSession()
   const [loanedTo, setLoanedTo] = useState<User | null>(null)
 
+  useEffect(() => {
+    setLoanedTo(property.loanedTo as User)
+  }, [property])
+
   const createProperty = async () => {
     if (loanedTo) setProperty({ ...property, loanedTo: loanedTo })
     try {
@@ -48,8 +52,6 @@ const PropertyForm = ({
   }
 
   const editProperty = async () => {
-    console.log(loanedTo)
-    console.log(property)
     try {
       const res = await axiosServer.put(
         `/admin/property/${property.id}`,

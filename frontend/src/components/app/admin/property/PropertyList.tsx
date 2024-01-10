@@ -1,10 +1,12 @@
 import Toast from "@/components/Toast"
 import { useSession } from "@/contexts/session"
 import { Property } from "@/types/entities"
+import { User } from "@/types/user"
 import { axiosServer } from "@/utils/axiosClient"
 import { useEffect, useState } from "react"
 import { Button, Table, Tooltip } from "react-daisyui"
-import { FaEdit, FaPlus, FaTrash } from "react-icons/fa"
+import { FaCheck, FaEdit, FaPlus, FaTimes, FaTrash } from "react-icons/fa"
+import LoanedModal from "./LoanedModal"
 import PropertyModal from "./PropertyModal"
 
 type Props = {
@@ -20,6 +22,9 @@ const PropertyList = ({ query = "" }: Props) => {
   const [modelAction, setModelAction] = useState<"create" | "edit">("edit")
   const [targetIndex, setTargetIndex] = useState(-1)
   const [toast, setToast] = useState("")
+
+  const [loanedTo, setLoanedTo] = useState<User | null>(null)
+  const [loanedAt, setLoanedAt] = useState("")
 
   useEffect(() => {
     const timer = setTimeout(() => setDebouncedQuery(query), debounceDelay)
@@ -85,10 +90,30 @@ const PropertyList = ({ query = "" }: Props) => {
               <span>{property.id}</span>
               <span>{property.name}</span>
               <span>{property.type}</span>
-              <span>{property.loanedTo ? "Sim" : "Não"}</span>
+              <span>
+                {property.loanedTo ? (
+                  <Button
+                    color="success"
+                    onClick={() => {
+                      setLoanedTo(property.loanedTo as User)
+                      setLoanedAt(property.loanedAt as string)
+                    }}
+                  >
+                    <FaCheck />
+                  </Button>
+                ) : (
+                  <Button color="error">
+                    <FaTimes />
+                  </Button>
+                )}
+              </span>
               <span>
                 <Tooltip message="Editar">
-                  <Button onClick={() => openEditModal(property.id)} className="mr-2" color="primary">
+                  <Button
+                    onClick={() => openEditModal(property.id)}
+                    className="mr-2"
+                    color="primary"
+                  >
                     <FaEdit />
                   </Button>
                 </Tooltip>
@@ -131,6 +156,8 @@ const PropertyList = ({ query = "" }: Props) => {
         setIndex={setTargetIndex}
         setToast={setToast}
       />
+
+      <LoanedModal loanedTo={loanedTo} setLoanedTo={setLoanedTo} loanedAt={loanedAt} />
     </div>
   )
 }

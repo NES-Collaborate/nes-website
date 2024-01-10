@@ -20,6 +20,10 @@ const UserSearchInput = ({ targetUser, setTargetUser, ...inputProps }: Props) =>
   const inputRef = useRef<HTMLInputElement>(null)
 
   useEffect(() => {
+    setInputValue(targetUser?.name || "")
+  }, [targetUser])
+
+  useEffect(() => {
     if (!inputValue) return
     if (targetUser) return
 
