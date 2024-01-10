@@ -10,7 +10,7 @@ type Props = {
     | "banner"
     | "bannerProcessoSeletivo"
     | "obmepMedals"
-    | "mathBanner"
+    | "computerBanner"
     | "library"
   size?: number
   alt?: string

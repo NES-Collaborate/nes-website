@@ -8,7 +8,7 @@ const Home = () => {
     <>
       <div className="mb-4 overflow-hidden">
         <Logo
-          type="mathBanner"
+          type="computerBanner"
           className="w-full max-h-72 object-cover object-center"
           alt="Banner do NES"
         />

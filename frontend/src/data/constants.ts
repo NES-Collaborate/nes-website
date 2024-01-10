@@ -52,15 +52,15 @@ export const LOGOS: Record<string, Image> = {
     width: 3744,
     height: 2494,
   },
-  mathBanner: {
-    src: "/img/math-banner.jpg",
-    width: 6000,
-    height: 4000,
+  computerBanner: {
+    src: "/img/computer-banner.jpg",
+    width: 1440,
+    height: 960,
   },
   library: {
     src: "/img/library.jpg",
-    width: 3840,
-    height: 5760,
+    width: 960,
+    height: 1440,
   },
 }
 
