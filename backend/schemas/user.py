@@ -15,25 +15,21 @@ from models.enum import (
 
 
 class Attatch(BaseModel):
-
     name: str
     location: str
     type: AttachType
 
 
 class Email(BaseModel):
-
     value: EmailStr
 
 
 class PhoneNumber(BaseModel):
-
     value: str
     isEmergency: bool
 
 
 class Address(BaseModel):
-
     name: str
     street: str
     number: Optional[int]
@@ -44,7 +40,6 @@ class Address(BaseModel):
 
 
 class Achievement(BaseModel):
-
     name: str
     type: AchievementType
     olympic_acronym: str
@@ -81,7 +76,7 @@ class UserOut(UserBase):
 
 
 class UserPoster(BaseModel):
-
+    id: int
     name: str
     emails: Optional[List[Email]]
     photo: Optional[Attatch]
