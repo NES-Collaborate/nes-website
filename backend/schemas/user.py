@@ -83,3 +83,11 @@ class UserPoster(BaseModel):
 
     class Config:
         from_attributes = True
+
+
+class UserMinimal(BaseModel):
+    id: int
+    name: str
+
+    class Config:
+        from_attributes = True

@@ -3,11 +3,10 @@ from typing import Optional
 
 from pydantic import BaseModel
 
-from .user import UserPoster
+from .user import UserMinimal, UserPoster
 
 
 class PropertyBase(BaseModel):
-
     name: str
     type: str
 
@@ -16,11 +15,10 @@ class PropertyBase(BaseModel):
 
 
 class PropertyOut(PropertyBase):
-
     id: int
     loanedTo: Optional[UserPoster]
     loanedAt: Optional[datetime]
 
 
 class PropertyIn(PropertyBase):
-    pass
+    loanedTo: Optional[UserMinimal]

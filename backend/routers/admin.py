@@ -1,3 +1,4 @@
+from datetime import datetime
 from typing import Optional
 
 import sqlalchemy as sa
@@ -60,6 +61,17 @@ async def create_property(
 
     _property = Property(**property.model_dump())
 
+    if property.loanedTo:
+        _user = session.query(User).get(property.loanedTo.id)
+        if not _user:
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND,
+                detail="Usuário não encontrado",
+            )
+
+        _property.loanedTo = _user
+        _property.loanedAt = datetime.now()
+
     session.add(_property)
     session.commit()
     session.refresh(_property)
@@ -88,8 +100,25 @@ async def update_property(
             detail="Propriedade não encontrada",
         )
 
+    if property.loanedTo:
+        _user = session.query(User).get(property.loanedTo.id)
+        if not _user:
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND,
+                detail="Usuário não encontrado",
+            )
+
+        if _property.loanedTo:
+            if _property.loanedTo.id != _user.id:
+                _property.loanedTo = _user
+                _property.loanedAt = datetime.now()
+        else:
+            _property.loanedTo = _user
+            _property.loanedAt = datetime.now()
+
     _property.name = property.name
     _property.type = property.type
+
     session.add(_property)
     session.commit()
     session.refresh(_property)
