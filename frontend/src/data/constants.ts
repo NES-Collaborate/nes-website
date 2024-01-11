@@ -144,3 +144,8 @@ export type Material = {
   description: string
   url: string
 }
+
+export type Selection = {
+  year: string
+  isOpen: boolean
+}

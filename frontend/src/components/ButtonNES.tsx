@@ -49,7 +49,7 @@ const ButtonNES = ({
         setButtonStyle("btn btn-ghost text-gray-300 hover:bg-primary")
         break
       case "link":
-        setButtonStyle("btn-link text-gray-300 hover:bg-primary")
+        setButtonStyle("btn-link text-primary hover:bg-transparent")
         break
     }
 
