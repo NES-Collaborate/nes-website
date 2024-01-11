@@ -1,5 +1,7 @@
 import ButtonNES from "@/components/ButtonNES"
-import Image from "next/image"
+import { RiInstagramFill } from "react-icons/ri"
+import { FaYoutube } from "react-icons/fa"
+import { MdEmail } from "react-icons/md"
 
 /**
  * Links to the contacts
@@ -7,7 +9,7 @@ import Image from "next/image"
  */
 const Contacts = () => {
   return (
-    <div className="flex flex-col items-start">
+    <div className="flex flex-col items-center">
       <ButtonNES
         type="navigation"
         style="ghost"
@@ -15,13 +17,7 @@ const Contacts = () => {
         href="https://www.instagram.com/nes.ufal/"
         target="_blank"
       >
-        <Image
-          src="/img/instagram_white.png"
-          alt="Instagram"
-          className="bg-primary rounded-full mr-1"
-          width="30"
-          height="30"
-        ></Image>
+        <RiInstagramFill fontSize="1.25em" />
         Siga nosso Instagram!
       </ButtonNES>
       <ButtonNES
@@ -31,13 +27,7 @@ const Contacts = () => {
         href="https://www.youtube.com/@novoensinosuplementar"
         target="_blank"
       >
-        <Image
-          src="/img/youtube_white.png"
-          alt="YouTube"
-          className="bg-primary rounded-full mr-1"
-          width="30"
-          height="30"
-        ></Image>
+        <FaYoutube fontSize="1.25em" />
         Inscreva-se em nosso canal no YouTube!
       </ButtonNES>
       <ButtonNES
@@ -47,13 +37,7 @@ const Contacts = () => {
         href="mailto:nes.alagoas@gmail.com"
         target="_blank"
       >
-        <Image
-          src="/img/email_white.png"
-          alt="Email"
-          className="bg-primary rounded-full mr-1"
-          width="30"
-          height="30"
-        ></Image>
+        <MdEmail fontSize="1.25em" />
         Envie-nos um email!
       </ButtonNES>
     </div>
