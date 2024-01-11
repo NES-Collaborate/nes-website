@@ -7,13 +7,18 @@ import ButtonNES from "../ButtonNES"
 const Footer = () => {
   return (
     <div className="w-full flex flex-col items-center bg-primary">
-      <ButtonNES style="ghost" className="text-2xl mt-4 mb-2" href="/nes/about">
+      <ButtonNES
+        type="navigation"
+        style="ghost"
+        className="text-2xl mt-4 mb-2"
+        href="/nes/contact"
+      >
         Contato
       </ButtonNES>
       <ButtonNES
         type="navigation"
         style="link"
-        className="text-lg mb-4"
+        className="!text-gray-300 text-lg mb-4"
         href="mailto:nes.alagoas@gmail.com"
         target="_blank"
       >

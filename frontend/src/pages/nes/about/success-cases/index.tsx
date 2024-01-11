@@ -25,30 +25,35 @@ const Home = () => {
   }, [])
 
   return (
-    <>
-      <div className="mb-4 overflow-hidden">
-        <Logo
-          type="obmepMedals"
-          className="w-full max-h-72 object-cover object-center"
-          alt="Banner do NES"
-        />
+    <div className="min-height flex flex-col">
+      <div className="flex-1">
+        <div className="mb-4 overflow-hidden">
+          <Logo
+            type="obmepMedals"
+            className="w-full max-h-72 object-cover object-center"
+            alt="Banner do NES"
+          />
+        </div>
+
+        <Brief />
+
+        {isLoading && (
+          <div className="flex justify-center items-center h-48">
+            <Loading
+              text="Carregando Casos de Sucesso..."
+              textClassName="ml-3 text-2xl"
+            />
+          </div>
+        )}
+
+        {!isLoading &&
+          successCases.map((successCase) => (
+            <SuccessCase key={successCase.id} {...successCase} />
+          ))}
       </div>
 
-      <Brief />
-
-      {isLoading && (
-        <div className="flex justify-center items-center h-48">
-          <Loading text="Carregando Casos de Sucesso..." textClassName="ml-3 text-2xl" />
-        </div>
-      )}
-
-      {!isLoading &&
-        successCases.map((successCase) => (
-          <SuccessCase key={successCase.id} {...successCase} />
-        ))}
-
       <Footer />
-    </>
+    </div>
   )
 }
 

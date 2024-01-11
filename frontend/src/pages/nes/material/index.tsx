@@ -4,19 +4,21 @@ import Materials from "@/components/nes/material/Materials"
 
 const Home = () => {
   return (
-    <>
-      <div className="mb-4 overflow-hidden">
-        <Logo
-          type="library"
-          className="w-full max-h-72 object-cover object-center"
-          alt="Banner do NES"
-        />
+    <div className="min-height flex flex-col">
+      <div className="flex-1">
+        <div className="mb-4 overflow-hidden">
+          <Logo
+            type="library"
+            className="w-full max-h-72 object-cover object-center"
+            alt="Banner do NES"
+          />
+        </div>
+
+        <Materials />
       </div>
 
-      <Materials />
-
       <Footer />
-    </>
+    </div>
   )
 }
 
