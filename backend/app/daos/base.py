@@ -2,9 +2,8 @@ from abc import ABC, abstractmethod
 from typing import Any
 
 from app.models.user import User
-from sqlalchemy.orm import Session
-
 from models.user import User
+from sqlalchemy.orm import Session
 
 
 class BaseDao(ABC):

@@ -2,9 +2,6 @@ from datetime import date
 from typing import List, Optional, get_args
 
 import sqlalchemy as sa
-from passlib import hash  # type: ignore
-from sqlalchemy.orm import Mapped, mapped_column, relationship
-
 from models.enum import (
     AchievementStatus,
     AchievementType,
@@ -13,6 +10,8 @@ from models.enum import (
     Serie,
     UserType,
 )
+from passlib import hash  # type: ignore
+from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from .base import BaseTable, char2, str10
 
