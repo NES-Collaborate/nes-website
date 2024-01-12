@@ -62,6 +62,11 @@ export const LOGOS: Record<string, Image> = {
     width: 960,
     height: 1440,
   },
+  calendarBanner: {
+    src: "/img/calendarBanner.jpg",
+    width: 1500,
+    height: 1175,
+  },
 }
 
 /**
@@ -121,9 +126,10 @@ export const BREADCRUMB_NAMES: Record<string, string> = {
   login: "Login",
   about: "Sobre",
   "learn-more": "Saiba mais",
-  contact: "Contato",
+  contact: "Contatos",
   material: "Material Gratuito",
   subscription: "Processo Seletivo",
+  schedule: "Cronograma",
 }
 
 /**
@@ -148,7 +154,58 @@ export type Material = {
   url: string
 }
 
+export type Event = {
+  date: string
+  description: string
+}
+
 export type Selection = {
   year: string
   isOpen: boolean
+  schedule: Event[]
 }
+
+export const SELECTIONS_EXAMPLES = [
+  {
+    year: "2024",
+    isOpen: true,
+    schedule: [
+      {
+        date: "25/12/2024",
+        description: "Natal",
+      },
+      {
+        date: "31/12/2024",
+        description: "Ano Novo",
+      },
+    ],
+  },
+  {
+    year: "2023.2",
+    isOpen: false,
+    schedule: [
+      {
+        date: "25/12/2023",
+        description: "Natal",
+      },
+      {
+        date: "31/12/2023",
+        description: "Ano Novo",
+      },
+    ],
+  },
+  {
+    year: "2023.1",
+    isOpen: false,
+    schedule: [
+      {
+        date: "Junho de 2023",
+        description: "São João",
+      },
+      {
+        date: "01/01/2023",
+        description: "Ano Novo",
+      },
+    ],
+  },
+]

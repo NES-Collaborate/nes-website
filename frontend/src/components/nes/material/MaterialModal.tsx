@@ -27,7 +27,7 @@ const MaterialModal = ({ material, isOpen = false, onClose }: Props) => {
       <Modal.Body className="h-screen">
         <iframe
           width="100%"
-          height="75%"
+          height="100%"
           src={material.url}
           title={material.title}
           allowFullScreen

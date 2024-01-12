@@ -12,6 +12,7 @@ type Props = {
     | "obmepMedals"
     | "computerBanner"
     | "library"
+    | "calendarBanner"
   size?: number
   alt?: string
   className?: string

@@ -5,7 +5,7 @@ type Props = {
   type?: "navigation" | "action"
   style?: "fill" | "outline" | "ghost" | "link"
   className?: string
-  href?: string
+  href?: any
   target?: "_blank" | "_self"
   onClick?: React.MouseEventHandler<HTMLButtonElement>
   disabled?: boolean
@@ -18,6 +18,7 @@ type Props = {
  * @param {number} style The style of the button. Defaults to fill
  * @param {string} className Additional classes
  * @param {string} href The reference of the button
+ * @param {string} target The target of the button
  * @param {React.MouseEventHandler<HTMLButtonElement>} onClick Function to call when click
  * @param {boolean} disabled True if the button is disabled
  * @param {React.ReactNode} children The content inside the button

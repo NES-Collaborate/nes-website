@@ -1,3 +1,4 @@
+import { SELECTIONS_EXAMPLES } from "@/data/constants"
 import SelectionCard from "./SelectionCard"
 
 /**
@@ -7,8 +8,9 @@ import SelectionCard from "./SelectionCard"
 const Selections = () => {
   return (
     <div>
-      <SelectionCard year="2024" isOpen={true} />
-      <SelectionCard year="2023" isOpen={false} />
+      {SELECTIONS_EXAMPLES.map((selection, i) => {
+        return <SelectionCard key={i} selection={selection} />
+      })}
     </div>
   )
 }

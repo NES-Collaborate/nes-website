@@ -1,15 +1,16 @@
 import ButtonNES from "@/components/ButtonNES"
 import { Selection } from "@/data/constants"
 import clsx from "clsx"
-import Image from "next/image"
-import Link from "next/link"
-import { useState } from "react"
+
+type Props = {
+  selection: Selection
+}
 
 /**
  * Material Card
  * @returns {JSX.Element} SelectionCard
  */
-const SelectionCard = (selection: Selection) => {
+const SelectionCard = ({ selection }: Props) => {
   return (
     <>
       <div className="collapse collapse-plus">
@@ -26,7 +27,15 @@ const SelectionCard = (selection: Selection) => {
           <ButtonNES href="" type="navigation" style="link" className="mb-2">
             Inscrição
           </ButtonNES>
-          <ButtonNES href="" type="navigation" style="link" className="mb-2">
+          <ButtonNES
+            href={{
+              pathname: "/nes/subscription/schedule",
+              query: { selectionYear: selection.year },
+            }}
+            type="navigation"
+            style="link"
+            className="mb-2"
+          >
             Cronograma
           </ButtonNES>
           <ButtonNES href="" type="navigation" style="link" className="mb-2">
