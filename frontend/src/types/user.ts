@@ -1,13 +1,16 @@
+import { Serie, UserType } from "./constants"
+import { Address } from "./entities"
+
 export type User = {
   id: number
   name: string
   photo?: string
   emails: string[]
   phones: string[]
-  address?: string
+  address?: Address
   cpf: string
   birthdate: string
   scolarship: number
-  serie?: string
-  type: "admin" | "other" | "student" | "responsible"
+  serie?: Serie
+  type: UserType
 }

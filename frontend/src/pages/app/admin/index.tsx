@@ -14,6 +14,12 @@ const PAGES = [
     description:
       "Permite criar, editar e deletar propriedades (bens materiais) sobre posse do NES além de atribuir determinados bens aos alunos.",
   },
+  {
+    name: "Gestão de Usuários",
+    path: "/app/admin/users",
+    description:
+      "Permite adicionar, pesquisar com filtros, editar e deletar todos os usuários da aplicação.",
+  },
 ]
 
 const Admin = () => {

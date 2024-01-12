@@ -66,3 +66,18 @@ export type Property = {
   loanedTo?: User
   loanedAt?: string
 }
+
+
+/**
+ * Address representation
+ */
+export type Address = {
+  id: number
+  name: string          // endereço
+  neighborhood: string  // bairro
+  number?: number
+  complement?: string
+  city: string
+  state: string         // char(2) | UF
+  cep: string           // char(10)
+}

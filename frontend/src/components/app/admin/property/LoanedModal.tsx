@@ -54,7 +54,7 @@ const LoanedModal = ({ loanedTo, setLoanedTo, loanedAt }: Props) => {
               {loanedTo.phones && loanedTo.phones.length > 0 && (
                 <p>Telefone: {loanedTo.phones[0]}</p>
               )}
-              {loanedTo.address && <p>Endereço: {loanedTo.address}</p>}
+              {loanedTo.address && <p>Endereço: {loanedTo.address.name}</p>}
               {loanedTo.serie && <p>Serie: {loanedTo.serie}</p>}
             </div>
 
