@@ -2,15 +2,14 @@ from datetime import datetime
 from typing import Optional
 
 import sqlalchemy as sa
+from app.models.admin import Property
+from app.models.user import User
+from app.schemas.admin import PropertyIn, PropertyOut
+from app.schemas.user import UserPoster
+from app.services.db import get_session
+from app.services.user import UserService
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
-
-from models.admin import Property
-from models.user import User
-from schemas.admin import PropertyIn, PropertyOut
-from schemas.user import UserPoster
-from services.db import get_session
-from services.user import UserService
 
 router = APIRouter(prefix="/admin", tags=["admin"])
 

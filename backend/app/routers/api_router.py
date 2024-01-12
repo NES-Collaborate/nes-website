@@ -1,3 +1,4 @@
+from app.routers import admin, auth, classroom, teacher
 from fastapi import APIRouter
 
 from routers import admin, auth, classroom, teacher
