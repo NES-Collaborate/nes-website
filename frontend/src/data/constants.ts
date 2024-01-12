@@ -67,6 +67,11 @@ export const LOGOS: Record<string, Image> = {
     width: 1500,
     height: 1175,
   },
+  bannerInscricoes: {
+    src: "/img/bannerInscricoes.png",
+    width: 1366,
+    height: 768,
+  },
 }
 
 /**
@@ -130,6 +135,7 @@ export const BREADCRUMB_NAMES: Record<string, string> = {
   material: "Material Gratuito",
   subscription: "Processo Seletivo",
   schedule: "Cronograma",
+  form: "Inscrição",
 }
 
 /**
@@ -162,6 +168,7 @@ export type Event = {
 export type Selection = {
   year: string
   isOpen: boolean
+  iframeSrc: string
   schedule: Event[]
 }
 
@@ -169,6 +176,8 @@ export const SELECTIONS_EXAMPLES = [
   {
     year: "2024",
     isOpen: true,
+    iframeSrc:
+      "https://drive.google.com/file/d/1immcmC25h8rXU43qcLQ1WiMO4OkAjmtQ/preview",
     schedule: [
       {
         date: "25/12/2024",
@@ -183,6 +192,8 @@ export const SELECTIONS_EXAMPLES = [
   {
     year: "2023.2",
     isOpen: false,
+    iframeSrc:
+      "https://drive.google.com/file/d/1immcmC25h8rXU43qcLQ1WiMO4OkAjmtQ/preview",
     schedule: [
       {
         date: "25/12/2023",
@@ -197,6 +208,8 @@ export const SELECTIONS_EXAMPLES = [
   {
     year: "2023.1",
     isOpen: false,
+    iframeSrc:
+      "https://drive.google.com/file/d/1immcmC25h8rXU43qcLQ1WiMO4OkAjmtQ/preview",
     schedule: [
       {
         date: "Junho de 2023",

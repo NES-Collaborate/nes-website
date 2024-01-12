@@ -24,7 +24,15 @@ const SelectionCard = ({ selection }: Props) => {
           Seleção {selection.year}
         </div>
         <div className="collapse-content flex flex-col ml-2">
-          <ButtonNES href="" type="navigation" style="link" className="mb-2">
+          <ButtonNES
+            href={{
+              pathname: "/nes/subscription/form",
+              query: { selectionYear: selection.year },
+            }}
+            type="navigation"
+            style="link"
+            className="mb-2"
+          >
             Inscrição
           </ButtonNES>
           <ButtonNES
