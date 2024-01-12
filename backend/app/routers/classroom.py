@@ -1,9 +1,9 @@
+from app.models.classroom import Classroom, Post, Subject
+from app.models.user import User
+from app.schemas.classroom import PostOut, SubjectOut
+from app.services.db import get_session
+from app.services.user import UserService
 from fastapi import APIRouter, Depends, HTTPException, status
-from models.classroom import Classroom, Post, Subject
-from models.user import User
-from schemas.classroom import PostOut, SubjectOut
-from services.db import get_session
-from services.user import UserService
 from sqlalchemy.orm import Session
 
 router = APIRouter(prefix="/classroom", tags=["classroom"])

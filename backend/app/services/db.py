@@ -1,11 +1,10 @@
 from datetime import date
 
+from app.models.classroom import Classroom, Subject
+from app.models.user import User
 from passlib import hash
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
-
-from models.classroom import Classroom, Subject
-from models.user import User
 
 from .settings import settings
 

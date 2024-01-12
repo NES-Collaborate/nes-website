@@ -1,11 +1,11 @@
-from daos import user
+from app.daos import user
 from fastapi import Depends, HTTPException, status
 from fastapi.responses import JSONResponse
 from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
 from jose import JWTError, jwt
-from services.db import get_session
 from sqlalchemy.orm import Session
 
+from .db import get_session
 from .settings import settings
 
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/api/login")

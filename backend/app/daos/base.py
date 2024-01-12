@@ -1,7 +1,7 @@
 from abc import ABC, abstractmethod
 from typing import Any
 
-from models.user import User
+from app.models.user import User
 from sqlalchemy.orm import Session
 
 
