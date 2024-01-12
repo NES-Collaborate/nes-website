@@ -61,7 +61,7 @@ const Home = () => {
               Cronograma
             </ButtonNES>
             <ButtonNES href="" type="navigation" className="mb-2">
-              Resultado
+              Resultados
             </ButtonNES>
             <ButtonNES href="" type="navigation" className="mb-2">
               Ementa

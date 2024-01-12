@@ -46,8 +46,16 @@ const SelectionCard = ({ selection }: Props) => {
           >
             Cronograma
           </ButtonNES>
-          <ButtonNES href="" type="navigation" style="link" className="mb-2">
-            Resultado
+          <ButtonNES
+            href={{
+              pathname: "/nes/subscription/results",
+              query: { selectionYear: selection.year },
+            }}
+            type="navigation"
+            style="link"
+            className="mb-2"
+          >
+            Resultados
           </ButtonNES>
           <ButtonNES href="" type="navigation" style="link" className="mb-2">
             Ementa

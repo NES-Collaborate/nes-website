@@ -136,6 +136,7 @@ export const BREADCRUMB_NAMES: Record<string, string> = {
   subscription: "Processo Seletivo",
   schedule: "Cronograma",
   form: "Inscrição",
+  results: "Resultados",
 }
 
 /**
@@ -165,11 +166,18 @@ export type Event = {
   description: string
 }
 
+export type Student = {
+  name: string
+  city: string
+  UF: string
+}
+
 export type Selection = {
   year: string
   isOpen: boolean
   iframeSrc: string
   schedule: Event[]
+  results: Student[]
 }
 
 export const SELECTIONS_EXAMPLES = [
@@ -188,6 +196,18 @@ export const SELECTIONS_EXAMPLES = [
         description: "Ano Novo",
       },
     ],
+    results: [
+      {
+        name: "Irineu da SIlva Cabral Santos Gomes Pereira dos Anjos",
+        city: "Maceió",
+        UF: "AL",
+      },
+      {
+        name: "Irineu",
+        city: "Maceió",
+        UF: "AL",
+      },
+    ],
   },
   {
     year: "2023.2",
@@ -204,6 +224,18 @@ export const SELECTIONS_EXAMPLES = [
         description: "Ano Novo",
       },
     ],
+    results: [
+      {
+        name: "Irineu",
+        city: "Maceió",
+        UF: "AL",
+      },
+      {
+        name: "Irineu",
+        city: "Maceió",
+        UF: "AL",
+      },
+    ],
   },
   {
     year: "2023.1",
@@ -218,6 +250,18 @@ export const SELECTIONS_EXAMPLES = [
       {
         date: "01/01/2023",
         description: "Ano Novo",
+      },
+    ],
+    results: [
+      {
+        name: "Irineu",
+        city: "Maceió",
+        UF: "AL",
+      },
+      {
+        name: "Irineu",
+        city: "Maceió",
+        UF: "AL",
       },
     ],
   },
