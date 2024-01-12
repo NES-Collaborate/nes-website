@@ -11,7 +11,7 @@ type Props = {
 
 const MaterialModal = ({ material, isOpen = false, onClose }: Props) => {
   return (
-    <Modal open={isOpen} className="h-full" responsive={true}>
+    <Modal open={isOpen} className="h-full !max-w-full" responsive={true}>
       <Button
         onClick={onClose}
         className="absolute right-2 top-2"

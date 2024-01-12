@@ -20,7 +20,7 @@ const MaterialCard = (material: Material) => {
 
   return (
     <>
-      <div className="flex flex-col items-start px-4 mb-4">
+      <div className="flex flex-col items-start px-4 mb-4 max-w-xs">
         <button onClick={openModal}>
           <div className="card card-compact bg-base-100 shadow-xl hover:bg-zinc-500/75">
             <figure className="max-w-xs">

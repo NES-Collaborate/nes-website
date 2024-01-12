@@ -6,7 +6,7 @@ import MaterialCard from "./MaterialCard"
  */
 const Materials = () => {
   return (
-    <div>
+    <div className="flex flex-wrap">
       <MaterialCard
         imageUrl="/img/circle.png"
         title="Material do NES"
