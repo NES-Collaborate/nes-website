@@ -2,7 +2,11 @@ from datetime import date
 from typing import List, Optional, get_args
 
 import sqlalchemy as sa
-from models.enum import (
+from passlib import hash  # type: ignore
+from sqlalchemy.orm import Mapped, mapped_column, relationship
+
+from .base import BaseTable, char2, str10
+from .enum import (
     AchievementStatus,
     AchievementType,
     AttachType,
@@ -10,10 +14,6 @@ from models.enum import (
     Serie,
     UserType,
 )
-from passlib import hash  # type: ignore
-from sqlalchemy.orm import Mapped, mapped_column, relationship
-
-from .base import BaseTable, char2, str10
 
 
 class User(BaseTable):

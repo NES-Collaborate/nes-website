@@ -2,7 +2,7 @@ run-dev:
 	@uvicorn app:app --reload --host 0.0.0.0 --port 8000
 
 run:
-	@uvicorn main:app --host 0.0.0.0 --port 8000
+	@uvicorn app:app --host 0.0.0.0 --port 8000
 
 format:
 	@echo "Sorting imports with isort..."
