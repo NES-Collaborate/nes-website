@@ -14,6 +14,12 @@ const Home = () => {
           />
         </div>
 
+        <div className="w-full flex flex-col items-center">
+          <h1 className="text-primary text-3xl stroke-1 mb-4 text-center">
+            Material Gratuito
+          </h1>
+        </div>
+
         <Materials />
       </div>
 

@@ -14,6 +14,7 @@ type Props = {
     | "library"
     | "calendarBanner"
     | "bannerInscricoes"
+    | "bannerResultados"
   size?: number
   alt?: string
   className?: string

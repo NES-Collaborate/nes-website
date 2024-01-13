@@ -27,7 +27,7 @@ const Home = () => {
       <div className="flex-1">
         <div className="mb-4 overflow-hidden">
           <Logo
-            type="bannerInscricoes"
+            type="banner"
             className="w-full max-h-72 object-cover object-center"
             alt="Banner do NES"
           />

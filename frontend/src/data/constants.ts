@@ -72,6 +72,11 @@ export const LOGOS: Record<string, Image> = {
     width: 1366,
     height: 768,
   },
+  bannerResultados: {
+    src: "/img/bannerResultados.png",
+    width: 1366,
+    height: 768,
+  },
 }
 
 /**
