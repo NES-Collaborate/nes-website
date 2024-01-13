@@ -19,7 +19,7 @@ const DrawerNES = ({ children }: Props) => {
   }, [])
 
   return (
-    <Drawer side={<SideBar />} open={visible} onClickOverlay={toggleVisible}>
+    <Drawer side={<SideBar toggleDrawerVisibility={toggleVisible} />} open={visible} onClickOverlay={toggleVisible}>
       <NavBar toggleDrawerVisibility={toggleVisible} />
       {children}
     </Drawer>

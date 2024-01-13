@@ -143,6 +143,7 @@ export const BREADCRUMB_NAMES: Record<string, string> = {
   form: "Inscrição",
   results: "Resultados",
   program: "Ementa",
+  users: "Usuários",
 }
 
 /**
@@ -286,4 +287,3 @@ export const SERIES: Serie[] = ["9º EF", "1º EM", "2º EM", "3º EM"]
  * Possible user types
  */
 export const USER_TYPES = ["admin", "other", "student", "responsible"]
-

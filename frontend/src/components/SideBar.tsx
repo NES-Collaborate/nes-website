@@ -5,9 +5,14 @@ import clsx from "clsx"
 import Image from "next/image"
 import Link from "next/link"
 import { Button, Menu } from "react-daisyui"
+import { IoClose } from "react-icons/io5"
 import LoginButtom from "./LoginButtom"
 
-const SideBar = () => {
+type Props = {
+  toggleDrawerVisibility: () => void
+}
+
+const SideBar = ({ toggleDrawerVisibility }: Props) => {
   const session = useSession()
   const profilePhoto = session.user?.photo || "/img/default-user.png"
 
@@ -17,6 +22,14 @@ const SideBar = () => {
 
   return (
     <div className="flex flex-col gap-1 bg-base-200 h-screen">
+      <Button
+        className="!absolute right-2 top-2 bg-red-500 btn-circle"
+        size="xs"
+        onClick={toggleDrawerVisibility}
+      >
+        <IoClose size={21} />
+      </Button>
+
       <div
         className={clsx(
           session.user && "hidden",

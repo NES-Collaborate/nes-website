@@ -18,7 +18,7 @@ const Breadcrumb = () => {
 
   return (
     <div className="flex justify-around pt-1">
-      <Breadcrumbs>
+      <Breadcrumbs className="max-w-[85%] w-72 text-sm">
         {splitedPath.map((x, i) => {
           const url = `/${splitedPath.slice(0, i + 1).join("/")}`
 
