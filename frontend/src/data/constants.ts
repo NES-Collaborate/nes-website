@@ -1,4 +1,4 @@
-import { Image, LandingPage, UserPage } from "@/types/constants"
+import { Image, LandingPage, Serie, UserPage } from "@/types/constants"
 import path from "path"
 import { FaClipboardList, FaHandHoldingHeart, FaUser } from "react-icons/fa"
 import { FaCircleInfo } from "react-icons/fa6"
@@ -276,3 +276,14 @@ export const SELECTIONS_EXAMPLES = [
     ],
   },
 ]
+
+/**
+ * Possible series
+ */
+export const SERIES: Serie[] = ["9º EF", "1º EM", "2º EM", "3º EM"]
+
+/**
+ * Possible user types
+ */
+export const USER_TYPES = ["admin", "other", "student", "responsible"]
+

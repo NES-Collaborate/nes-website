@@ -1,10 +1,8 @@
 from datetime import date
 from typing import List, Optional
 
-from pydantic import BaseModel, EmailStr
-
-from models.base import char2, str10
-from models.enum import (
+from app.models.base import char2, str10
+from app.models.enum import (
     AchievementStatus,
     AchievementType,
     AttachType,
@@ -12,6 +10,7 @@ from models.enum import (
     Serie,
     UserType,
 )
+from pydantic import BaseModel, EmailStr
 
 
 class Attatch(BaseModel):

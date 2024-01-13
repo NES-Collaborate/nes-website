@@ -40,6 +40,9 @@ export type UserPage = {
   allowedUserTypes: User["type"][]
 }
 
+/**
+ * Success Case's representation
+ */
 export type SuccessCase = {
   id: number
   imagePath: string
@@ -49,3 +52,13 @@ export type SuccessCase = {
   difficulties: string
   phrase: string
 }
+
+/**
+ * Serie representation
+ */
+export type Serie = "9º EF" | "1º EM" | "2º EM" | "3º EM"
+
+/**
+ * User Type representation
+ */
+export type UserType = "admin" | "other" | "student" | "responsible"

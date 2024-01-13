@@ -97,6 +97,7 @@ const Login = ({ userSession }: Props) => {
             )}
             onChange={(e) => setPassword(e.target.value)}
             onClick={() => setErrors([])}
+            onKeyDown={(e) => e.key === "Enter" && handleSubmit()}
             value={password}
             disabled={isLoggingIn}
           />
@@ -105,7 +106,6 @@ const Login = ({ userSession }: Props) => {
         <ButtonNES
           type="action"
           style="outline"
-          className=""
           onClick={handleSubmit}
           disabled={isLoggingIn}
         >

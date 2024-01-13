@@ -1,10 +1,10 @@
+from app.models.classroom import Classroom, Subject
+from app.models.relationships import teacher_subject as ts
+from app.models.user import User
+from app.schemas.classroom import ClassroomOut
+from app.services.db import get_session
+from app.services.user import UserService
 from fastapi import APIRouter, Depends, HTTPException, status
-from models.classroom import Classroom, Subject
-from models.relationships import teacher_subject as ts
-from models.user import User
-from schemas.classroom import ClassroomOut
-from services.db import get_session
-from services.user import UserService
 from sqlalchemy.orm import Session
 
 router = APIRouter(prefix="/teacher", tags=["teacher"])

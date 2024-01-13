@@ -1,10 +1,10 @@
+from app.models.user import User
+from app.schemas.user import UserOut
+from app.services.db import get_session
+from app.services.user import UserService
 from fastapi import APIRouter, Depends, status
 from fastapi.responses import JSONResponse
 from fastapi.security import OAuth2PasswordRequestForm
-from models.user import User
-from schemas.user import UserOut
-from services.db import get_session
-from services.user import UserService
 from sqlalchemy.orm import Session
 
 router = APIRouter()

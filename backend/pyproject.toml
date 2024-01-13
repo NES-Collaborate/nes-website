@@ -38,6 +38,10 @@ uvicorn = "0.25.0"
 python-multipart = "^0.0.6"
 
 
+[tool.poetry.group.dev.dependencies]
+isort = "^5.13.2"
+yapf = "^0.40.2"
+
 [build-system]
 requires = ["poetry-core"]
 build-backend = "poetry.core.masonry.api"
