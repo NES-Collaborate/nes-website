@@ -137,6 +137,7 @@ export const BREADCRUMB_NAMES: Record<string, string> = {
   schedule: "Cronograma",
   form: "Inscrição",
   results: "Resultados",
+  program: "Ementa",
 }
 
 /**
@@ -176,6 +177,7 @@ export type Selection = {
   year: string
   isOpen: boolean
   iframeSrc: string
+  program: string
   schedule: Event[]
   results: Student[]
 }
@@ -186,6 +188,7 @@ export const SELECTIONS_EXAMPLES = [
     isOpen: true,
     iframeSrc:
       "https://drive.google.com/file/d/1immcmC25h8rXU43qcLQ1WiMO4OkAjmtQ/preview",
+    program: "https://drive.google.com/file/d/1Jo41-h5zvD42FRNuQThof4_wNWSJsSHT/view",
     schedule: [
       {
         date: "25/12/2024",
@@ -214,6 +217,7 @@ export const SELECTIONS_EXAMPLES = [
     isOpen: false,
     iframeSrc:
       "https://drive.google.com/file/d/1immcmC25h8rXU43qcLQ1WiMO4OkAjmtQ/preview",
+    program: "https://drive.google.com/file/d/1Jo41-h5zvD42FRNuQThof4_wNWSJsSHT/view",
     schedule: [
       {
         date: "25/12/2023",
@@ -242,6 +246,7 @@ export const SELECTIONS_EXAMPLES = [
     isOpen: false,
     iframeSrc:
       "https://drive.google.com/file/d/1immcmC25h8rXU43qcLQ1WiMO4OkAjmtQ/preview",
+    program: "https://drive.google.com/file/d/1Jo41-h5zvD42FRNuQThof4_wNWSJsSHT/view",
     schedule: [
       {
         date: "Junho de 2023",

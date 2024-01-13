@@ -35,8 +35,7 @@ const Home = () => {
 
         <div className="w-full flex flex-col items-center">
           <h1 className="text-primary text-3xl stroke-1 mb-4 text-center">
-            Preencha o formulário abaixo para fazer a sua inscrição no Processo Seletivo{" "}
-            {selection?.year}!
+            Ementa {selection?.year}!
           </h1>
         </div>
 
@@ -44,43 +43,11 @@ const Home = () => {
           <iframe
             width="100%"
             height="100%"
-            src={selection?.iframeSrc}
+            src={selection?.program}
             title={selection?.year}
             className="min-h-96 sm:max-w-2xl mb-4"
             allowFullScreen
           ></iframe>
-          <div className="flex flex-col justify-center w-1/2 mb-4">
-            <ButtonNES
-              href={{
-                pathname: "/nes/subscription/schedule",
-                query: { selectionYear: selection?.year },
-              }}
-              type="navigation"
-              className="mb-2"
-            >
-              Cronograma
-            </ButtonNES>
-            <ButtonNES
-              href={{
-                pathname: "/nes/subscription/results",
-                query: { selectionYear: selection?.year },
-              }}
-              type="navigation"
-              className="mb-2"
-            >
-              Resultados
-            </ButtonNES>
-            <ButtonNES
-              href={{
-                pathname: "/nes/subscription/program",
-                query: { selectionYear: selection?.year },
-              }}
-              type="navigation"
-              className="mb-2"
-            >
-              Ementa
-            </ButtonNES>
-          </div>
         </div>
       </div>
 
