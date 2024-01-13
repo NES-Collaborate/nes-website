@@ -1,9 +1,6 @@
 import Logo from "@/components/Logo"
 import Footer from "@/components/nes/Footer"
-import Brief from "@/components/nes/home/Brief"
-import MoreInfos from "@/components/nes/home/MoreInfos"
-import Notices from "@/components/nes/home/Notices"
-import Link from "next/link"
+import Contacts from "@/components/nes/contact/Contacts"
 
 const Home = () => {
   return (
@@ -17,15 +14,11 @@ const Home = () => {
           />
         </div>
 
-        <Brief />
+        <div className="w-full flex flex-col items-center my-4">
+          <h1 className="text-primary text-3xl stroke-1 mb-4">Contatos</h1>
+        </div>
 
-        <Link href="/nes/subscription" className="my-4">
-          <Logo type="bannerProcessoSeletivo" size={500} className="mx-auto w-4/5" />
-        </Link>
-
-        <Notices />
-
-        <MoreInfos />
+        <Contacts />
       </div>
 
       <Footer />

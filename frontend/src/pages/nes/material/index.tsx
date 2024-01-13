@@ -1,8 +1,6 @@
-import ButtonNES from "@/components/ButtonNES"
 import Logo from "@/components/Logo"
 import Footer from "@/components/nes/Footer"
-import Content from "@/components/nes/about/curriculum/Content"
-import Scroll from "@/components/nes/about/curriculum/Scroll"
+import Materials from "@/components/nes/material/Materials"
 
 const Home = () => {
   return (
@@ -16,20 +14,13 @@ const Home = () => {
           />
         </div>
 
-        <Scroll />
-
-        <Content />
-
-        <div className="flex flex-wrap w-full justify-evenly mb-4">
-          <ButtonNES
-            type="navigation"
-            style="fill"
-            className="btn-lg my-4"
-            href="/nes/about"
-          >
-            Saiba mais sobre o NES
-          </ButtonNES>
+        <div className="w-full flex flex-col items-center">
+          <h1 className="text-primary text-3xl stroke-1 mb-4 text-center">
+            Material Gratuito
+          </h1>
         </div>
+
+        <Materials />
       </div>
 
       <Footer />

@@ -10,8 +10,11 @@ type Props = {
     | "banner"
     | "bannerProcessoSeletivo"
     | "obmepMedals"
-    | "mathBanner"
+    | "computerBanner"
     | "library"
+    | "calendarBanner"
+    | "bannerInscricoes"
+    | "bannerResultados"
   size?: number
   alt?: string
   className?: string

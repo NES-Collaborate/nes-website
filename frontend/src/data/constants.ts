@@ -52,15 +52,30 @@ export const LOGOS: Record<string, Image> = {
     width: 3744,
     height: 2494,
   },
-  mathBanner: {
-    src: "/img/math-banner.jpg",
-    width: 6000,
-    height: 4000,
+  computerBanner: {
+    src: "/img/computer-banner.jpg",
+    width: 1440,
+    height: 960,
   },
   library: {
     src: "/img/library.jpg",
-    width: 3840,
-    height: 5760,
+    width: 960,
+    height: 1440,
+  },
+  calendarBanner: {
+    src: "/img/calendarBanner.jpg",
+    width: 1500,
+    height: 1175,
+  },
+  bannerInscricoes: {
+    src: "/img/bannerInscricoes.png",
+    width: 1366,
+    height: 768,
+  },
+  bannerResultados: {
+    src: "/img/bannerResultados.png",
+    width: 1366,
+    height: 768,
   },
 }
 
@@ -121,6 +136,13 @@ export const BREADCRUMB_NAMES: Record<string, string> = {
   login: "Login",
   about: "Sobre",
   "learn-more": "Saiba mais",
+  contact: "Contatos",
+  material: "Material Gratuito",
+  subscription: "Processo Seletivo",
+  schedule: "Cronograma",
+  form: "Inscrição",
+  results: "Resultados",
+  program: "Ementa",
 }
 
 /**
@@ -138,6 +160,123 @@ export const POST_TYPE_TRANSLATIONS = {
   Activity: "Atividade",
 }
 
+export type Material = {
+  imageUrl: string
+  title: string
+  description: string
+  url: string
+}
+
+export type Event = {
+  date: string
+  description: string
+}
+
+export type Student = {
+  name: string
+  city: string
+  UF: string
+}
+
+export type Selection = {
+  year: string
+  isOpen: boolean
+  iframeSrc: string
+  program: string
+  schedule: Event[]
+  results: Student[]
+}
+
+export const SELECTIONS_EXAMPLES = [
+  {
+    year: "2024",
+    isOpen: true,
+    iframeSrc:
+      "https://drive.google.com/file/d/1immcmC25h8rXU43qcLQ1WiMO4OkAjmtQ/preview",
+    program: "https://drive.google.com/file/d/1Jo41-h5zvD42FRNuQThof4_wNWSJsSHT/view",
+    schedule: [
+      {
+        date: "25/12/2024",
+        description: "Natal",
+      },
+      {
+        date: "31/12/2024",
+        description: "Ano Novo",
+      },
+    ],
+    results: [
+      {
+        name: "Irineu da SIlva Cabral Santos Gomes Pereira dos Anjos",
+        city: "Maceió",
+        UF: "AL",
+      },
+      {
+        name: "Irineu",
+        city: "Maceió",
+        UF: "AL",
+      },
+    ],
+  },
+  {
+    year: "2023.2",
+    isOpen: false,
+    iframeSrc:
+      "https://drive.google.com/file/d/1immcmC25h8rXU43qcLQ1WiMO4OkAjmtQ/preview",
+    program: "https://drive.google.com/file/d/1Jo41-h5zvD42FRNuQThof4_wNWSJsSHT/view",
+    schedule: [
+      {
+        date: "25/12/2023",
+        description: "Natal",
+      },
+      {
+        date: "31/12/2023",
+        description: "Ano Novo",
+      },
+    ],
+    results: [
+      {
+        name: "Irineu",
+        city: "Maceió",
+        UF: "AL",
+      },
+      {
+        name: "Irineu",
+        city: "Maceió",
+        UF: "AL",
+      },
+    ],
+  },
+  {
+    year: "2023.1",
+    isOpen: false,
+    iframeSrc:
+      "https://drive.google.com/file/d/1immcmC25h8rXU43qcLQ1WiMO4OkAjmtQ/preview",
+    program: "https://drive.google.com/file/d/1Jo41-h5zvD42FRNuQThof4_wNWSJsSHT/view",
+    schedule: [
+      {
+        date: "Junho de 2023",
+        description: "São João",
+      },
+      {
+        date: "01/01/2023",
+        description: "Ano Novo",
+      },
+    ],
+    results: [
+      {
+        name: "Irineu",
+        city: "Maceió",
+        UF: "AL",
+      },
+      {
+        name: "Irineu",
+        city: "Maceió",
+        UF: "AL",
+      },
+    ],
+  },
+]
+
 /**
  * Possible series
  */
@@ -147,3 +286,4 @@ export const SERIES: Serie[] = ["9º EF", "1º EM", "2º EM", "3º EM"]
  * Possible user types
  */
 export const USER_TYPES = ["admin", "other", "student", "responsible"]
+

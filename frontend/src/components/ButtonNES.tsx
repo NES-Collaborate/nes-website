@@ -5,7 +5,8 @@ type Props = {
   type?: "navigation" | "action"
   style?: "fill" | "outline" | "ghost" | "link"
   className?: string
-  href?: string
+  href?: any
+  target?: "_blank" | "_self"
   onClick?: React.MouseEventHandler<HTMLButtonElement>
   disabled?: boolean
   children?: React.ReactNode
@@ -17,6 +18,7 @@ type Props = {
  * @param {number} style The style of the button. Defaults to fill
  * @param {string} className Additional classes
  * @param {string} href The reference of the button
+ * @param {string} target The target of the button
  * @param {React.MouseEventHandler<HTMLButtonElement>} onClick Function to call when click
  * @param {boolean} disabled True if the button is disabled
  * @param {React.ReactNode} children The content inside the button
@@ -27,6 +29,7 @@ const ButtonNES = ({
   style = "fill",
   className = "",
   href = "",
+  target = "_self",
   onClick,
   disabled = false,
   children,
@@ -47,7 +50,7 @@ const ButtonNES = ({
         setButtonStyle("btn btn-ghost text-gray-300 hover:bg-primary")
         break
       case "link":
-        setButtonStyle("btn-link text-gray-300 hover:bg-primary")
+        setButtonStyle("btn-link text-primary hover:bg-transparent")
         break
     }
 
@@ -57,7 +60,7 @@ const ButtonNES = ({
   return (
     <>
       {type === "navigation" && (
-        <Link className={buttonStyle} href={href}>
+        <Link className={buttonStyle} href={href} target={target}>
           {children}
         </Link>
       )}
