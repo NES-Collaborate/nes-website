@@ -3,8 +3,6 @@ from typing import Any
 
 from sqlalchemy.orm import Session
 
-from app.models.user import User
-
 
 class BaseDao(ABC):
 
@@ -12,9 +10,9 @@ class BaseDao(ABC):
         self.session = session
 
     @abstractmethod
-    def create(self, user_data: Any) -> User | None:
+    def create(self, user_data: Any) -> Any | None:
         pass
 
     @abstractmethod
-    def get_by_id(self, id: int) -> User | None:
+    def get_by_id(self, id: int) -> Any | None:
         pass
