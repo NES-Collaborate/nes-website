@@ -18,14 +18,23 @@ class Attatch(BaseModel):
     location: str
     type: AttachType
 
+    class Config:
+        from_attributes = True
+
 
 class Email(BaseModel):
     value: EmailStr
+
+    class Config:
+        from_attributes = True
 
 
 class PhoneNumber(BaseModel):
     value: str
     isEmergency: bool
+
+    class Config:
+        from_attributes = True
 
 
 class Address(BaseModel):
@@ -37,6 +46,9 @@ class Address(BaseModel):
     state: char2
     cep: str10
 
+    class Config:
+        from_attributes = True
+
 
 class Achievement(BaseModel):
     name: str
@@ -47,6 +59,9 @@ class Achievement(BaseModel):
     link: Optional[str]
     other_info: Optional[str]
     status: AchievementStatus
+
+    class Config:
+        from_attributes = True
 
 
 class UserBase(BaseModel):
@@ -60,7 +75,6 @@ class UserBase(BaseModel):
     scholarship: float
     serie: Optional[Serie]
     type: UserType
-    achievements: Optional[List[Achievement]]
 
     class Config:
         from_attributes = True
