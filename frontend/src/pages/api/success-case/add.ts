@@ -3,6 +3,13 @@ import { apiWithAuth, getUserSession } from "@/utils/auth"
 import { addSuccessCaseData } from "@/utils/successCase"
 import { NextApiHandler } from "next"
 
+/**
+ * A NextApiHandler function for adding a success case.
+ *
+ * @param {object} req - the request object
+ * @param {object} res - the response object
+ * @return {Promise<void>} a promise with no return value
+ */
 const addSuccessCase: NextApiHandler = async (req, res) => {
   if (req.method !== "POST") {
     res.status(405).json({ error: "Method not allowed" })

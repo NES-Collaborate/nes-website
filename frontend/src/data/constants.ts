@@ -144,6 +144,7 @@ export const BREADCRUMB_NAMES: Record<string, string> = {
   results: "Resultados",
   program: "Ementa",
   users: "Usuários",
+  "success-cases": "Casos de Sucesso",
 }
 
 /**

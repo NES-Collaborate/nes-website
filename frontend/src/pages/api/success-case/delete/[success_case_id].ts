@@ -2,6 +2,15 @@ import { apiWithAuth, getUserSession } from "@/utils/auth"
 import { deleteSuccessCaseData } from "@/utils/successCase"
 import { NextApiHandler } from "next"
 
+/**
+ * Handles the DELETE request to delete a success case,
+ * verifies user's admin status, and returns appropriate
+ * status codes and error messages if necessary.
+ *
+ * @param {NextApiRequest} req - the request object
+ * @param {NextApiResponse} res - the response object
+ * @return {Promise<void>} a Promise that resolves to void
+ */
 const deleteSuccessCase: NextApiHandler = async (req, res) => {
   if (req.method !== "DELETE") {
     res.status(405).json({ error: "Method not allowed" })
