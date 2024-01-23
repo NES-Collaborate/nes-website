@@ -14,6 +14,12 @@ type Props = {
   userSession: User
 }
 
+/**
+ * Login component for user authentication.
+ *
+ * @param {Props} userSession - the user session information
+ * @return {JSX.Element} the login component
+ */
 const Login = ({ userSession }: Props) => {
   const [username, setUsername] = useState("")
   const [password, setPassword] = useState("")
@@ -48,11 +54,11 @@ const Login = ({ userSession }: Props) => {
   }
 
   return (
-    <div className="h-screen flex justify-center items-center">
-      <div className="shadow-xl flex flex-col justify-between gap-5 p-5 rounded-md md:w-1/5">
-        <h1 className="text-3xl text-center">Login</h1>
+    <div className="min-h-screen flex justify-center items-center">
+      <div className="w-full max-w-md p-6 rounded-md shadow-lg md:p-8 lg:max-w-xl">
+        <h1 className="text-3xl text-center font-semibold">Login</h1>
         {errors.length > 0 && (
-          <div className="flex flex-col gap-2 p-2">
+          <div className="mt-6 space-y-2">
             {errors.map((error, i) => (
               <div
                 key={i}
@@ -66,7 +72,7 @@ const Login = ({ userSession }: Props) => {
           </div>
         )}
 
-        <label className="form-control w-full">
+        <label className="form-control w-full mt-6">
           <div className="label">
             <span className="label-text">Usuário</span>
           </div>
@@ -74,7 +80,7 @@ const Login = ({ userSession }: Props) => {
             type="text"
             placeholder="Seu CPF"
             className={clsx(
-              "input input-accent w-full",
+              "input input-accent w-full px-4 mt-1",
               isLoggingIn && "cursor-not-allowed"
             )}
             onChange={(e) => setUsername(e.target.value.replace(/\D/g, ""))}
@@ -84,7 +90,7 @@ const Login = ({ userSession }: Props) => {
           />
         </label>
 
-        <label className="form-control w-full">
+        <label className="form-control w-full mt-4">
           <div className="label">
             <span className="label-text">Senha</span>
           </div>
@@ -108,6 +114,7 @@ const Login = ({ userSession }: Props) => {
           style="outline"
           onClick={handleSubmit}
           disabled={isLoggingIn}
+          className="mt-6 w-full py-3"
         >
           {isLoggingIn && <Loading text="Carregando..." textClassName="text-white" />}
           {!isLoggingIn && (

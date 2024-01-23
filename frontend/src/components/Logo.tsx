@@ -1,7 +1,6 @@
 import { useTheme } from "@/contexts/theme"
 import { LOGOS } from "@/data/constants"
 import Image from "next/image"
-import { useEffect, useState } from "react"
 
 type Props = {
   type:
