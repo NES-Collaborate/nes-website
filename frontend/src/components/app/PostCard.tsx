@@ -1,5 +1,6 @@
 import { POST_TYPE_TRANSLATIONS } from "@/data/constants"
 import { Post } from "@/types/entities"
+import { getUserPhotoUrl } from "@/utils/client"
 import Image from "next/image"
 import Link from "next/link"
 
@@ -15,7 +16,7 @@ const PostCard = ({ post }: { post: Post }) => {
           <div className="flex items-center justify-between mb-4">
             <div className="flex items-center space-x-2">
               <Image
-                src={post.postBy.photo || "/img/default-user.png"}
+                src={getUserPhotoUrl(post.postBy)}
                 alt={`${post.postBy.name} profile photo`}
                 width={40}
                 height={40}
@@ -23,7 +24,8 @@ const PostCard = ({ post }: { post: Post }) => {
               />
               <div className="flex flex-col">
                 <span className="font-bold text-sm">
-                  {post.postBy.name} ({post.postBy.email || "Sem email"})
+                  {post.postBy.name} (
+                  {(post.postBy.emails && post.postBy.emails[0].value) || "Sem email"})
                 </span>
                 <span className="text-sm font-light">
                   {post.createdAt || "Sem data de criação"}

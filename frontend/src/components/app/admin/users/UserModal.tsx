@@ -26,7 +26,7 @@ const UserModal = ({ users, setUsers, action, userId, setUserId, setToast }: Pro
   const [user, setUser] = useState<User>({
     id: 0,
     name: "",
-    photo: "/img/default-user.png",
+    photo: undefined,
     emails: [],
     phones: [],
     cpf: "",

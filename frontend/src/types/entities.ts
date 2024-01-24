@@ -20,11 +20,7 @@ export type Post = {
   id: number
   title: string
   content: string
-  postBy: {
-    name: string
-    email: string
-    photo?: string
-  }
+  postBy: User
   type: PostType
   endsOn?: string
   createdAt: string
@@ -49,8 +45,8 @@ export type AttachType = "File" | "Link"
  * Attach Representation
  */
 export type Attach = {
-  id: number
-  name: string
+  id?: number
+  name?: string
   location: string
   type: AttachType
 }
@@ -67,17 +63,16 @@ export type Property = {
   loanedAt?: string
 }
 
-
 /**
  * Address representation
  */
 export type Address = {
   id: number
-  name: string          // endereço
-  neighborhood: string  // bairro
+  name: string // endereço
+  neighborhood: string // bairro
   number?: number
   complement?: string
   city: string
-  state: string         // char(2) | UF
-  cep: string           // char(10)
+  state: string // char(2) | UF
+  cep: string // char(10)
 }

@@ -2,6 +2,7 @@ import Toast from "@/components/Toast"
 import { useSession } from "@/contexts/session"
 import { User } from "@/types/user"
 import { axiosServer } from "@/utils/axiosClient"
+import { getUserPhotoUrl } from "@/utils/client"
 import Image from "next/image"
 import { useEffect, useState } from "react"
 import { Button, Table, Tooltip } from "react-daisyui"
@@ -76,7 +77,7 @@ const UsersList = ({ query }: Props) => {
             <Table.Row key={user.id} className="text-center">
               <span className="flex gap-2 justify-center items-center">
                 <Image
-                  src={user.photo || "/img/default-user.png"}
+                  src={getUserPhotoUrl(user)}
                   alt={user.name}
                   width={40}
                   height={40}

@@ -1,4 +1,5 @@
 import { User } from "@/types/user"
+import { getUserPhotoUrl } from "@/utils/client"
 import Image from "next/image"
 import { Button, Modal } from "react-daisyui"
 import { IoMdClose } from "react-icons/io"
@@ -38,7 +39,7 @@ const LoanedModal = ({ loanedTo, setLoanedTo, loanedAt }: Props) => {
         {loanedTo ? (
           <div className="flex flex-col items-center space-y-4">
             <Image
-              src={loanedTo.photo || "/img/default-user.png"}
+              src={getUserPhotoUrl(loanedTo)}
               alt={`${loanedTo.name}'s photo`}
               width={50}
               height={50}
@@ -49,10 +50,10 @@ const LoanedModal = ({ loanedTo, setLoanedTo, loanedAt }: Props) => {
 
             <div className="text-gray-600">
               {loanedTo.emails && loanedTo.emails.length > 0 && (
-                <p>Email: {loanedTo.emails[0]}</p>
+                <p>Email: {loanedTo.emails[0].value}</p>
               )}
               {loanedTo.phones && loanedTo.phones.length > 0 && (
-                <p>Telefone: {loanedTo.phones[0]}</p>
+                <p>Telefone: {loanedTo.phones[0].value}</p>
               )}
               {loanedTo.address && <p>Endereço: {loanedTo.address.name}</p>}
               {loanedTo.serie && <p>Serie: {loanedTo.serie}</p>}

@@ -4,10 +4,10 @@ import { Serie, UserType } from "@/types/constants"
 import { Address } from "@/types/entities"
 import { User } from "@/types/user"
 import { axiosServer } from "@/utils/axiosClient"
+import { getUserPhotoUrl } from "@/utils/client"
 import { Dispatch, useEffect, useRef, useState } from "react"
 import { Button, Input, Select, Tooltip } from "react-daisyui"
 import { FaEdit, FaPlus, FaTrash } from "react-icons/fa"
-import AddressModal from "./AddressModal"
 
 type Props = {
   user: User
@@ -109,8 +109,10 @@ const UserForm = ({
           <Input
             placeholder="URL da Foto"
             size="md"
-            value={user.photo}
-            onChange={(e) => setUser({ ...user, photo: e.target.value })}
+            value={getUserPhotoUrl(user)}
+            onChange={(e) =>
+              setUser({ ...user, photo: { location: e.target.value, type: "Link" } })
+            }
             color="primary"
             disabled={loading}
             bordered
@@ -128,7 +130,7 @@ const UserForm = ({
             onKeyDown={(e) => {
               const email = emailInput.current?.value
               if (e.key == "Enter" && email) {
-                setUser({ ...user, emails: [...user.emails, email] })
+                setUser({ ...user, emails: [...(user.emails || []), { value: email }] })
                 emailInput.current.value = ""
               }
             }}
@@ -137,13 +139,17 @@ const UserForm = ({
             bordered
           />
           <ul>
-            {user.emails.map((email) => (
-              <li key={email}>
-                {email}
+            {(user.emails || []).map((email) => (
+              <li key={email.id}>
+                {email.value}
                 <Tooltip message="Remover este email">
                   <Button
+                    size="xs"
                     onClick={() =>
-                      setUser({ ...user, emails: user.emails.filter((n) => n != email) })
+                      setUser({
+                        ...user,
+                        emails: (user.emails || []).filter((e) => e !== email),
+                      })
                     }
                   >
                     <FaTrash />
@@ -165,7 +171,7 @@ const UserForm = ({
             onKeyDown={(e) => {
               const phone = phoneInput.current?.value
               if (e.key == "Enter" && phone) {
-                setUser({ ...user, phones: [...(user.phones || []), phone] })
+                setUser({ ...user, phones: [...(user.phones || []), { value: phone }] })
                 phoneInput.current.value = ""
               }
             }}
@@ -175,12 +181,16 @@ const UserForm = ({
           />
           <ul>
             {(user.phones || []).map((phone) => (
-              <li key={phone}>
-                {phone}
+              <li key={phone.id}>
+                {phone.value}
                 <Tooltip message="Remover este Telefone">
                   <Button
+                    size="xs"
                     onClick={() =>
-                      setUser({ ...user, phones: user.phones.filter((n) => n != phone) })
+                      setUser({
+                        ...user,
+                        phones: (user.phones || []).filter((n) => n !== phone),
+                      })
                     }
                   >
                     <FaTrash />

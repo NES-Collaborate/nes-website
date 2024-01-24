@@ -1,6 +1,7 @@
 import { useSession } from "@/contexts/session"
 import { LANDING_PAGES, USER_PAGES } from "@/data/constants"
 import { User } from "@/types/user"
+import { getUserPhotoUrl } from "@/utils/client"
 import clsx from "clsx"
 import Image from "next/image"
 import Link from "next/link"
@@ -14,7 +15,7 @@ type Props = {
 
 const SideBar = ({ toggleDrawerVisibility }: Props) => {
   const session = useSession()
-  const profilePhoto = session.user?.photo || "/img/default-user.png"
+  const profilePhoto = getUserPhotoUrl(session.user as User)
 
   const userPages = USER_PAGES.filter((page) =>
     page.allowedUserTypes.includes(session.user?.type as User["type"])
