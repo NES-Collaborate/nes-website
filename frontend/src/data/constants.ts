@@ -145,6 +145,10 @@ export const BREADCRUMB_NAMES: Record<string, string> = {
   program: "Ementa",
   users: "Usuários",
   "success-cases": "Casos de Sucesso",
+  curriculum: "Grade Curricular",
+  profile: "Perfil",
+  classroom: "Turma",
+  donate: "Doação",
 }
 
 /**
