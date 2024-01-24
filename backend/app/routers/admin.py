@@ -6,7 +6,7 @@ from app.daos.user import UserDao
 from app.models.admin import Property
 from app.models.user import User
 from app.schemas.admin import PropertyIn, PropertyOut
-from app.schemas.user import UserIn, UserOut, UserPoster
+from app.schemas.user import UserBase, UserIn, UserOut, UserPoster
 from app.services.db import get_session
 from app.services.user import UserService
 from fastapi import APIRouter, Depends, HTTPException, status
@@ -190,7 +190,7 @@ async def create_user(user: UserIn,
 
 @router.put("/users/{user_id}")
 async def update_user(user_id: int,
-                      user: UserIn,
+                      user: UserBase,
                       current_user: User = Depends(
                           UserService.get_current_user),
                       session: Session = Depends(get_session)):
