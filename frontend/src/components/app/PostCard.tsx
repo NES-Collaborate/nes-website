@@ -1,4 +1,4 @@
-import { POST_TYPE_TRANSLATIONS } from "@/data/constants"
+import { POST_TYPE_TRANSLATIONS } from "@/data/translations"
 import { Post } from "@/types/entities"
 import { getUserPhotoUrl } from "@/utils/client"
 import Image from "next/image"

@@ -56,7 +56,7 @@ const NoticeModal = ({
   }
 
   return (
-    <Modal open={isOpen} className="h-3/4" responsive={true}>
+    <Modal open={isOpen} className="h-3/4" responsive>
       <Button
         onClick={closeModal}
         className="absolute right-2 top-2"

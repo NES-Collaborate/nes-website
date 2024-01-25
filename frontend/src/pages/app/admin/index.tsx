@@ -20,6 +20,12 @@ const PAGES = [
     description:
       "Permite adicionar, pesquisar com filtros, editar e deletar todos os usuários da aplicação.",
   },
+  {
+    name: "Gestão Financeira",
+    path: "/app/admin/finance",
+    description:
+      "Permite movimentar dinheiro da conta corrente podendo adicionar, remover e fazer pagamento de bolsas em lote.",
+  },
 ]
 
 const Admin = () => {

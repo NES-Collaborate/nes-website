@@ -122,49 +122,9 @@ export const USER_PAGES: UserPage[] = [
 ]
 
 /**
- * Friendly Names for Breadcrumb Items
- */
-export const BREADCRUMB_NAMES: Record<string, string> = {
-  app: "Home",
-  classrooms: "Turmas",
-  admin: "Administração",
-  lp: "Landing Page",
-  notices: "Notícias",
-  bens: "Bens",
-  nes: "NES",
-  auth: "Autenticação",
-  login: "Login",
-  about: "Sobre",
-  "learn-more": "Saiba mais",
-  contact: "Contatos",
-  material: "Material Gratuito",
-  subscription: "Processo Seletivo",
-  schedule: "Cronograma",
-  form: "Inscrição",
-  results: "Resultados",
-  program: "Ementa",
-  users: "Usuários",
-  "success-cases": "Casos de Sucesso",
-  curriculum: "Grade Curricular",
-  profile: "Perfil",
-  classroom: "Turma",
-  donate: "Doação",
-}
-
-/**
  * Path to Cache directory to save small files
  */
 export const CACHE_DIR = path.join(process.cwd(), "public", "cache")
-
-/**
- * Translatiosns of the `PostType`s
- */
-export const POST_TYPE_TRANSLATIONS = {
-  Notice: "Aviso",
-  ClassMaterial: "Material de Aula",
-  Test: "Prova",
-  Activity: "Atividade",
-}
 
 export type Material = {
   imageUrl: string

@@ -1,4 +1,4 @@
-import { BREADCRUMB_NAMES } from "@/data/constants"
+import { BREADCRUMB_NAMES } from "@/data/translations"
 import { usePathname } from "next/navigation"
 import { useEffect, useState } from "react"
 import { Breadcrumbs } from "react-daisyui"

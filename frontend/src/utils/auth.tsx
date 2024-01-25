@@ -117,10 +117,10 @@ const defaultCallback = async (
  * @param allowedUsers Allowed user types
  * @returns callback(ctx) if logged user else redirect to login
  */
-export const withAuth = (props: WithAuthProps = {}) => {
-  const { callback = defaultCallback, allowedUsers = ["admin", "student", "other"] } =
-    props
-
+export const withAuth = ({
+  callback = defaultCallback,
+  allowedUsers = ["admin", "student", "other"],
+}: WithAuthProps) => {
   return async (ctx: GetServerSidePropsContext) => {
     const user = await getUserSession(ctx.req)
 

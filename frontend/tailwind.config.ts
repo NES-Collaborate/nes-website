@@ -15,9 +15,9 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
-        'purple-nes': 'rgb(93, 63, 211)',
-        'hover-purple-nes': 'rgb(107, 33, 168)',
-        'green-nes': 'rgb(0, 163, 108)',
+        "purple-nes": "rgb(93, 63, 211)",
+        "hover-purple-nes": "rgb(107, 33, 168)",
+        "green-nes": "rgb(0, 163, 108)",
       },
     },
   },
