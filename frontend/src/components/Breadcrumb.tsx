@@ -17,17 +17,19 @@ const Breadcrumb = () => {
   }, [pathname, splitedPath.length])
 
   return (
-    <Breadcrumbs className="max-w-[85%] w-72 text-sm flex justify-center">
-      {splitedPath.map((x, i) => {
-        const url = `/${splitedPath.slice(0, i + 1).join("/")}`
+    <div className="max-w-screen-lg mx-auto">
+      <Breadcrumbs className="w-72 text-sm flex justify-center">
+        {splitedPath.map((x, i) => {
+          const url = `/${splitedPath.slice(0, i + 1).join("/")}`
 
-        return (
-          <Breadcrumbs.Item key={i} href={url}>
-            {BREADCRUMB_NAMES[x] || x}
-          </Breadcrumbs.Item>
-        )
-      })}
-    </Breadcrumbs>
+          return (
+            <Breadcrumbs.Item key={i} href={url}>
+              {BREADCRUMB_NAMES[x] || x}
+            </Breadcrumbs.Item>
+          )
+        })}
+      </Breadcrumbs>
+    </div>
   )
 }
 
