@@ -3,10 +3,9 @@ import { EXPENSE_LOG_QUERY_TYPES } from "@/data/translations"
 import { Attach } from "@/types/entities"
 import { ExpenseLog, ExpenseLogType } from "@/types/finance"
 import { axiosServer } from "@/utils/axiosClient"
-import clsx from "clsx"
 import { useCallback, useEffect, useState } from "react"
-import { Alert, Button, Input, Join, Select } from "react-daisyui"
-import { IoMdEye } from "react-icons/io"
+import { Alert, Input, Join, Select } from "react-daisyui"
+import ExpenseLogTable from "./ExpenseLogTable"
 
 type QueryType = {
   type: ExpenseLogType | "all"
@@ -15,7 +14,7 @@ type QueryType = {
 }
 
 const ExpenseLogs = () => {
-  const [log, setLog] = useState<ExpenseLog[]>([])
+  const [logs, setLogs] = useState<ExpenseLog[]>([])
   const [errorLog, setErrorLog] = useState("")
   const [proof, setProof] = useState<Attach | null>(null)
   const [query, setQuery] = useState<QueryType>({
@@ -27,7 +26,7 @@ const ExpenseLogs = () => {
   const fetchLog = useCallback(async () => {
     try {
       const res = await axiosServer.get<ExpenseLog[]>("/admin/finance")
-      setLog(res.data)
+      setLogs(res.data)
     } catch {
       setErrorLog("Erro ao carregar movimentações")
     }
@@ -68,59 +67,15 @@ const ExpenseLogs = () => {
           {/* TODO: Add date picker with start and end date filters */}
         </Join>
 
-        {log && (
-          <div className="overflow-x-auto mt-3">
-            <table className="table table-sm text-center table-zebra-zebra">
-              <thead>
-                <tr>
-                  <th>Data</th>
-                  <th>Valor</th>
-                  <th>Categoria</th>
-                  <th>Comprovante</th>
-                  <th>Detalhes</th>
-                </tr>
-              </thead>
-              <tbody>
-                {log.map((exp, i) => (
-                  <tr key={i}>
-                    <td>{exp.createdAt}</td>
-                    <td
-                      className={clsx("font-semibold", {
-                        "text-error": exp.type === "removal",
-                        "text-success": exp.type === "deposit",
-                      })}
-                    >
-                      R$ {exp.value}
-                    </td>
-                    <td>{exp.category.name}</td>
-                    <td>
-                      <Button
-                        color="info"
-                        onClick={() => exp.proof && setProof(exp.proof)}
-                        disabled={!exp.proof}
-                      >
-                        <IoMdEye size={25} />
-                      </Button>
-                    </td>
-                    <td>
-                      <Button>Detalhes</Button>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-            {errorLog && (
-              <Alert status="error" className="my-3">
-                {errorLog}
-              </Alert>
-            )}
-          </div>
+        <ExpenseLogTable logs={logs} setProof={setProof} />
+        {errorLog && (
+          <Alert status="error" className="my-3">
+            {errorLog}
+          </Alert>
         )}
       </div>
 
-      {proof && (
-        <AttachmentModal attach={proof} setAttach={setProof} title="Comprovante" />
-      )}
+      <AttachmentModal attach={proof} setAttach={setProof} title="Comprovante" />
     </>
   )
 }
