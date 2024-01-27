@@ -120,7 +120,7 @@ const defaultCallback = async (
 export const withAuth = ({
   callback = defaultCallback,
   allowedUsers = ["admin", "student", "other"],
-}: WithAuthProps) => {
+}: WithAuthProps = {}) => {
   return async (ctx: GetServerSidePropsContext) => {
     const user = await getUserSession(ctx.req)
 
