@@ -8,6 +8,7 @@ import {
   IoMdEye,
   IoMdEyeOff,
 } from "react-icons/io"
+import ExpenseLogModal from "./ExpenseLogModal"
 
 type Props = {
   currentBalance: number
@@ -16,7 +17,9 @@ type Props = {
 
 const ExpenseLogStats = ({ currentBalance = 0, totalExpenses = 0 }: Props) => {
   const [hideBalance, setHideBalance] = useState(false)
+  const [expenseLogModal, setExpenseLogModal] = useState(false)
 
+  const toggleExpenseLogModal = () => setExpenseLogModal((_) => !_)
   const toggleHideBalance = () => setHideBalance((_) => !_)
 
   const formattedBalance = currentBalance.toLocaleString("pt-BR", {
@@ -54,7 +57,7 @@ const ExpenseLogStats = ({ currentBalance = 0, totalExpenses = 0 }: Props) => {
           })}
         </div>
         <div className="stat-actions flex justify-end gap-3">
-          <Button color="secondary">
+          <Button color="secondary" onClick={toggleExpenseLogModal}>
             <IoIosAddCircle size={25} /> Adicionar Registro
           </Button>
           <Button color="primary">
@@ -63,6 +66,8 @@ const ExpenseLogStats = ({ currentBalance = 0, totalExpenses = 0 }: Props) => {
           </Button>
         </div>
       </div>
+
+      <ExpenseLogModal isOpen={expenseLogModal} toggle={toggleExpenseLogModal} />
     </div>
   )
 }
