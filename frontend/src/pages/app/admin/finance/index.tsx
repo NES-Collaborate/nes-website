@@ -1,6 +1,7 @@
 import ExpenseLogStats from "@/components/app/admin/finance/ExpenseLogStats"
 import ExpenseLogs from "@/components/app/admin/finance/ExpenseLogs"
 import { withAuth } from "@/utils/auth"
+import { axiosServer } from "@/utils/axiosClient"
 
 type FinanceProps = {
   currentBalance: number
@@ -23,11 +24,24 @@ const Finance = (props: FinanceProps) => {
 export default Finance
 
 export const getServerSideProps = withAuth({
-  callback: async (ctx) => {
-    return {
-      props: {
-        current: 1,
-      },
+  callback: async ({ req }) => {
+    try {
+      const res = await axiosServer.get("/admin/finance/stats", {
+        headers: {
+          Authorization: `Bearer ${req.cookies._token}`,
+        },
+      })
+
+      return {
+        props: res.data,
+      }
+    } catch {
+      return {
+        redirect: {
+          destination: "/app/admin",
+          permanent: false,
+        },
+      }
     }
   },
 

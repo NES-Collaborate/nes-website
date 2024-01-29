@@ -19,8 +19,8 @@ const ExpenseLogs = () => {
 
   const fetchLog = useCallback(async () => {
     try {
-      const res = await axiosServer.get<ExpenseLog[]>("/admin/finance")
-      setLogs(res.data)
+      const res = await axiosServer.get<{ logs: ExpenseLog[] }>("/admin/finance")
+      setLogs(res.data.logs)
     } catch {
       setErrorLog("Erro ao carregar movimentações")
     }

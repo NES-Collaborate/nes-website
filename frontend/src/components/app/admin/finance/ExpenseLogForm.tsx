@@ -3,7 +3,7 @@ import { EXPENSE_LOG_QUERY_TYPES } from "@/data/translations"
 import { ExpenseLog } from "@/types/finance"
 import { axiosServer } from "@/utils/axiosClient"
 import { useRef, useState } from "react"
-import { Button, FileInput, Input, Select, Tooltip } from "react-daisyui"
+import { Alert, Button, FileInput, Input, Select, Tooltip } from "react-daisyui"
 import { FaPlus } from "react-icons/fa"
 import { IoIosInformationCircle } from "react-icons/io"
 
@@ -12,6 +12,7 @@ type Props = {
 }
 const ExpenseLogForm = ({ toggle }: Props) => {
   const [isLoading, setIsLoading] = useState(false)
+  const [error, setError] = useState<string>("")
   const session = useSession()
 
   const inputRefs = {
@@ -44,16 +45,18 @@ const ExpenseLogForm = ({ toggle }: Props) => {
         },
       })
 
+      // TODO: Insert res.data.log into logs array
+
       toggle()
     } catch {
-      // TODO: Set some error message to frontend
-      console.error("Failed to submit expense log")
+      setError("Erro ao registrar despesa. Tente novamente mais tarde.")
     }
     setIsLoading(false)
   }
 
   return (
     <div className="flex flex-col items-center gap-3">
+      {error && <Alert status="error">{error}</Alert>}
       <div className="form-control w-full max-w-xs">
         <label>
           <div className="label">
