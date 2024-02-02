@@ -126,6 +126,9 @@ export const USER_PAGES: UserPage[] = [
  */
 export const CACHE_DIR = path.join(process.cwd(), "public", "cache")
 
+/**
+ * Properties of a material (e.g.: Books and videos)
+ */
 export type Material = {
   imageUrl: string
   title: string
@@ -133,17 +136,26 @@ export type Material = {
   url: string
 }
 
+/**
+ * Properties of an event in the schedule of a Selection
+ */
 export type Event = {
   date: string
   description: string
 }
 
+/**
+ * Properties of a student in the results of a Selection
+ */
 export type Student = {
   name: string
   city: string
   UF: string
 }
 
+/**
+ * Properties of a selection process
+ */
 export type Selection = {
   year: string
   isOpen: boolean

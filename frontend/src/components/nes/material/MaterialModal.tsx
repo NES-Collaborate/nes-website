@@ -1,4 +1,3 @@
-import { useEffect, useState } from "react"
 import { Button, Modal } from "react-daisyui"
 import { IoMdClose } from "react-icons/io"
 import { Material } from "@/data/constants"
@@ -28,7 +27,7 @@ const MaterialModal = ({ material, isOpen = false, onClose }: Props) => {
         <iframe
           width="100%"
           height="100%"
-          src={material.url}
+          src={isOpen ? material.url : ""}
           title={material.title}
           allowFullScreen
         ></iframe>
