@@ -1,9 +1,10 @@
-from typing import Optional
+from typing import Optional, get_args
 
 import sqlalchemy as sa
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from .base import BaseTable
+from .enum import ExpenseLogType
 from .user import Attach, User
 
 
@@ -12,19 +13,21 @@ class ExpenseLog(BaseTable):
     __tablename__ = "expense_logs"
 
     value: Mapped[float]
-    user_id = mapped_column(sa.Integer, sa.ForeignKey("users.id"))
-    category_id = mapped_column(sa.Integer,
-                                sa.ForeignKey("expense_categories.id"))
-    type_id = mapped_column(sa.Integer, sa.ForeignKey("expense_logtypes.id"))
-    proof_id = mapped_column(sa.Integer, sa.ForeignKey("attatches.id"))
+    user_id: Mapped[int] = mapped_column(sa.Integer, sa.ForeignKey("users.id"))
+    category_id: Mapped[int] = mapped_column(
+        sa.Integer, sa.ForeignKey("expense_categories.id"))
+    proof_id: Mapped[Optional[int]] = mapped_column(
+        sa.Integer, sa.ForeignKey("attatches.id"))
+    type: Mapped[ExpenseLogType] = mapped_column(
+        sa.Enum(*get_args(ExpenseLogType)))
     comment: Mapped[Optional[str]]
-    paidto_id = mapped_column(sa.Integer, sa.ForeignKey("users.id"))
+    paidto_id: Mapped[Optional[int]] = mapped_column(sa.Integer,
+                                                     sa.ForeignKey("users.id"))
 
-    addedBy: Mapped["User"] = relationship()
+    addedBy: Mapped["User"] = relationship(foreign_keys=[user_id])
     category: Mapped["ExpenseCategory"] = relationship()
-    type: Mapped["ExpenseLogType"] = relationship()
     proof: Mapped[Optional["Attach"]] = relationship()
-    paidto: Mapped[Optional["User"]] = relationship()
+    paidto: Mapped[Optional["User"]] = relationship(foreign_keys=[paidto_id])
 
 
 class ExpenseCategory(BaseTable):
@@ -35,8 +38,8 @@ class ExpenseCategory(BaseTable):
     description: Mapped[Optional[str]]
 
 
-class ExpenseLogType(BaseTable):
+class Balance(BaseTable):
 
-    __tablename__ = "expense_logtypes"
+    __tablename__ = "balance"
 
-    type: Mapped[str]
+    current: Mapped[float]
