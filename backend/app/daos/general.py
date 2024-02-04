@@ -7,12 +7,6 @@ from .base import BaseDao
 
 class GeneralDao(BaseDao):
 
-    def create(self, user_data: Any) -> Any | None:
-        pass
-
-    def get_by_id(self, id: int) -> Any | None:
-        pass
-
     def create_email(self,
                      data: dict[str, Any],
                      user_id: Optional[int] = None,
