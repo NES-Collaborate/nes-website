@@ -1,4 +1,5 @@
 import AttachmentModal from "@/components/AttachmentModal"
+import { useSession } from "@/contexts/session"
 import { Attach } from "@/types/entities"
 import { ExpenseLog } from "@/types/finance"
 import { ExpenseLogQuery } from "@/types/queries"
@@ -16,19 +17,26 @@ const ExpenseLogs = () => {
     type: "all",
     input: "",
   })
+  const { token } = useSession()
 
   const fetchLog = useCallback(async () => {
+    if (!token) return
     try {
-      const res = await axiosServer.get<{ logs: ExpenseLog[] }>("/admin/finance")
+      const res = await axiosServer.get<{ logs: ExpenseLog[] }>("/admin/finance", {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      })
       setLogs(res.data.logs)
+      if (res.data.logs.length === 0) setErrorLog("Nenhum movimentação encontrada.")
     } catch {
       setErrorLog("Erro ao carregar movimentações")
     }
-  }, [])
+  }, [token])
 
   useEffect(() => {
     fetchLog()
-  })
+  }, [fetchLog])
 
   return (
     <>
