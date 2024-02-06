@@ -15,8 +15,8 @@ class AdminDao(BaseDao):
         _total = self.session.query(func.sum(ExpenseLog.value)).scalar()
 
         stats = {
-            "current_balance": _balance.current if _balance else 0,
-            "totalExpenses": _total
+            "currentBalance": _balance.current if _balance else 0,
+            "totalExpenses": _total if _total else 0
         }
         return stats
 
