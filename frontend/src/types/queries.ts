@@ -5,5 +5,8 @@ import { ExpenseLogType } from "./finance"
  */
 export type ExpenseLogQuery = {
   type: ExpenseLogType | "all"
-  input: string
+  category?: string
+  paidTo?: string
+  addedBy?: string
+  comment?: string
 }
