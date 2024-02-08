@@ -31,7 +31,8 @@ export const downloadFile = async (
       writer.on("finish", resolve)
       writer.on("error", reject)
     })
-  } catch {
+  } catch (e) {
+    console.log(e)
     return "Error downloading file"
   }
 }

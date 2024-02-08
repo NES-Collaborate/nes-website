@@ -25,14 +25,17 @@ const addSuccessCase: NextApiHandler = async (req, res) => {
   // TODO: Add validations here
   const successCase = req.body as SuccessCase
 
-  const result = addSuccessCaseData(successCase)
+  const result = await addSuccessCaseData(successCase)
 
   if (!result) {
     res.status(500).json({ error: "Failed to add success case" })
     return
+  } else if (typeof result === "string") {
+    res.status(500).json({ error: result })
+    return
   }
 
-  res.status(200).json({ successCase, status: true })
+  res.status(200).json({ successCase: result, status: true })
 }
 
 export default apiWithAuth(addSuccessCase)
