@@ -25,7 +25,7 @@ const SuccessCaseForm = ({
 
   const createSuccessCase = async () => {
     try {
-      const res = await axiosApi.post("/successCase/add", successCase)
+      const res = await axiosApi.post("/success-case/add", successCase)
       setSuccessCases([...successCases, res.data.successCase])
       setToast("Caso de sucesso criado com sucesso!")
     } catch {
@@ -35,7 +35,7 @@ const SuccessCaseForm = ({
 
   const editSuccessCase = async () => {
     try {
-      const res = await axiosApi.put(`/successCase/${successCase.id}`, successCase)
+      const res = await axiosApi.put(`/success-case/${successCase.id}`, successCase)
       setSuccessCases(
         successCases.map((n) => (n.id == successCase.id ? res.data.successCase : n))
       )
@@ -53,7 +53,8 @@ const SuccessCaseForm = ({
       !successCase.city ||
       !successCase.results ||
       !successCase.difficulties ||
-      !successCase.phrase
+      !successCase.phrase ||
+      !successCase.imagePath
     ) {
       setToast("Preencha todos os campos!")
       setIsLoading(false)
@@ -91,7 +92,7 @@ const SuccessCaseForm = ({
         <div className="label">
           <span className="label-text">Cidade - Estado</span>
         </div>
-        <Textarea
+        <Input
           placeholder="A cidade e o estado vão aqui..."
           size="md"
           value={successCase.city}
@@ -106,7 +107,7 @@ const SuccessCaseForm = ({
         <div className="label">
           <span className="label-text">Resultados</span>
         </div>
-        <Input
+        <Textarea
           placeholder="Os resultados vão aqui..."
           size="md"
           value={successCase.results}
@@ -121,7 +122,7 @@ const SuccessCaseForm = ({
         <div className="label">
           <span className="label-text">Dificuldades</span>
         </div>
-        <Input
+        <Textarea
           placeholder="As dificuldades vão aqui..."
           size="md"
           value={successCase.difficulties}
@@ -143,6 +144,21 @@ const SuccessCaseForm = ({
           size="md"
           value={successCase.phrase}
           onChange={(e) => setSuccessCase({ ...successCase, phrase: e.target.value })}
+          color="primary"
+          disabled={isLoading}
+          bordered
+        />
+      </label>
+
+      <label className="form-control w-full max-w-xs">
+        <div className="label">
+          <span className="label-text">Imagem do Aluno</span>
+        </div>
+        <Input
+          placeholder="Link da imagem"
+          size="md"
+          value={successCase.imagePath}
+          onChange={(e) => setSuccessCase({ ...successCase, imagePath: e.target.value })}
           color="primary"
           disabled={isLoading}
           bordered

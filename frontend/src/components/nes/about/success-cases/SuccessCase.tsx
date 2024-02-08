@@ -30,7 +30,7 @@ const SuccessCase = ({
   difficulties,
   phrase,
   type,
-}: Props) => {
+}: Props): JSX.Element => {
   const [direction, setDirection] = useState("")
 
   useEffect(() => {

@@ -33,7 +33,7 @@ const SuccessCases = () => {
     try {
       await axiosApi.delete(`/success-case/${successCase.id}`)
       setSuccessCases(successCases.filter((n) => n.id !== successCase.id))
-      setToast(`Caso de Sucesso do(a) '${successCase.name}' deletado com sucesso!`)
+      setToast(`Caso de Sucesso de '${successCase.name}' deletado com sucesso!`)
     } catch (error) {
       setError("Erro ao deletar caso de sucesso")
     }
@@ -118,14 +118,14 @@ const SuccessCases = () => {
         {successCases.length == 0 && !error && (
           <div className="flex justify-center items-center h-80">
             <Alert status="info" className="w-full" icon={<MdErrorOutline />}>
-              Nenhum caso de sucesso encontrada. Clique no botão abaixo para criar um :D
+              Nenhum caso de sucesso encontrado. Clique no botão abaixo para criar um :D
             </Alert>
           </div>
         )}
       </div>
 
       <Tooltip
-        message="Adicionar Notícia"
+        message="Adicionar Caso de Sucesso"
         position="left"
         className="fixed bottom-11 right-20"
       >
