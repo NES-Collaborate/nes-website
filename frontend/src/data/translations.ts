@@ -38,6 +38,7 @@ export const BREADCRUMB_NAMES: Record<string, string> = {
   classroom: "Turma",
   donate: "Doação",
   finance: "Financeiro",
+  scolarship: "Bolsas"
 }
 
 /**
