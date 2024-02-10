@@ -1,7 +1,6 @@
-import { useSession } from "@/contexts/session"
+import { useBackend } from "@/contexts/backend"
 import { Classroom } from "@/types/entities"
 import { ScolarshipQuery } from "@/types/queries"
-import { axiosServer } from "@/utils/axiosClient"
 import { useEffect, useMemo, useState } from "react"
 
 type Props = {
@@ -10,7 +9,7 @@ type Props = {
 }
 
 const ScolarshipParams = ({ query, setQuery }: Props) => {
-  const session = useSession()
+  const backend = useBackend()
   const currentDate = useMemo(() => new Date(), [])
 
   useEffect(() => {
@@ -28,12 +27,7 @@ const ScolarshipParams = ({ query, setQuery }: Props) => {
     setIsLoading(true)
     const fetchClassrooms = async () => {
       try {
-        const res = await axiosServer.get("/teacher/classrooms", {
-          headers: {
-            Authorization: `Bearer ${session.token}`,
-            Accept: "application/json",
-          },
-        })
+        const res = await backend.get("/teacher/classrooms")
         setClassrooms(res.data)
       } catch {
         // TODO: Set some error message here
@@ -41,7 +35,7 @@ const ScolarshipParams = ({ query, setQuery }: Props) => {
     }
     fetchClassrooms()
     setIsLoading(false)
-  }, [session.token])
+  }, [backend])
 
   return (
     <div className="join flex justify-center">

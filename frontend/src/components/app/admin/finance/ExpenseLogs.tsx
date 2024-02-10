@@ -1,10 +1,9 @@
 import AttachmentModal from "@/components/AttachmentModal"
+import { useBackend } from "@/contexts/backend"
 import { useExpenseLogs } from "@/contexts/expenseLogs"
-import { useSession } from "@/contexts/session"
 import { Attach } from "@/types/entities"
 import { ExpenseLog } from "@/types/finance"
 import { ExpenseLogQuery } from "@/types/queries"
-import { axiosServer } from "@/utils/axiosClient"
 import { useEffect, useState } from "react"
 import { Alert } from "react-daisyui"
 import ExpenseLogFilter from "./ExpenseLogFilter"
@@ -17,16 +16,12 @@ const ExpenseLogs = () => {
   const [query, setQuery] = useState<ExpenseLogQuery>({
     type: "all",
   })
-  const { token } = useSession()
+  const backend = useBackend()
 
   useEffect(() => {
-    if (!token) return
     const fetch = async () => {
       try {
-        const res = await axiosServer.get<{ logs: ExpenseLog[] }>("/admin/finance", {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
+        const res = await backend.get<{ logs: ExpenseLog[] }>("/admin/finance", {
           params: query,
         })
         setLogs(res.data.logs)
@@ -37,7 +32,7 @@ const ExpenseLogs = () => {
     }
     const timer = setTimeout(() => fetch(), 500)
     return () => clearTimeout(timer)
-  }, [query, token, setLogs])
+  }, [query, backend, setLogs])
 
   return (
     <>

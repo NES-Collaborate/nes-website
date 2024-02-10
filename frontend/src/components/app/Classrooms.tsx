@@ -1,7 +1,7 @@
 import Loading from "@/components/Loading"
+import { useBackend } from "@/contexts/backend"
 import { useSession } from "@/contexts/session"
 import { Classroom } from "@/types/entities"
-import { axiosServer } from "@/utils/axiosClient"
 import Link from "next/link"
 import { useEffect, useState } from "react"
 import { Alert } from "react-daisyui"
@@ -9,21 +9,17 @@ import { FaDoorOpen, FaEdit } from "react-icons/fa"
 import { MdErrorOutline } from "react-icons/md"
 
 const Classrooms = () => {
-  const session = useSession()
   const [isLoading, setIsLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
   const [classrooms, setClassrooms] = useState<Classroom[]>([])
+  const backend = useBackend()
+  const { user } = useSession()
 
   useEffect(() => {
     setIsLoading(true)
     const fetchClassrooms = async () => {
       try {
-        const res = await axiosServer.get("/teacher/classrooms", {
-          headers: {
-            Authorization: `Bearer ${session.token}`,
-            Accept: "application/json",
-          },
-        })
+        const res = await backend.get("/teacher/classrooms")
         setClassrooms(res.data)
         setError(null)
       } catch {
@@ -32,7 +28,7 @@ const Classrooms = () => {
     }
     fetchClassrooms()
     setIsLoading(false)
-  }, [session.token])
+  }, [backend])
 
   return (
     <div className="text-center mt-2">
@@ -67,7 +63,7 @@ const Classrooms = () => {
                       Acessar
                     </Link>
 
-                    {session.user?.type === "admin" && (
+                    {user?.type === "admin" && (
                       <Link
                         href={`/app/classrooms/${classroom.id}/edit`}
                         className="btn btn-secondary"

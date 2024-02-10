@@ -1,8 +1,7 @@
 import Toast from "@/components/Toast"
-import { useSession } from "@/contexts/session"
+import { useBackend } from "@/contexts/backend"
 import { Property } from "@/types/entities"
 import { User } from "@/types/user"
-import { axiosServer } from "@/utils/axiosClient"
 import { useEffect, useState } from "react"
 import { Button, Table, Tooltip } from "react-daisyui"
 import { FaCheck, FaEdit, FaPlus, FaTimes, FaTrash } from "react-icons/fa"
@@ -15,7 +14,7 @@ type Props = {
 
 const PropertyList = ({ query = "" }: Props) => {
   const [data, setData] = useState<Property[]>([])
-  const session = useSession()
+  const backend = useBackend()
   const [debouncedQuery, setDebouncedQuery] = useState(query)
   const debounceDelay = 500
 
@@ -32,30 +31,21 @@ const PropertyList = ({ query = "" }: Props) => {
   }, [query])
 
   useEffect(() => {
-    if (!session.token) return
-
-    axiosServer
+    backend
       .get("/admin/property", {
         params: {
           q: debouncedQuery,
-        },
-        headers: {
-          Authorization: `Bearer ${session.token}`,
         },
       })
       .then((res) => {
         setData(res.data.properties)
       })
       .catch(() => setData([]))
-  }, [debouncedQuery, setData, session.token])
+  }, [debouncedQuery, setData, backend])
 
   const deleteNotice = (propertyId: number) => {
-    axiosServer
-      .delete(`/admin/property/${propertyId}`, {
-        headers: {
-          Authorization: `Bearer ${session.token}`,
-        },
-      })
+    backend
+      .delete(`/admin/property/${propertyId}`)
       .then((res) => {
         setData(data.filter((p) => p.id !== propertyId))
         setToast(res.data.message || "Propriedade excluída com sucesso!")

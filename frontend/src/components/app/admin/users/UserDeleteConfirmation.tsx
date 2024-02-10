@@ -1,6 +1,5 @@
-import { useSession } from "@/contexts/session"
+import { useBackend } from "@/contexts/backend"
 import { User } from "@/types/user"
-import { axiosServer } from "@/utils/axiosClient"
 import { Button } from "react-daisyui"
 import { FaTrash } from "react-icons/fa"
 
@@ -13,15 +12,11 @@ type Props = {
 }
 
 const UserDeleteConfirmation = ({ user, setUser, users, setUsers, setToast }: Props) => {
-  const { token } = useSession()
+  const backend = useBackend()
 
   const deleteUser = async () => {
     try {
-      const res = await axiosServer.delete(`/admin/users/${user.id}`, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      })
+      const res = await backend.delete(`/admin/users/${user.id}`)
       setUsers(users.filter((u) => u.id !== user.id))
       setToast("Usuário deletado com sucesso!")
     } catch {

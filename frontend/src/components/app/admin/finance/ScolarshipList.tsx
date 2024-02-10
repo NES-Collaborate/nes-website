@@ -1,8 +1,7 @@
 import Toast from "@/components/Toast"
-import { useSession } from "@/contexts/session"
+import { useBackend } from "@/contexts/backend"
 import { ScolarshipQuery } from "@/types/queries"
 import { User } from "@/types/user"
-import { axiosServer } from "@/utils/axiosClient"
 import { getUserPhotoUrl } from "@/utils/client"
 import Image from "next/image"
 import { useEffect, useState } from "react"
@@ -15,7 +14,7 @@ type Props = {
 type Student = User & { alreadyPaid: boolean }
 
 const ScolarshipList = ({ query }: Props) => {
-  const session = useSession()
+  const backend = useBackend()
   const [students, setStudents] = useState<Student[]>([])
   const [toast, setToast] = useState<string>("")
   const everyAlreadyPaid = students.every((s) => s.alreadyPaid)
@@ -23,10 +22,7 @@ const ScolarshipList = ({ query }: Props) => {
   useEffect(() => {
     const fetchStudents = async () => {
       try {
-        const res = await axiosServer.get("/admin/finance/students", {
-          headers: {
-            Authorization: `Bearer ${session.token}`,
-          },
+        const res = await backend.get("/admin/finance/students", {
           params: query,
         })
         setStudents(res.data.students)
@@ -37,25 +33,16 @@ const ScolarshipList = ({ query }: Props) => {
     }
 
     fetchStudents()
-  }, [query, session.token])
+  }, [query, backend])
 
   const handlePayEveryStudent = async () => {
     if (everyAlreadyPaid) return
     try {
-      await axiosServer.post(
-        "/admin/finance/students/pay",
-        {
-          ids: students.filter((s) => !s.alreadyPaid).map((s) => s.id),
-          month: query.month,
-          year: query.year,
-        },
-        {
-          headers: {
-            Authorization: `Bearer ${session.token}`,
-            "Content-Type": "application/json",
-          },
-        }
-      )
+      await backend.post("/admin/finance/students/pay", {
+        ids: students.filter((s) => !s.alreadyPaid).map((s) => s.id),
+        month: query.month,
+        year: query.year,
+      })
       setStudents(
         students.map((s) => {
           return { ...s, alreadyPaid: true }
@@ -72,20 +59,11 @@ const ScolarshipList = ({ query }: Props) => {
   const handlePayStudent = async (id: number) => {
     if (students.find((s) => s.id === id)?.alreadyPaid) return
     try {
-      await axiosServer.post(
-        "/admin/finance/students/pay",
-        {
-          ids: [id],
-          month: query.month,
-          year: query.year,
-        },
-        {
-          headers: {
-            Authorization: `Bearer ${session.token}`,
-            "Content-Type": "application/json",
-          },
-        }
-      )
+      await backend.post("/admin/finance/students/pay", {
+        ids: [id],
+        month: query.month,
+        year: query.year,
+      })
       setStudents(students.map((s) => (s.id === id ? { ...s, alreadyPaid: true } : s)))
       setToast(
         `Estudante ${

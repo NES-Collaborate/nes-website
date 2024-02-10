@@ -1,7 +1,6 @@
 import Toast from "@/components/Toast"
-import { useSession } from "@/contexts/session"
+import { useBackend } from "@/contexts/backend"
 import { User } from "@/types/user"
-import { axiosServer } from "@/utils/axiosClient"
 import { getUserPhotoUrl } from "@/utils/client"
 import Image from "next/image"
 import { useEffect, useState } from "react"
@@ -16,7 +15,7 @@ type Props = {
 const UsersList = ({ query }: Props) => {
   const [debouncedQuery, setDebouncedQuery] = useState(query)
   const debounceDelay = 500
-  const session = useSession()
+  const backend = useBackend()
   const [users, setUsers] = useState<User[]>([])
   const [targetUserId, setTargetUserId] = useState(-1)
   const [modelAction, setModelAction] = useState<"create" | "edit" | "delete">("edit")
@@ -31,11 +30,8 @@ const UsersList = ({ query }: Props) => {
   useEffect(() => {
     const fetchUsers = async () => {
       try {
-        const res = await axiosServer.get("/admin/users", {
+        const res = await backend.get("/admin/users", {
           params: { q: debouncedQuery },
-          headers: {
-            Authorization: `Bearer ${session.token}`,
-          },
         })
 
         setUsers(res.data.users as User[])
@@ -46,7 +42,7 @@ const UsersList = ({ query }: Props) => {
     }
 
     fetchUsers()
-  }, [debouncedQuery, session.token])
+  }, [debouncedQuery, backend])
 
   const openCreateModal = () => {
     setTargetUserId(-1)

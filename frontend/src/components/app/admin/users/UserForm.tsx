@@ -1,9 +1,8 @@
-import { useSession } from "@/contexts/session"
+import { useBackend } from "@/contexts/backend"
 import { SERIES, USER_TYPES } from "@/data/constants"
 import { Serie, UserType } from "@/types/constants"
 import { Address } from "@/types/entities"
 import { User } from "@/types/user"
-import { axiosServer } from "@/utils/axiosClient"
 import { getUserPhotoUrl } from "@/utils/client"
 import { Dispatch, useEffect, useRef, useState } from "react"
 import { Button, Input, Select, Tooltip } from "react-daisyui"
@@ -33,7 +32,7 @@ const UserForm = ({
   addressModal,
 }: Props) => {
   const [loading, setLoading] = useState(false)
-  const { token } = useSession()
+  const backend = useBackend()
   const emailInput = useRef<HTMLInputElement>(null)
   const phoneInput = useRef<HTMLInputElement>(null)
 
@@ -44,11 +43,7 @@ const UserForm = ({
 
   const createUser = async () => {
     try {
-      const res = await axiosServer.post("/admin/users", user, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      })
+      const res = await backend.post("/admin/users", user)
       setUsers([...users, res.data.user])
       setToast("Usuário criado com sucesso!")
     } catch {
@@ -58,11 +53,7 @@ const UserForm = ({
 
   const editUser = async () => {
     try {
-      const res = await axiosServer.put(`/admin/users/${user.id}`, user, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      })
+      const res = await backend.put(`/admin/users/${user.id}`, user)
       setUsers(users.map((u) => (u.id == user.id ? res.data.user : u)))
       setToast("Usuário editado com sucesso!")
     } catch {

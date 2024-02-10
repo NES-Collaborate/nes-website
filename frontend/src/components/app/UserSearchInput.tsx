@@ -1,6 +1,6 @@
+import { useBackend } from "@/contexts/backend"
 import { useSession } from "@/contexts/session"
 import { User } from "@/types/user"
-import { axiosServer } from "@/utils/axiosClient"
 import clsx from "clsx"
 import { useEffect, useRef, useState } from "react"
 import { Input, InputProps } from "react-daisyui"
@@ -16,7 +16,7 @@ const UserSearchInput = ({ targetUser, setTargetUser, ...inputProps }: Props) =>
   const [users, setUsers] = useState<User[]>([])
   const [activeIndex, setActiveIndex] = useState(-1)
   const [loading, setLoading] = useState(false)
-  const session = useSession()
+  const backend = useBackend()
   const inputRef = useRef<HTMLInputElement>(null)
 
   useEffect(() => {
@@ -30,10 +30,7 @@ const UserSearchInput = ({ targetUser, setTargetUser, ...inputProps }: Props) =>
     const fetchUsers = async () => {
       try {
         setLoading(true)
-        const res = await axiosServer.get("/admin/users", {
-          headers: {
-            Authorization: `Bearer ${session.token}`,
-          },
+        const res = await backend.get("/admin/users", {
           params: {
             q: inputValue,
           },
@@ -51,7 +48,7 @@ const UserSearchInput = ({ targetUser, setTargetUser, ...inputProps }: Props) =>
     const timer = setTimeout(() => fetchUsers(), 500)
 
     return () => clearTimeout(timer)
-  }, [inputValue, session.token, targetUser])
+  }, [inputValue, backend, targetUser])
 
   const handleSelectUser = (user: User) => {
     setInputValue(user.name)

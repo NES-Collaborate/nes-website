@@ -1,6 +1,5 @@
-import { useSession } from "@/contexts/session"
+import { useBackend } from "@/contexts/backend"
 import { Post } from "@/types/entities"
-import { axiosServer } from "@/utils/axiosClient"
 import { useEffect, useRef, useState } from "react"
 import { Button, Input, Tooltip } from "react-daisyui"
 import { FaSearch } from "react-icons/fa"
@@ -9,7 +8,7 @@ import Loading from "../Loading"
 import PostCard from "./PostCard"
 
 const Posts = () => {
-  const session = useSession()
+  const backend = useBackend()
   const [page, setPage] = useState(1)
   const [posts, setPosts] = useState<Post[]>([])
   const [hasNextPage, setHasNextPage] = useState(true)
@@ -21,10 +20,7 @@ const Posts = () => {
     const getPosts = async (page: number, perPage: number, query: string) => {
       try {
         setIsFetching(true)
-        const res = await axiosServer.get("/classroom/posts", {
-          headers: {
-            Authorization: `Bearer ${session.token}`,
-          },
+        const res = await backend.get("/classroom/posts", {
           params: {
             p: page,
             pp: perPage,
@@ -50,7 +46,7 @@ const Posts = () => {
       getPosts(page, 2, query)
       setPage((p) => p + 1)
     }
-  }, [inView, hasNextPage, page, session.token, isFetching])
+  }, [inView, hasNextPage, page, backend, isFetching])
 
   const reloadPosts = () => {
     if (inputRef.current) {

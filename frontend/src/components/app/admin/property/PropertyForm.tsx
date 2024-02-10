@@ -1,7 +1,6 @@
-import { useSession } from "@/contexts/session"
+import { useBackend } from "@/contexts/backend"
 import { Property } from "@/types/entities"
 import { User } from "@/types/user"
-import { axiosServer } from "@/utils/axiosClient"
 import { useEffect, useState } from "react"
 import { Button, Input } from "react-daisyui"
 import { FaEdit, FaPlus } from "react-icons/fa"
@@ -25,7 +24,7 @@ const PropertyForm = ({
   properties,
 }: Props) => {
   const [isLoading, setIsLoading] = useState(false)
-  const { token } = useSession()
+  const backend = useBackend()
   const [loanedTo, setLoanedTo] = useState<User | null>(null)
 
   useEffect(() => {
@@ -35,15 +34,7 @@ const PropertyForm = ({
   const createProperty = async () => {
     if (loanedTo) setProperty({ ...property, loanedTo: loanedTo })
     try {
-      const res = await axiosServer.post(
-        "/admin/property",
-        { ...property, loanedTo },
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      )
+      const res = await backend.post("/admin/property", { ...property, loanedTo })
       setProperties([...properties, res.data.property])
       setToast("Propriedade criada com sucesso!")
     } catch {
@@ -53,15 +44,10 @@ const PropertyForm = ({
 
   const editProperty = async () => {
     try {
-      const res = await axiosServer.put(
-        `/admin/property/${property.id}`,
-        { ...property, loanedTo },
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      )
+      const res = await backend.put(`/admin/property/${property.id}`, {
+        ...property,
+        loanedTo,
+      })
       setProperties(properties.map((p) => (p.id == property.id ? res.data.property : p)))
       setToast("Propriedade editada com sucesso!")
     } catch {

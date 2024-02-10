@@ -1,8 +1,8 @@
+import { useBackend } from "@/contexts/backend"
 import { useExpenseLogs } from "@/contexts/expenseLogs"
 import { useSession } from "@/contexts/session"
 import { EXPENSE_LOG_QUERY_TYPES } from "@/data/translations"
 import { ExpenseLog } from "@/types/finance"
-import { axiosServer } from "@/utils/axiosClient"
 import { uploadAttach } from "@/utils/client"
 import clsx from "clsx"
 import { useRef, useState } from "react"
@@ -18,8 +18,9 @@ const ExpenseLogForm = ({ toggle }: Props) => {
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState<string>("")
   const [proof, setProof] = useState<number | null>(null)
-  const session = useSession()
   const { logs, setLogs } = useExpenseLogs()
+  const backend = useBackend()
+  const { token } = useSession()
 
   const inputRefs = {
     value: useRef<HTMLInputElement>(null),
@@ -42,11 +43,7 @@ const ExpenseLogForm = ({ toggle }: Props) => {
 
       form["proof"] = proof
 
-      const res = await axiosServer.post("/admin/finance", form, {
-        headers: {
-          Authorization: `Bearer ${session.token}`,
-        },
-      })
+      const res = await backend.post("/admin/finance", form)
 
       setLogs([...logs, res.data.log as ExpenseLog])
       toggle()
@@ -61,7 +58,7 @@ const ExpenseLogForm = ({ toggle }: Props) => {
     const file = e.target.files?.[0]
     if (file) {
       setIsLoading(true)
-      const attach = await uploadAttach(file, session.token)
+      const attach = await uploadAttach(file, token)
       if (typeof attach === "string") {
         setError(attach)
         setIsLoading(true)
