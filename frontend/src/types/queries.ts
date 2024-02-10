@@ -10,3 +10,12 @@ export type ExpenseLogQuery = {
   addedBy?: string
   comment?: string
 }
+
+/**
+ * Query representation to the Scolarship get users API
+ */
+export type ScolarshipQuery = {
+  year: number
+  month: number
+  classroomId: number
+}
