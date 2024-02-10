@@ -60,10 +60,10 @@ const ExpenseLogStats = ({ currentBalance = 0, totalExpenses = 0 }: Props) => {
           <Button color="secondary" onClick={toggleExpenseLogModal}>
             <IoIosAddCircle size={25} /> Adicionar Registro
           </Button>
-          <Button color="primary">
+          <Link href={"/app/admin/finance/scolarship"} className="btn btn-primary">
             <IoMdCash size={25} />
             Pagar Bolsas
-          </Button>
+          </Link>
         </div>
       </div>
 
