@@ -1,4 +1,6 @@
 import { Attach } from "@/types/entities"
+import { getAttachmentUrl } from "@/utils/client"
+import Image from "next/image"
 import { Button, Modal } from "react-daisyui"
 import { IoMdClose } from "react-icons/io"
 
@@ -35,14 +37,14 @@ const AttachmentModal = ({ attach, setAttach, title = "Arquivo", className }: Pr
       <Modal.Header className="font-bold">{title}</Modal.Header>
 
       <Modal.Body>
-        <iframe
-          className="h-72"
-          width="100%"
-          height="100%"
-          src={attach?.location}
-          title={attach?.name}
-          allowFullScreen
-        />
+        <div className="w-full h-full">
+          <Image
+            alt="Arquivo"
+            width={1000}
+            height={1000}
+            src={getAttachmentUrl(attach!)}
+          />
+        </div>
       </Modal.Body>
     </Modal>
   )
