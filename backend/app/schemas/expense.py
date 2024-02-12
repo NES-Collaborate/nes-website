@@ -1,3 +1,4 @@
+from datetime import datetime
 from typing import Optional
 
 from app.models.enum import ExpenseLogType
@@ -11,7 +12,7 @@ class ExpenseLogCategory(BaseModel):
 
     id: int
     name: str
-    description: str
+    description: Optional[str]
 
     class Config:
         from_attributes = True
@@ -29,12 +30,11 @@ class ExpenseLogBase(BaseModel):
 
 
 class ExpenseLogIn(ExpenseLogBase):
-
     proof: int
     pass
 
 
-class ScolarshipPayment(BaseModel):
+class ScholarshipPayment(BaseModel):
     ids: list[int]
     month: int
     year: int
@@ -49,6 +49,7 @@ class ExpenseLogOut(ExpenseLogBase):
     addedBy: UserMinimal
     paidto: Optional[UserMinimal]
     id: int
+    createdAt: datetime
 
 
 class Balance(BaseModel):

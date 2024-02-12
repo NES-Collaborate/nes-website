@@ -2,7 +2,7 @@ from app.daos.admin import AdminDao
 from app.daos.user import UserDao
 from app.models.expense import ExpenseCategory, ExpenseLog
 from app.models.user import User
-from app.schemas.expense import ExpenseLogIn, ExpenseLogOut, ScolarshipPayment
+from app.schemas.expense import ExpenseLogIn, ExpenseLogOut, ScholarshipPayment
 from app.schemas.user import UserPayment
 from app.services.db import get_session
 from app.services.user import UserService
@@ -50,7 +50,8 @@ async def get_finances(category: str = "",
     conditions = [
         ExpenseCategory.name.contains(category.strip()),
         ExpenseLog.comment.contains(comment.strip()),
-        ExpenseLog.type.contains(type.strip()),
+        ExpenseLog.type.contains(type.strip() if type.lower() !=
+                                 "all" else ""),
         User.name.contains(addedBy.strip()),
     ]
 
@@ -86,13 +87,11 @@ async def get_students(year: int,
     _users = UserDao(session).get_by_classroom(classroomId)
 
     for _user in _users:
-
-        data = UserPayment.model_validate(_user)
-
-        if AdminDao(session).get_scolarship_payment(_user.id, year, month):
-            data.already_paid = True
+        data = UserPayment.model_validate(_user, from_attributes=True)
+        if AdminDao(session).get_scholarship_payment(_user.id, year, month):
+            data.alreadyPaid = True
         else:
-            data.already_paid = False
+            data.alreadyPaid = False
 
         response.append(data)
 
@@ -100,7 +99,7 @@ async def get_students(year: int,
 
 
 @router.post("/students/pay")
-async def pay_students(payment: ScolarshipPayment,
+async def pay_students(payment: ScholarshipPayment,
                        current_user: User = Depends(
                            UserService.get_current_user),
                        session: Session = Depends(get_session)):
@@ -114,9 +113,9 @@ async def pay_students(payment: ScolarshipPayment,
     for id in payment.ids:
         _user = UserDao(session).get_by_id(id)
 
-        AdminDao(session).create_scolarship_payment(current_user, _user,
-                                                    payment.year,
-                                                    payment.month)
+        AdminDao(session).create_scholarship_payment(current_user, _user,
+                                                     payment.year,
+                                                     payment.month)
 
 
 @router.post("")

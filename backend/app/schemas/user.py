@@ -112,5 +112,5 @@ class UserPayment(BaseModel):
     id: int
     name: str
     photo: Optional[Attach]
-    scolarship: float
-    already_paid: Optional[bool]
+    scholarship: float
+    alreadyPaid: Optional[bool] = None
