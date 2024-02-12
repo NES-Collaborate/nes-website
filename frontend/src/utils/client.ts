@@ -7,8 +7,22 @@ import { axiosServer } from "./axiosClient"
  * @param user The user instance
  * @returns string
  */
-export const getUserPhotoUrl = (user: User) =>
-  user?.photo?.location || "/img/default-user.png"
+export const getUserPhotoUrl = (user: User) => {
+  if (!user?.photo || user?.photo!?.location) return "/img/default-user.png"
+
+  return getAttachmentUrl(user?.photo)
+}
+
+/**
+ * Get attachment url
+ * @param attach An attachment
+ * @returns string
+ */
+export const getAttachmentUrl = (attach: Attach) => {
+  if (!attach?.location) return "/img/default-user.png"
+  if (attach.type === "Link") return attach.location
+  return `/api/server/attachments/${attach?.id}`
+}
 
 /**
  * Upload a file to backend and register it as an attachment
@@ -23,6 +37,7 @@ export const uploadAttach = async (attach: any, token: string) => {
     const res = await axiosServer.post("/upload", form, {
       headers: {
         Authorization: `Bearer ${token}`,
+        "Content-Type": "multipart/form-data",
       },
     })
     return res.data as Attach
