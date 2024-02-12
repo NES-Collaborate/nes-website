@@ -20,29 +20,15 @@ class AdminDao(BaseDao):
         }
         return stats
 
-    def create_expense(self, data: ExpenseLogIn) -> ExpenseLog:
+    def create_expense(self, data: ExpenseLogIn, addedBy: User) -> ExpenseLog:
 
         _expense = ExpenseLog(value=data.value,
                               type=data.type,
-                              comment=data.comment)
-
-        if data.addedBy:
-            _user = self.session.query(User).get(data.addedBy.id)
-            if not _user:
-                raise HTTPException(
-                    status_code=status.HTTP_404_NOT_FOUND,
-                    detail="Usuário (AddedBy) não encontrado",
-                )
-
-            _expense.addedBy = _user
-
-        if data.paidto:
-            _user = self.session.query(User).get(data.paidto.id)
-            if _user:
-                _expense.paidto = _user
+                              comment=data.comment,
+                              addedBy=addedBy)
 
         if data.proof:
-            _attach = self.session.query(Attach).get(data.proof.id)
+            _attach = self.session.query(Attach).get(data.proof)
             if _attach:
                 _expense.proof = _attach
 
@@ -62,6 +48,39 @@ class AdminDao(BaseDao):
         self.session.refresh(_expense)
         return _expense
 
+    def get_scolarship_payment(self, id: int, year: int,
+                               month: int) -> ExpenseLog | None:
+
+        _result = self.session.query(ExpenseLog).filter(
+            (ExpenseLog.paidto_id == id)
+            & (func.extract("month", ExpenseLog.createdAt) == month)
+            & (func.extract("year", ExpenseLog.createdAt) == year)).first()
+
+        return _result
+
+    def create_scolarship_payment(self, addedBy: User, paidTo: User, year: int,
+                                  month: int):
+
+        _result = self.get_scolarship_payment(paidTo.id, year, month)
+
+        if _result: return
+
+        _payment = ExpenseLog(value=paidTo.scholarship,
+                              type="Deposit",
+                              addedBy=addedBy,
+                              paidTo=paidTo,
+                              comment=f"Pagamento de {month}-{year}")
+
+        _category = self.session.query(ExpenseCategory).filter_by(
+            name="Pagamento de Bolsa").first()
+        if not _category:
+            _category = ExpenseCategory(name="Pagamento de Bolsa")
+
+        _payment.category = _category
+
+        self.session.add(_payment)
+        self.session.commit()
+
     def update_expense(self, data: ExpenseLogIn, id: int) -> ExpenseLog | None:
 
         _expense = self.session.query(ExpenseLog).get(id)
@@ -73,13 +92,8 @@ class AdminDao(BaseDao):
         _expense.type = data.type
         _expense.comment = data.comment
 
-        if data.paidto:
-            _user = self.session.query(User).get(data.paidto.id)
-            if _user:
-                _expense.paidto = _user
-
         if data.proof:
-            _attach = self.session.query(Attach).get(data.proof.id)
+            _attach = self.session.query(Attach).get(data.proof)
             if _attach:
                 _expense.proof = _attach
 

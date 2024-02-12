@@ -2,6 +2,7 @@ from typing import Any
 
 from app.daos.base import BaseDao
 from app.models.user import User
+from fastapi import HTTPException
 from passlib import hash
 
 from .general import GeneralDao
@@ -38,16 +39,36 @@ class UserDao(BaseDao):
         return _user
 
     def get_by_id(self, id: int):
-        return self.session.query(User).filter(User.id == id).first()
+        _user = self.session.query(User).filter(User.id == id).first()
+
+        if not _user:
+            raise HTTPException(status_code=404,
+                                detail="Usuário não encontrado")
+
+        return _user
+
+    def get_by_classroom(self, classroomId: int) -> list[User]:
+        _users = self.session.query(User).filter(
+            User.classroom_id == classroomId).all()
+
+        if not _users:
+            raise HTTPException(status_code=404,
+                                detail="Nenum usuário encontrado")
+
+        return _users
 
     def get_by_cpf(self, cpf: str | None):
-        return self.session.query(User).filter(User.cpf == cpf).first()
+
+        _user = self.session.query(User).filter(User.cpf == cpf).first()
+
+        if not _user:
+            raise HTTPException(status_code=404,
+                                detail="Usuário não encontrado")
+
+        return _user
 
     def update(self, user_data: dict[str, Any], user_id: int) -> User | None:
         _user = self.get_by_id(user_id)
-
-        if _user is None:
-            return None
 
         if user_data.get("emails"):
             for email in user_data["emails"]:
@@ -87,8 +108,6 @@ class UserDao(BaseDao):
 
     def delete_by_id(self, id: int):
         _user = self.get_by_id(id)
-        if _user is None:
-            return None
 
         for email in _user.emails:  # type: ignore
             self.session.delete(email)
