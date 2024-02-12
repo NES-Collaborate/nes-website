@@ -12,9 +12,9 @@ export type ExpenseLogQuery = {
 }
 
 /**
- * Query representation to the Scolarship get users API
+ * Query representation to the Scholarship get users API
  */
-export type ScolarshipQuery = {
+export type ScholarshipQuery = {
   year: number
   month: number
   classroomId: number

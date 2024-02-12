@@ -25,11 +25,17 @@ const ExpenseLogTable = ({ logs, setProof }: Props) => {
         <tbody>
           {logs.map((exp, i) => (
             <tr key={i}>
-              <td>{exp.createdAt}</td>
+              <td>
+                {new Date(exp.createdAt).toLocaleDateString("pt-BR", {
+                  year: "numeric",
+                  month: "short",
+                  day: "numeric",
+                })}
+              </td>
               <td
                 className={clsx("font-semibold", {
-                  "text-error": exp.type === "removal",
-                  "text-success": exp.type === "deposit",
+                  "text-error": exp.type === "Removal",
+                  "text-success": exp.type === "Deposit",
                 })}
               >
                 R$ {exp.value}
@@ -40,6 +46,7 @@ const ExpenseLogTable = ({ logs, setProof }: Props) => {
                   color="info"
                   onClick={() => exp.proof && setProof(exp.proof)}
                   disabled={!exp.proof}
+                  variant="outline"
                 >
                   <IoMdEye size={25} />
                 </Button>

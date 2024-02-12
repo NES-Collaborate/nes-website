@@ -30,7 +30,7 @@ export type User = {
   address?: Address
   cpf: string
   birthdate: string
-  scolarship: number
+  scholarship: number
   serie?: Serie
   type: UserType
 }

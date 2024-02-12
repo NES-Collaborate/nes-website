@@ -1,15 +1,15 @@
 import { useBackend } from "@/contexts/backend"
 import { Classroom } from "@/types/entities"
-import { ScolarshipQuery } from "@/types/queries"
+import { ScholarshipQuery } from "@/types/queries"
 import { useEffect, useMemo, useState } from "react"
 
 type Props = {
-  query: ScolarshipQuery
-  setQuery: React.Dispatch<React.SetStateAction<ScolarshipQuery>>
+  query: ScholarshipQuery
+  setQuery: React.Dispatch<React.SetStateAction<ScholarshipQuery>>
 }
 
-const ScolarshipParams = ({ query, setQuery }: Props) => {
-  const backend = useBackend()
+const ScholarshipParams = ({ query, setQuery }: Props) => {
+  const { backend, isLogged } = useBackend()
   const currentDate = useMemo(() => new Date(), [])
 
   useEffect(() => {
@@ -26,6 +26,7 @@ const ScolarshipParams = ({ query, setQuery }: Props) => {
   useEffect(() => {
     setIsLoading(true)
     const fetchClassrooms = async () => {
+      if (!isLogged) return
       try {
         const res = await backend.get("/teacher/classrooms")
         setClassrooms(res.data)
@@ -35,7 +36,7 @@ const ScolarshipParams = ({ query, setQuery }: Props) => {
     }
     fetchClassrooms()
     setIsLoading(false)
-  }, [backend])
+  }, [backend, isLogged])
 
   return (
     <div className="join flex justify-center">
@@ -94,4 +95,4 @@ const ScolarshipParams = ({ query, setQuery }: Props) => {
   )
 }
 
-export default ScolarshipParams
+export default ScholarshipParams

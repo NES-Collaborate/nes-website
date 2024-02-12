@@ -31,7 +31,7 @@ const UserModal = ({ users, setUsers, action, userId, setUserId, setToast }: Pro
     phones: [],
     cpf: "",
     birthdate: "",
-    scolarship: 0,
+    scholarship: 0,
     type: "student",
   })
 

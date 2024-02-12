@@ -1,6 +1,6 @@
 import Toast from "@/components/Toast"
 import { useBackend } from "@/contexts/backend"
-import { ScolarshipQuery } from "@/types/queries"
+import { ScholarshipQuery } from "@/types/queries"
 import { User } from "@/types/user"
 import { getUserPhotoUrl } from "@/utils/client"
 import Image from "next/image"
@@ -8,24 +8,26 @@ import { useEffect, useState } from "react"
 import { Tooltip } from "react-daisyui"
 
 type Props = {
-  query: ScolarshipQuery
+  query: ScholarshipQuery
 }
 
 type Student = User & { alreadyPaid: boolean }
 
-const ScolarshipList = ({ query }: Props) => {
-  const backend = useBackend()
+const ScholarshipList = ({ query }: Props) => {
+  const { backend, isLogged } = useBackend()
   const [students, setStudents] = useState<Student[]>([])
   const [toast, setToast] = useState<string>("")
   const everyAlreadyPaid = students.every((s) => s.alreadyPaid)
 
   useEffect(() => {
     const fetchStudents = async () => {
+      if (query.classroomId === 0) return
       try {
+        if (!isLogged) return
         const res = await backend.get("/admin/finance/students", {
           params: query,
         })
-        setStudents(res.data.students)
+        setStudents(res.data)
         if (res.data.students.length === 0) setToast("Nenhum estudante encontrado.")
       } catch (error) {
         console.error(error)
@@ -33,7 +35,7 @@ const ScolarshipList = ({ query }: Props) => {
     }
 
     fetchStudents()
-  }, [query, backend])
+  }, [query, backend, isLogged])
 
   const handlePayEveryStudent = async () => {
     if (everyAlreadyPaid) return
@@ -93,7 +95,6 @@ const ScolarshipList = ({ query }: Props) => {
             </th>
             <th>Aluno</th>
             <th>Bolsa (R$)</th>
-            <th>Ações</th>
           </tr>
         </thead>
         <tbody>
@@ -124,7 +125,7 @@ const ScolarshipList = ({ query }: Props) => {
                 </div>
               </th>
               <th>
-                {student.scolarship.toLocaleString("pt-BR", {
+                {student.scholarship.toLocaleString("pt-BR", {
                   style: "currency",
                   currency: "BRL",
                 })}
@@ -139,4 +140,4 @@ const ScolarshipList = ({ query }: Props) => {
   )
 }
 
-export default ScolarshipList
+export default ScholarshipList
