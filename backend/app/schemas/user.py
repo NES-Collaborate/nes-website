@@ -13,7 +13,7 @@ from app.models.enum import (
 from pydantic import BaseModel, EmailStr
 
 
-class Attatch(BaseModel):
+class Attach(BaseModel):
     id: int
     name: str
     location: str
@@ -67,7 +67,7 @@ class Achievement(BaseModel):
 
 class UserBase(BaseModel):
     name: str
-    photo: Optional[Attatch]
+    photo: Optional[Attach]
     emails: Optional[List[Email]]
     phones: Optional[List[PhoneNumber]]
     address: Optional[Address]
@@ -93,7 +93,7 @@ class UserPoster(BaseModel):
     id: int
     name: str
     emails: Optional[List[Email]]
-    photo: Optional[Attatch]
+    photo: Optional[Attach]
 
     class Config:
         from_attributes = True
@@ -105,3 +105,12 @@ class UserMinimal(BaseModel):
 
     class Config:
         from_attributes = True
+
+
+class UserPayment(BaseModel):
+
+    id: int
+    name: str
+    photo: Optional[Attach]
+    scolarship: float
+    already_paid: Optional[bool]

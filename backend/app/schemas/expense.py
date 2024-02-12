@@ -1,9 +1,10 @@
 from typing import Optional
 
 from app.models.enum import ExpenseLogType
+from app.schemas.user import Attach
 from pydantic import BaseModel
 
-from .user import Attatch, UserMinimal
+from .user import UserMinimal
 
 
 class ExpenseLogCategory(BaseModel):
@@ -19,12 +20,9 @@ class ExpenseLogCategory(BaseModel):
 class ExpenseLogBase(BaseModel):
 
     value: float
-    addedBy: UserMinimal
     category: ExpenseLogCategory
     type: ExpenseLogType
-    proof: Optional[Attatch]
     comment: Optional[str]
-    paidto: Optional[UserMinimal]
 
     class Config:
         from_attributes = True
@@ -32,11 +30,24 @@ class ExpenseLogBase(BaseModel):
 
 class ExpenseLogIn(ExpenseLogBase):
 
+    proof: int
     pass
+
+
+class ScolarshipPayment(BaseModel):
+    ids: list[int]
+    month: int
+    year: int
+
+    class Config:
+        from_attributes = True
 
 
 class ExpenseLogOut(ExpenseLogBase):
 
+    proof: Optional[Attach]
+    addedBy: UserMinimal
+    paidto: Optional[UserMinimal]
     id: int
 
 
