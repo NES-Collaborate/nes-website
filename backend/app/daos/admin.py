@@ -1,4 +1,6 @@
-from app.models.expense import Balance, ExpenseCategory, ExpenseLog
+from datetime import datetime
+
+from app.models.expense import ExpenseCategory, ExpenseLog
 from app.models.user import Attach, User
 from app.schemas.expense import ExpenseLogIn
 from fastapi import HTTPException, status
@@ -11,14 +13,16 @@ class AdminDao(BaseDao):
 
     def get_stats(self) -> dict[str, float]:
 
-        _balance = self.session.query(Balance).first()
-        _total = self.session.query(func.sum(ExpenseLog.value)).scalar()
+        _total_removed = self.session.query(func.sum(
+            ExpenseLog.value)).filter_by(type="Removal").scalar()
+        _total_deposited = self.session.query(func.sum(
+            ExpenseLog.value)).filter_by(type="Deposit").scalar() or 0
 
         stats = {
-            "currentBalance": _balance.current if _balance else 0,
-            "totalExpenses": _total if _total else 0
+            "currentBalance": (_total_deposited or 0) - (_total_removed or 0),
+            "totalExpenses": (_total_removed or 0)
         }
-        return stats
+        return stats  # type: ignore [dict[str, int]]
 
     def create_expense(self, data: ExpenseLogIn, addedBy: User) -> ExpenseLog:
 
@@ -33,13 +37,12 @@ class AdminDao(BaseDao):
                 _expense.proof = _attach
 
         if data.category:
-            _category = self.session.query(ExpenseCategory).get(
-                data.category.id)
+            _category = self.session.query(ExpenseCategory).filter_by(
+                name=data.category.name).first()
             if not _category:
-                raise HTTPException(
-                    status_code=status.HTTP_404_NOT_FOUND,
-                    detail="Categoria não encontrada",
-                )
+                _category = ExpenseCategory(
+                    name=data.category.name,
+                    description=data.category.description)
 
             _expense.category = _category
 
@@ -48,8 +51,8 @@ class AdminDao(BaseDao):
         self.session.refresh(_expense)
         return _expense
 
-    def get_scolarship_payment(self, id: int, year: int,
-                               month: int) -> ExpenseLog | None:
+    def get_scholarship_payment(self, id: int, year: int,
+                                month: int) -> ExpenseLog | None:
 
         _result = self.session.query(ExpenseLog).filter(
             (ExpenseLog.paidto_id == id)
@@ -58,18 +61,20 @@ class AdminDao(BaseDao):
 
         return _result
 
-    def create_scolarship_payment(self, addedBy: User, paidTo: User, year: int,
-                                  month: int):
+    def create_scholarship_payment(self, addedBy: User, paidTo: User,
+                                   year: int, month: int):
 
-        _result = self.get_scolarship_payment(paidTo.id, year, month)
+        _result = self.get_scholarship_payment(paidTo.id, year, month)
 
         if _result: return
 
+        created_at = datetime(year, month, 1)
         _payment = ExpenseLog(value=paidTo.scholarship,
-                              type="Deposit",
+                              type="Removal",
                               addedBy=addedBy,
-                              paidTo=paidTo,
-                              comment=f"Pagamento de {month}-{year}")
+                              paidto=paidTo,
+                              comment=f"Pagamento de {month}-{year}",
+                              createdAt=created_at)
 
         _category = self.session.query(ExpenseCategory).filter_by(
             name="Pagamento de Bolsa").first()

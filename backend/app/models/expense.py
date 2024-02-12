@@ -36,10 +36,3 @@ class ExpenseCategory(BaseTable):
 
     name: Mapped[str]
     description: Mapped[Optional[str]]
-
-
-class Balance(BaseTable):
-
-    __tablename__ = "balance"
-
-    current: Mapped[float]
