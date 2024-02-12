@@ -1,10 +1,20 @@
 import { useEffect, useState } from "react"
-import { LandingPageDropDown } from "./LandingPageDropDown"
-import { LogInOutButtom } from "./LogInOutButtom"
-import { Logo } from "./Logo"
-import { ThemeToggle } from "./ThemeToggle"
+import { Button } from "react-daisyui"
+import { FaBars } from "react-icons/fa6"
+import Breadcrumb from "./Breadcrumb"
+import Logo from "./Logo"
+import ThemeToggle from "./ThemeToggle"
 
-export const NavBar = () => {
+type Props = {
+  toggleDrawerVisibility: () => void
+}
+
+/**
+ * NavBar component for Landing Page
+ * @param {function} toggleDrawerVisibility Function to toggle the drawer
+ * @returns {JSX.Element} Navbar
+ */
+const NavBar = ({ toggleDrawerVisibility }: Props) => {
   const [windowWidth, setWindowWidth] = useState(1080)
 
   useEffect(() => {
@@ -17,15 +27,23 @@ export const NavBar = () => {
   return (
     <div className="navbar bg-base-100 shadow-md">
       <div className="navbar-start gap-3">
-        <LandingPageDropDown />
-        <ThemeToggle />
+        <Logo
+          type={windowWidth < 500 ? "circle" : "horizontal"}
+          size={40}
+          className="ml-3"
+        />
       </div>
       <div className="navbar-center">
-        <Logo type={windowWidth < 410 ? "circle" : "horizontal"} size={40} />
+        <Breadcrumb />
       </div>
       <div className="navbar-end gap-3">
-        <LogInOutButtom />
+        <ThemeToggle />
+        <Button shape="circle" onClick={toggleDrawerVisibility}>
+          <FaBars />
+        </Button>
       </div>
     </div>
   )
 }
+
+export default NavBar

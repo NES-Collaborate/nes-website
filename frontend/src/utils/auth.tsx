@@ -1,108 +1,157 @@
+import { SessionContext } from "@/contexts/session"
+import { User } from "@/types/user"
 import { AxiosError } from "axios"
-import { GetServerSidePropsContext } from "next"
-import { useEffect, useState } from "react"
-import { axiosSesh } from "./axiosClient"
+import {
+  GetServerSidePropsContext,
+  GetServerSidePropsResult,
+  NextApiHandler,
+  NextApiRequest,
+  NextApiResponse,
+} from "next"
+import { axiosServer } from "./axiosClient"
 
-export const getMe = async (token: string) => {
-  return (
-    await axiosSesh.get("/api/me", {
-      headers: {
-        Authorization: token,
-      },
-    })
-  ).data
-}
-
-export const GetSession = () => {
-  const [session, setSession] = useState(null)
-
-  useEffect(() => {
-    const tokenDeclaration = document.cookie
-      .split("; ")
-      .find((c) => c.startsWith("_token="))
-
-    if (tokenDeclaration) {
-      const token = tokenDeclaration.split("=")[1]
-
-      getMe(token).then((user) => setSession(user))
-    }
-  }, [])
-
-  return session
-}
-
+/**
+ * Sign in the user with username and password and set the session token
+ * @param {string} username Username
+ * @param {string} password Password
+ * @param {SessionContext} session Session context
+ * @returns {object} { ok: boolean, error?: string }
+ */
 export const signIn = async ({
   username,
   password,
-  csrfToken,
+  session,
 }: {
   username: string
   password: string
-  csrfToken: string
+  session: SessionContext
 }) => {
   if (!username.trim() || !password.trim()) {
     return { ok: false, error: "Preencha todos os campos." }
   }
 
-  // Is expected that the backend will set the cookie (_token)
+  // username is a CPF
+  if (username.trim().length !== 11) {
+    return { ok: false, error: "CPF Inválido." }
+  }
+
   try {
-    const res = await axiosSesh.post(
+    const res = await axiosServer.post(
       "/login",
-      { username, password, csrfToken },
+      { username, password },
       {
         headers: {
-          Accept: "application/json",
+          "Content-Type": "application/x-www-form-urlencoded",
         },
       }
     )
-    return res.data
+
+    if (session.setToken) {
+      session.setToken(res.data.access_token)
+    }
+
+    return { ok: true, ...res.data }
   } catch (error) {
     const e = error as AxiosError
-    return { ok: false, error: e.message }
+    if (e.response) {
+      switch (e.response.status) {
+        case 400:
+          return { ok: false, error: "CPF ou senha inválido." }
+        case 500:
+          return {
+            ok: false,
+            error: "Houve algum erro no servidor. Tente novamente mais tarde.",
+          }
+        default:
+          return {
+            ok: false,
+            error: "Houve algum erro desconhecido. Tente novamente mais tarde.",
+          }
+      }
+    } else {
+      return {
+        ok: false,
+        error: e.message ?? "Houve algum erro desconhecido. Tente novamente mais tarde.",
+      }
+    }
   }
 }
 
-export const getCsrfToken = async () => {
-  try {
-    return (await axiosSesh.get("/csrfToken")).data
-  } catch (e) {
-    const error = e as AxiosError
-    console.log("Falha ao obter o CSRF-Token do Backend:", error.cause?.message)
-  }
-  return "csrfToken" // TODO: remove this and put a proper error
-}
-
-export const getSession = async (req: GetServerSidePropsContext["req"]) => {
+/**
+ * A server-side function to get the logged user
+ * @param req Request
+ * @returns {SessionContext}
+ */
+export const getUserSession = async (req: GetServerSidePropsContext["req"]) => {
   const token = req.cookies._token
+  if (!token) return null
+  try {
+    const res = await axiosServer.get("/me", {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    })
 
-  if (!token) {
-    return { user: null }
+    return res.data as User
+  } catch (err) {
+    return null
   }
-
-  return { user: await getMe(token) }
 }
 
-export async function withAuth<P>(
-  handler: (context: GetServerSidePropsContext) => Promise<{ props: P }>
-) {
-  return async (context: GetServerSidePropsContext) => {
-    const session = await getSession(context.req)
+type WithAuthProps = {
+  callback?: (
+    context: GetServerSidePropsContext
+  ) => Promise<GetServerSidePropsResult<any>> | GetServerSidePropsResult<any>
+  allowedUsers?: User["type"][]
+}
 
-    if (!session.user) {
+const defaultCallback = async (
+  ctx: GetServerSidePropsContext
+): Promise<GetServerSidePropsResult<any>> => {
+  return { props: {} }
+}
+
+/**
+ * A decorator to handle authentication
+ * @param callback The `getServerSideProps` callback (optional)
+ * @param allowedUsers Allowed user types
+ * @returns callback(ctx) if logged user else redirect to login
+ */
+export const withAuth = ({
+  callback = defaultCallback,
+  allowedUsers = ["admin", "student", "other"],
+}: WithAuthProps = {}) => {
+  return async (ctx: GetServerSidePropsContext) => {
+    const user = await getUserSession(ctx.req)
+
+    const isAllowed = user && allowedUsers.includes(user.type as User["type"])
+    if (!isAllowed) {
       return {
         redirect: {
-          destination: "/auth/login",
+          destination: "/nes",
           permanent: false,
         },
       }
     }
 
-    return await handler(context)
+    return callback(ctx)
   }
 }
 
-export const simpleWithAuth = async () => {
-  return await withAuth(async () => ({
-    props: {},
-  }))
-}
+// TODO: Add "alowed_user_types" param.
+/**
+ * A decorator to handle authentication for API's
+ * @param callback The `NextApiHandler` callback
+ * @returns callback(req, res) if logged user else 401
+ */
+export const apiWithAuth =
+  (callback: NextApiHandler) => async (req: NextApiRequest, res: NextApiResponse) => {
+    const user = getUserSession(req)
+
+    if (!user) {
+      res.status(401).json({ error: "Unauthorized" })
+      return
+    }
+
+    return callback(req, res)
+  }

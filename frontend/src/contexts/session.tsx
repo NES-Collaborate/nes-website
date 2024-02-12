@@ -1,20 +1,63 @@
 import { User } from "@/types/user"
-import { GetSession } from "@/utils/auth"
-import { createContext, useContext, useState } from "react"
+import { axiosServer } from "@/utils/axiosClient"
+import Cookies from "js-cookie"
+import { createContext, useContext, useEffect, useState } from "react"
 
-type SessionContext = {
-  user: User | null | undefined
+export type SessionContext = {
+  user: User | null
+  setUser: (newUser: User | null) => void
   logOut: () => void
+  token: string
+  setToken: (newToken: string) => void
 }
 
-const sessionContext = createContext<SessionContext>({ user: null, logOut: () => {} })
+const sessionContext = createContext<SessionContext>({
+  user: null,
+  setUser: () => {},
+  logOut: () => {},
+  token: "",
+  setToken: () => {},
+})
 
 export const SessionProvider = ({ children }: { children: React.ReactNode }) => {
-  const [user, setUser] = useState<User | null | undefined>(GetSession())
+  const [user, setUser] = useState<User | null>(null)
+  const [token, setToken] = useState<string>("")
+
+  useEffect(() => {
+    const token = Cookies.get("_token")
+    if (!token) return
+    setToken(token)
+  }, [])
+
+  useEffect(() => {
+    if (!token) return
+    Cookies.set("_token", token)
+    axiosServer
+      .get("/me", {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      })
+      .then((res) => {
+        setUser(res.data)
+      })
+      .catch((err) => null)
+  }, [token])
 
   const session = {
     user,
-    logOut: () => setUser(null),
+    setUser,
+    logOut: () => {
+      setUser(null)
+      setToken("")
+      Cookies.remove("_token")
+      axiosServer
+        .get("/logout")
+        .then(() => {})
+        .catch(() => {})
+    },
+    token,
+    setToken,
   }
 
   return <sessionContext.Provider value={session}>{children}</sessionContext.Provider>

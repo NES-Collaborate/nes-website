@@ -1,0 +1,34 @@
+{
+  "[python]": {
+    "editor.defaultFormatter": "eeyore.yapf",
+    "diffEditor.ignoreTrimWhitespace": false,
+    "editor.formatOnSaveMode": "file",
+    "editor.formatOnType": false,
+    "editor.wordBasedSuggestions": "off",
+    "editor.formatOnPaste": false,
+    "editor.formatOnSave": true,
+    "editor.insertSpaces": true,
+    "editor.tabSize": 4,
+    "editor.codeActionsOnSave": {
+      "source.organizeImports": "explicit"
+    }
+  },
+  "isort.args": ["--profile", "black"],
+  "isort.check": true,
+  "editor.codeActionsOnSave": {
+    "source.sortImports": "explicit"
+  },
+  "python.analysis.typeCheckingMode": "strict",
+  "python.analysis.autoImportCompletions": true,
+
+  // Prettier Configurations:
+  "editor.defaultFormatter": "esbenp.prettier-vscode",
+  "editor.tabSize": 2,
+  "editor.insertSpaces": true,
+  "prettier.tabWidth": 2,
+  "prettier.printWidth": 90,
+  "prettier.semi": false,
+  
+  // Auto save:
+  "editor.formatOnSave": true,
+}

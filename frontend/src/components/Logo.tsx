@@ -3,11 +3,31 @@ import { LOGOS } from "@/data/constants"
 import Image from "next/image"
 
 type Props = {
-  type: "circle" | "horizontal"
+  type:
+    | "circle"
+    | "horizontal"
+    | "banner"
+    | "bannerProcessoSeletivo"
+    | "obmepMedals"
+    | "computerBanner"
+    | "library"
+    | "calendarBanner"
+    | "bannerInscricoes"
+    | "bannerResultados"
   size?: number
+  alt?: string
+  className?: string
 }
 
-export const Logo = ({ type, size }: Props) => {
+/**
+ * Handler to render some default images like logos and banners.
+ * @param {string} type Type of logo (image key in `LOGOS`)
+ * @param {number} size Size of the image (px, the width will be calculated based on the height)
+ * @param {string} alt Alternative text
+ * @param {string} className Class name
+ * @returns {Image} Image component
+ */
+const Logo = ({ type, size, alt = "Logo", className = "" }: Props) => {
   const { theme } = useTheme()
 
   const realType = () => {
@@ -19,5 +39,15 @@ export const Logo = ({ type, size }: Props) => {
   const finalHeight = size || logo.height
   const finalWidth = size ? (logo.width / logo.height) * finalHeight : logo.width
 
-  return <Image alt="Logo" src={logo.src} height={finalHeight} width={finalWidth} />
+  return (
+    <Image
+      alt={alt}
+      className={className}
+      src={logo.src}
+      height={finalHeight}
+      width={finalWidth}
+    />
+  )
 }
+
+export default Logo

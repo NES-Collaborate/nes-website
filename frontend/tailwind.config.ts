@@ -10,7 +10,16 @@ const config: Config = {
   ],
   plugins: [require("daisyui")],
   daisyui: {
-    themes: ["light", "dark", "sunset"],
+    themes: ["light", "dark"],
+  },
+  theme: {
+    extend: {
+      colors: {
+        "purple-nes": "rgb(93, 63, 211)",
+        "hover-purple-nes": "rgb(107, 33, 168)",
+        "green-nes": "rgb(0, 163, 108)",
+      },
+    },
   },
 }
 export default config
