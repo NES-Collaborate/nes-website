@@ -16,7 +16,7 @@ const UserSearchInput = ({ targetUser, setTargetUser, ...inputProps }: Props) =>
   const [users, setUsers] = useState<User[]>([])
   const [activeIndex, setActiveIndex] = useState(-1)
   const [loading, setLoading] = useState(false)
-  const backend = useBackend()
+  const { backend } = useBackend()
   const inputRef = useRef<HTMLInputElement>(null)
 
   useEffect(() => {

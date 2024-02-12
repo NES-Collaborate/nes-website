@@ -1,12 +1,21 @@
 import { axiosServer } from "@/utils/axiosClient"
 import axios, { AxiosInstance } from "axios"
-import { createContext, useContext } from "react"
+import { createContext, useContext, useState } from "react"
 import { useSession } from "./session"
 
-const backendContext = createContext<AxiosInstance>(axiosServer)
+type Backend = {
+  backend: AxiosInstance
+  isLogged: boolean
+}
+
+const backendContext = createContext<Backend>({
+  backend: axiosServer,
+  isLogged: false,
+})
 
 const BackendProvider = ({ children }: { children: React.ReactNode }) => {
   const { token } = useSession()
+  const isLogged = !!token
   const backend = axios.create({
     baseURL: axiosServer.defaults.baseURL,
     headers: {
@@ -15,7 +24,11 @@ const BackendProvider = ({ children }: { children: React.ReactNode }) => {
     },
   })
 
-  return <backendContext.Provider value={backend}>{children}</backendContext.Provider>
+  return (
+    <backendContext.Provider value={{ backend, isLogged }}>
+      {children}
+    </backendContext.Provider>
+  )
 }
 
 const useBackend = () => useContext(backendContext)

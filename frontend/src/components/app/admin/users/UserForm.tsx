@@ -32,7 +32,7 @@ const UserForm = ({
   addressModal,
 }: Props) => {
   const [loading, setLoading] = useState(false)
-  const backend = useBackend()
+  const { backend } = useBackend()
   const emailInput = useRef<HTMLInputElement>(null)
   const phoneInput = useRef<HTMLInputElement>(null)
 
@@ -305,10 +305,10 @@ const UserForm = ({
               <Input
                 placeholder="MONEYYY $$$"
                 size="md"
-                value={user.scolarship}
+                value={user.scholarship}
                 onChange={(e) => {
                   const value = parseFloat(e.target.value)
-                  setUser({ ...user, scolarship: value || 0 })
+                  setUser({ ...user, scholarship: value || 0 })
                 }}
                 color="primary"
                 disabled={loading}

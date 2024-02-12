@@ -19,7 +19,7 @@ const ExpenseLogForm = ({ toggle }: Props) => {
   const [error, setError] = useState<string>("")
   const [proof, setProof] = useState<number | null>(null)
   const { logs, setLogs } = useExpenseLogs()
-  const backend = useBackend()
+  const { backend } = useBackend()
   const { token } = useSession()
 
   const inputRefs = {
@@ -41,6 +41,8 @@ const ExpenseLogForm = ({ toggle }: Props) => {
         }
       }
 
+      form["category"] = { id: 0, name: form["category"], description: "" }
+      form["value"] = parseFloat(form["value"])
       form["proof"] = proof
 
       const res = await backend.post("/admin/finance", form)
@@ -65,6 +67,7 @@ const ExpenseLogForm = ({ toggle }: Props) => {
       } else {
         setProof(attach.id || null)
         setIsLoading(false)
+        setError("")
       }
     }
   }

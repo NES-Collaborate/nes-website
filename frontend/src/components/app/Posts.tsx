@@ -8,7 +8,7 @@ import Loading from "../Loading"
 import PostCard from "./PostCard"
 
 const Posts = () => {
-  const backend = useBackend()
+  const { backend } = useBackend()
   const [page, setPage] = useState(1)
   const [posts, setPosts] = useState<Post[]>([])
   const [hasNextPage, setHasNextPage] = useState(true)

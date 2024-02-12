@@ -14,7 +14,7 @@ type Props = {
 
 const PropertyList = ({ query = "" }: Props) => {
   const [data, setData] = useState<Property[]>([])
-  const backend = useBackend()
+  const { backend } = useBackend()
   const [debouncedQuery, setDebouncedQuery] = useState(query)
   const debounceDelay = 500
 

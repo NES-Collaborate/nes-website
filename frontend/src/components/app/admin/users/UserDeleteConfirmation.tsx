@@ -12,7 +12,7 @@ type Props = {
 }
 
 const UserDeleteConfirmation = ({ user, setUser, users, setUsers, setToast }: Props) => {
-  const backend = useBackend()
+  const { backend } = useBackend()
 
   const deleteUser = async () => {
     try {

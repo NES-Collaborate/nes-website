@@ -16,7 +16,7 @@ const ExpenseLogs = () => {
   const [query, setQuery] = useState<ExpenseLogQuery>({
     type: "all",
   })
-  const backend = useBackend()
+  const { backend } = useBackend()
 
   useEffect(() => {
     const fetch = async () => {
@@ -25,7 +25,6 @@ const ExpenseLogs = () => {
           params: query,
         })
         setLogs(res.data.logs)
-        if (res.data.logs.length === 0) setErrorLog("Nenhum movimentação encontrada.")
       } catch {
         setErrorLog("Erro ao carregar movimentações")
       }
@@ -40,11 +39,12 @@ const ExpenseLogs = () => {
         <h2 className="text-xl text-center">Movimentações</h2>
         <ExpenseLogFilter query={query} setQuery={setQuery} />
         <ExpenseLogTable logs={logs} setProof={setProof} />
-        {errorLog && (
-          <Alert status="error" className="my-3">
-            {errorLog}
-          </Alert>
-        )}
+        {errorLog ||
+          (logs.length === 0 && (
+            <Alert status="error" className="my-3">
+              {errorLog || "Nenhuma movimentação encontrada"}
+            </Alert>
+          ))}
       </div>
 
       <AttachmentModal attach={proof} setAttach={setProof} title="Comprovante" />

@@ -12,7 +12,7 @@ const Classrooms = () => {
   const [isLoading, setIsLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
   const [classrooms, setClassrooms] = useState<Classroom[]>([])
-  const backend = useBackend()
+  const { backend } = useBackend()
   const { user } = useSession()
 
   useEffect(() => {

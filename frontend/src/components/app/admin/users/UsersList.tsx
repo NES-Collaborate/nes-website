@@ -15,7 +15,7 @@ type Props = {
 const UsersList = ({ query }: Props) => {
   const [debouncedQuery, setDebouncedQuery] = useState(query)
   const debounceDelay = 500
-  const backend = useBackend()
+  const { backend } = useBackend()
   const [users, setUsers] = useState<User[]>([])
   const [targetUserId, setTargetUserId] = useState(-1)
   const [modelAction, setModelAction] = useState<"create" | "edit" | "delete">("edit")

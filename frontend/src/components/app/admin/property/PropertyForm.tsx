@@ -24,7 +24,7 @@ const PropertyForm = ({
   properties,
 }: Props) => {
   const [isLoading, setIsLoading] = useState(false)
-  const backend = useBackend()
+  const { backend } = useBackend()
   const [loanedTo, setLoanedTo] = useState<User | null>(null)
 
   useEffect(() => {
