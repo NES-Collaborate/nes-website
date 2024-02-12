@@ -19,9 +19,14 @@ async def get_classrooms(current_user: User = Depends(
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED,
                             detail="Usuário não autorizado")
 
-    results = session.query(Classroom.id, Classroom.name).join(
-        Subject, Subject.classroom_id == Classroom.id).join(
-            ts, ts.columns.subject_id == Subject.id).filter(
-                ts.columns.teacher_id == current_user.id).distinct().all()
+    if current_user.type == "admin":
+        query = session.query(Classroom)
+    else:
+        query = session.query(Classroom.id, Classroom.name).join(
+            Subject, Subject.classroom_id == Classroom.id).join(
+                ts, ts.columns.subject_id == Subject.id).filter(
+                    ts.columns.teacher_id == current_user.id).distinct()
+
+    results = query.all()
 
     return [ClassroomOut.model_validate(result) for result in results]
