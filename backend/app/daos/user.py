@@ -1,3 +1,4 @@
+from datetime import datetime
 from typing import Any
 
 from app.daos.base import BaseDao
@@ -11,6 +12,8 @@ from .general import GeneralDao
 class UserDao(BaseDao):
 
     def create(self, user_data: dict[str, Any]) -> User | None:
+        user_data.update(birthdate=datetime.strptime(user_data["birthdate"],
+                                                     "%d/%m/%Y").date())
         _user = User(
             name=user_data["name"],
             type=user_data["type"],
@@ -83,8 +86,8 @@ class UserDao(BaseDao):
                                                     _user.id)
 
         if user_data.get("photo"):
-            GeneralDao(self.session).update_attachment(user_data["photo"],
-                                                       _user.id)
+            user_data["photo"] = GeneralDao(self.session).create_attachment(
+                user_data["photo"])
 
         UPDATED_KEYS = [
             "name",
@@ -93,6 +96,7 @@ class UserDao(BaseDao):
             "birthdate",
             "scholarship",
             "serie",
+            "photo",
         ]
 
         for key, value in user_data.items():

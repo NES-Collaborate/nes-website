@@ -8,9 +8,7 @@ import { axiosServer } from "./axiosClient"
  * @returns string
  */
 export const getUserPhotoUrl = (user: User) => {
-  if (!user?.photo || user?.photo!?.location) return "/img/default-user.png"
-
-  return getAttachmentUrl(user?.photo)
+  return getAttachmentUrl(user?.photo || ({} as Attach))
 }
 
 /**

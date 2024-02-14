@@ -1,5 +1,6 @@
 import { Address } from "@/types/entities"
 import { User } from "@/types/user"
+import { getUserPhotoUrl } from "@/utils/client"
 import clsx from "clsx"
 import { useEffect, useState } from "react"
 import { Button, Modal } from "react-daisyui"
@@ -26,19 +27,20 @@ const UserModal = ({ users, setUsers, action, userId, setUserId, setToast }: Pro
   const [user, setUser] = useState<User>({
     id: 0,
     name: "",
-    photo: undefined,
+    photo: { location: getUserPhotoUrl({} as User), type: "Link" },
     emails: [],
     phones: [],
     cpf: "",
     birthdate: "",
     scholarship: 0,
+    password: "",
     type: "student",
   })
 
   const [addressModalOpen, setAddressModalOpen] = useState(false)
   const [addressModal, setAddressModal] = useState<Address>({
     id: user.address?.id || 0,
-    name: user.address?.name || "",
+    street: user.address?.street || "",
     neighborhood: user.address?.neighborhood || "",
     number: user.address?.number || 0,
     complement: user.address?.complement || "",

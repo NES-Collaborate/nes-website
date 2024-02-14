@@ -100,7 +100,7 @@ const UserForm = ({
           <Input
             placeholder="URL da Foto"
             size="md"
-            value={getUserPhotoUrl(user)}
+            value={user.photo?.location}
             onChange={(e) =>
               setUser({ ...user, photo: { location: e.target.value, type: "Link" } })
             }
@@ -130,8 +130,8 @@ const UserForm = ({
             bordered
           />
           <ul>
-            {(user.emails || []).map((email) => (
-              <li key={email.id}>
+            {(user.emails || []).map((email, i) => (
+              <li key={i}>
                 {email.value}
                 <Tooltip message="Remover este email">
                   <Button
@@ -162,7 +162,10 @@ const UserForm = ({
             onKeyDown={(e) => {
               const phone = phoneInput.current?.value
               if (e.key == "Enter" && phone) {
-                setUser({ ...user, phones: [...(user.phones || []), { value: phone }] })
+                setUser({
+                  ...user,
+                  phones: [...(user.phones || []), { value: phone, isEmergency: false }],
+                })
                 phoneInput.current.value = ""
               }
             }}
@@ -171,8 +174,8 @@ const UserForm = ({
             bordered
           />
           <ul>
-            {(user.phones || []).map((phone) => (
-              <li key={phone.id}>
+            {(user.phones || []).map((phone, i) => (
+              <li key={i}>
                 {phone.value}
                 <Tooltip message="Remover este Telefone">
                   <Button
@@ -200,7 +203,7 @@ const UserForm = ({
             size="md"
             value={
               user.address
-                ? `${user.address.name}, ${user.address.number}, ${user.address.neighborhood} (${user.address.complement}) ${user.address.city} (${user.address.state} - ${user.address.cep})`
+                ? `${user.address.street}, ${user.address.number}, ${user.address.neighborhood} (${user.address.complement}) ${user.address.city} (${user.address.state} - ${user.address.cep})`
                 : "Sem endereço"
             }
             onChange={(e) => setUser({ ...user, name: e.target.value })}
@@ -230,6 +233,23 @@ const UserForm = ({
 
         <label className="form-control w-full max-w-xs">
           <div className="label">
+            <span className="label-text">Senha</span>
+          </div>
+          {/* TODO: Hide/Unhide button for password */}
+          <Input
+            placeholder="Senha"
+            size="md"
+            type="password"
+            value={user.password}
+            onChange={(e) => setUser({ ...user, password: e.target.value })}
+            color="primary"
+            disabled={loading}
+            bordered
+          />
+        </label>
+
+        <label className="form-control w-full max-w-xs">
+          <div className="label">
             <span className="label-text">Data de Nascimento</span>
           </div>
           <Input
@@ -248,7 +268,7 @@ const UserForm = ({
             <span className="label-text">Tipo de Usuário</span>
           </label>
           <Select
-            defaultValue={"default"}
+            value={user.type}
             onChange={(e) => {
               const value = e.target.value
               if (value !== "default") {
@@ -256,11 +276,9 @@ const UserForm = ({
               }
             }}
           >
-            <Select.Option value={"default"} disabled>
-              Selecione um Tipo
-            </Select.Option>
-            {USER_TYPES.map((serie) => (
-              <Select.Option key={serie} value={serie}>
+            <Select.Option disabled>Selecione um Tipo</Select.Option>
+            {USER_TYPES.map((serie, i) => (
+              <Select.Option key={i} value={serie}>
                 {serie}
               </Select.Option>
             ))}
@@ -275,7 +293,7 @@ const UserForm = ({
               </label>
               <Select
                 color="primary"
-                defaultValue={"default"}
+                value={user.serie || "default"}
                 onChange={(e) => {
                   const value = e.target.value
                   if (value !== "default") {
@@ -287,11 +305,7 @@ const UserForm = ({
                   Selecione uma Série
                 </Select.Option>
                 {SERIES.map((serie) => (
-                  <Select.Option
-                    key={serie}
-                    value={serie}
-                    selected={serie === user.serie}
-                  >
+                  <Select.Option key={serie} value={serie}>
                     {serie}
                   </Select.Option>
                 ))}

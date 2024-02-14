@@ -40,8 +40,8 @@ const AddressModal = ({ open, setOpen, address, setAddress }: Props) => {
             <Input
               placeholder="Rua do Macaco Molhado, ..."
               size="md"
-              value={address.name}
-              onChange={(e) => setAddress({ ...address, name: e.target.value })}
+              value={address.street}
+              onChange={(e) => setAddress({ ...address, street: e.target.value })}
               color="primary"
               disabled={loading}
               bordered
