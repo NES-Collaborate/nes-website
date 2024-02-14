@@ -14,8 +14,7 @@ from pydantic import BaseModel, EmailStr
 
 
 class Attach(BaseModel):
-    id: int
-    name: str
+    name: str = ""
     location: str
     type: AttachType
 
@@ -39,7 +38,6 @@ class PhoneNumber(BaseModel):
 
 
 class Address(BaseModel):
-    name: str
     street: str
     number: Optional[int]
     neighborhood: Optional[str]
@@ -72,7 +70,6 @@ class UserBase(BaseModel):
     phones: Optional[List[PhoneNumber]]
     address: Optional[Address]
     cpf: str
-    birthdate: date
     scholarship: float
     serie: Optional[Serie]
     type: UserType
@@ -83,10 +80,12 @@ class UserBase(BaseModel):
 
 class UserIn(UserBase):
     password: str
+    birthdate: str
 
 
 class UserOut(UserBase):
     id: int
+    birthdate: date
 
 
 class UserPoster(BaseModel):

@@ -68,7 +68,7 @@ export type Property = {
  */
 export type Address = {
   id: number
-  name: string // endereço
+  street: string // nome da rua
   neighborhood: string // bairro
   number?: number
   complement?: string

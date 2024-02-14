@@ -100,7 +100,7 @@ const UserForm = ({
           <Input
             placeholder="URL da Foto"
             size="md"
-            value={getUserPhotoUrl(user)}
+            value={user.photo?.location}
             onChange={(e) =>
               setUser({ ...user, photo: { location: e.target.value, type: "Link" } })
             }
@@ -162,7 +162,10 @@ const UserForm = ({
             onKeyDown={(e) => {
               const phone = phoneInput.current?.value
               if (e.key == "Enter" && phone) {
-                setUser({ ...user, phones: [...(user.phones || []), { value: phone }] })
+                setUser({
+                  ...user,
+                  phones: [...(user.phones || []), { value: phone, isEmergency: false }],
+                })
                 phoneInput.current.value = ""
               }
             }}
@@ -200,7 +203,7 @@ const UserForm = ({
             size="md"
             value={
               user.address
-                ? `${user.address.name}, ${user.address.number}, ${user.address.neighborhood} (${user.address.complement}) ${user.address.city} (${user.address.state} - ${user.address.cep})`
+                ? `${user.address.street}, ${user.address.number}, ${user.address.neighborhood} (${user.address.complement}) ${user.address.city} (${user.address.state} - ${user.address.cep})`
                 : "Sem endereço"
             }
             onChange={(e) => setUser({ ...user, name: e.target.value })}
@@ -222,6 +225,23 @@ const UserForm = ({
             size="md"
             value={user.cpf}
             onChange={(e) => setUser({ ...user, cpf: e.target.value })}
+            color="primary"
+            disabled={loading}
+            bordered
+          />
+        </label>
+
+        <label className="form-control w-full max-w-xs">
+          <div className="label">
+            <span className="label-text">Senha</span>
+          </div>
+          {/* TODO: Hide/Unhide button for password */}
+          <Input
+            placeholder="Senha"
+            size="md"
+            type="password"
+            value={user.password}
+            onChange={(e) => setUser({ ...user, password: e.target.value })}
             color="primary"
             disabled={loading}
             bordered

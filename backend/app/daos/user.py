@@ -1,3 +1,4 @@
+from datetime import datetime
 from typing import Any
 
 from app.daos.base import BaseDao
@@ -11,6 +12,8 @@ from .general import GeneralDao
 class UserDao(BaseDao):
 
     def create(self, user_data: dict[str, Any]) -> User | None:
+        user_data.update(birthdate=datetime.strptime(user_data["birthdate"],
+                                                     "%d/%m/%Y").date())
         _user = User(
             name=user_data["name"],
             type=user_data["type"],
