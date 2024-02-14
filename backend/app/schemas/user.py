@@ -14,6 +14,7 @@ from pydantic import BaseModel, EmailStr
 
 
 class Attach(BaseModel):
+    id: int = 0
     name: str = ""
     location: str
     type: AttachType

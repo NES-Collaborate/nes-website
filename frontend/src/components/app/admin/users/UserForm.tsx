@@ -130,8 +130,8 @@ const UserForm = ({
             bordered
           />
           <ul>
-            {(user.emails || []).map((email) => (
-              <li key={email.id}>
+            {(user.emails || []).map((email, i) => (
+              <li key={i}>
                 {email.value}
                 <Tooltip message="Remover este email">
                   <Button
@@ -174,8 +174,8 @@ const UserForm = ({
             bordered
           />
           <ul>
-            {(user.phones || []).map((phone) => (
-              <li key={phone.id}>
+            {(user.phones || []).map((phone, i) => (
+              <li key={i}>
                 {phone.value}
                 <Tooltip message="Remover este Telefone">
                   <Button
@@ -268,7 +268,7 @@ const UserForm = ({
             <span className="label-text">Tipo de Usuário</span>
           </label>
           <Select
-            defaultValue={"default"}
+            value={user.type}
             onChange={(e) => {
               const value = e.target.value
               if (value !== "default") {
@@ -276,11 +276,9 @@ const UserForm = ({
               }
             }}
           >
-            <Select.Option value={"default"} disabled>
-              Selecione um Tipo
-            </Select.Option>
-            {USER_TYPES.map((serie) => (
-              <Select.Option key={serie} value={serie}>
+            <Select.Option disabled>Selecione um Tipo</Select.Option>
+            {USER_TYPES.map((serie, i) => (
+              <Select.Option key={i} value={serie}>
                 {serie}
               </Select.Option>
             ))}
@@ -295,7 +293,7 @@ const UserForm = ({
               </label>
               <Select
                 color="primary"
-                defaultValue={"default"}
+                value={user.serie || "default"}
                 onChange={(e) => {
                   const value = e.target.value
                   if (value !== "default") {
@@ -307,11 +305,7 @@ const UserForm = ({
                   Selecione uma Série
                 </Select.Option>
                 {SERIES.map((serie) => (
-                  <Select.Option
-                    key={serie}
-                    value={serie}
-                    selected={serie === user.serie}
-                  >
+                  <Select.Option key={serie} value={serie}>
                     {serie}
                   </Select.Option>
                 ))}

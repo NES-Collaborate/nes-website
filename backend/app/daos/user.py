@@ -86,8 +86,8 @@ class UserDao(BaseDao):
                                                     _user.id)
 
         if user_data.get("photo"):
-            GeneralDao(self.session).update_attachment(user_data["photo"],
-                                                       _user.id)
+            user_data["photo"] = GeneralDao(self.session).create_attachment(
+                user_data["photo"])
 
         UPDATED_KEYS = [
             "name",
@@ -96,6 +96,7 @@ class UserDao(BaseDao):
             "birthdate",
             "scholarship",
             "serie",
+            "photo",
         ]
 
         for key, value in user_data.items():
