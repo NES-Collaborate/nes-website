@@ -28,6 +28,9 @@ export type User = {
   emails?: Email[]
   phones?: PhoneNumber[]
   address?: Address
+  password?: string
+  responsible_name?: string
+  responsible_phone?: string
   cpf: string
   birthdate: string
   scholarship: number

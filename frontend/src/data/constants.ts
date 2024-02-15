@@ -1,4 +1,4 @@
-import { Image, LandingPage, Serie, UserPage } from "@/types/constants"
+import { Image, LandingPage, Serie, UserPage, UserType } from "@/types/constants"
 import path from "path"
 import { FaClipboardList, FaHandHoldingHeart, FaUser } from "react-icons/fa"
 import { FaCircleInfo } from "react-icons/fa6"
@@ -165,6 +165,7 @@ export type Selection = {
   results: Student[]
 }
 
+// Example of Selection
 export const SELECTIONS_EXAMPLES = [
   {
     year: "2024",
@@ -263,4 +264,10 @@ export const SERIES: Serie[] = ["9º EF", "1º EM", "2º EM", "3º EM"]
 /**
  * Possible user types
  */
-export const USER_TYPES = ["admin", "other", "student", "responsible"]
+export const USER_TYPES: string[] = ["admin", "other", "student"]
+
+export const USER_TYPES_MASK: Record<UserType, string> = {
+  admin: "Administrador",
+  other: "Professor/Monitor",
+  student: "Aluno",
+}

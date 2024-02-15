@@ -61,4 +61,4 @@ export type Serie = "9º EF" | "1º EM" | "2º EM" | "3º EM"
 /**
  * User Type representation
  */
-export type UserType = "admin" | "other" | "student" | "responsible"
+export type UserType = "admin" | "other" | "student"

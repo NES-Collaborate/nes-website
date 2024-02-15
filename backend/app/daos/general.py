@@ -52,12 +52,14 @@ class GeneralDao(BaseDao):
 
     def create_attachment(self,
                           data: dict[str, Any],
-                          user_id: Optional[int] = None) -> None:
+                          user_id: Optional[int] = None) -> Attach:
 
+        data.pop("id", None)
         _attach = Attach(**data)
         _attach.user_id = user_id
         self.session.add(_attach)
         self.session.commit()
+        return _attach
 
     def update_address(self, data: dict[str, Any], user_id: int) -> None:
         _address = self.session.query(Address).filter(
@@ -70,7 +72,7 @@ class GeneralDao(BaseDao):
 
     def update_attachment(self, data: dict[str, Any], user_id: int) -> None:
         _attach = self.session.query(Attach).filter(
-            Attach.user_id == user_id).first()
+            Attach.id == data.get("id")).first()
         if _attach is None:
             return None
         for key, value in data.items():

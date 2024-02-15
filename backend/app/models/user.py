@@ -25,6 +25,8 @@ class User(BaseTable):
     cpf: Mapped[str] = mapped_column(sa.String, unique=True, index=True)
     birthdate: Mapped[date]
     scholarship: Mapped[float]
+    responsible_name: Mapped[Optional[str]]
+    responsible_phone: Mapped[Optional[str]]
     serie: Mapped[Optional[Serie]] = mapped_column(sa.Enum(*get_args(Serie)))
     type: Mapped[UserType] = mapped_column(sa.Enum(*get_args(UserType)))
 
@@ -89,7 +91,6 @@ class Address(BaseTable):
 
     __tablename__ = "addresses"
 
-    name: Mapped[str]
     street: Mapped[str]
     number: Mapped[Optional[int]]
     neighborhood: Mapped[Optional[str]]

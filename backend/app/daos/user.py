@@ -1,3 +1,4 @@
+from datetime import datetime
 from typing import Any
 
 from app.daos.base import BaseDao
@@ -11,14 +12,16 @@ from .general import GeneralDao
 class UserDao(BaseDao):
 
     def create(self, user_data: dict[str, Any]) -> User | None:
-        _user = User(
-            name=user_data["name"],
-            type=user_data["type"],
-            cpf=user_data["cpf"],
-            birthdate=user_data["birthdate"],
-            scholarship=user_data["scholarship"],
-            serie=user_data["serie"],
-        )
+        user_data.update(birthdate=datetime.strptime(user_data["birthdate"],
+                                                     "%d/%m/%Y").date())
+        _user = User(name=user_data["name"],
+                     type=user_data["type"],
+                     cpf=user_data["cpf"],
+                     birthdate=user_data["birthdate"],
+                     scholarship=user_data["scholarship"],
+                     serie=user_data["serie"],
+                     responsible_nane=user_data["responsible_name"],
+                     responsible_phone=user_data["responsible_phone"])
 
         _user.password = hash.bcrypt.hash(user_data["password"])
         self.session.add(_user)
@@ -83,16 +86,12 @@ class UserDao(BaseDao):
                                                     _user.id)
 
         if user_data.get("photo"):
-            GeneralDao(self.session).update_attachment(user_data["photo"],
-                                                       _user.id)
+            user_data["photo"] = GeneralDao(self.session).create_attachment(
+                user_data["photo"])
 
         UPDATED_KEYS = [
-            "name",
-            "type",
-            "cpf",
-            "birthdate",
-            "scholarship",
-            "serie",
+            "name", "type", "cpf", "birthdate", "scholarship", "serie",
+            "photo", "responsible_name", "responsible_phone"
         ]
 
         for key, value in user_data.items():

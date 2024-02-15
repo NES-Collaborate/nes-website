@@ -1,12 +1,11 @@
 import { useBackend } from "@/contexts/backend"
-import { SERIES, USER_TYPES } from "@/data/constants"
+import { SERIES, USER_TYPES, USER_TYPES_MASK } from "@/data/constants"
 import { Serie, UserType } from "@/types/constants"
 import { Address } from "@/types/entities"
 import { User } from "@/types/user"
-import { getUserPhotoUrl } from "@/utils/client"
 import { Dispatch, useEffect, useRef, useState } from "react"
 import { Button, Input, Select, Tooltip } from "react-daisyui"
-import { FaEdit, FaPlus, FaTrash } from "react-icons/fa"
+import { FaEdit, FaEye, FaEyeSlash, FaPlus, FaTrash } from "react-icons/fa"
 
 type Props = {
   user: User
@@ -35,6 +34,7 @@ const UserForm = ({
   const { backend } = useBackend()
   const emailInput = useRef<HTMLInputElement>(null)
   const phoneInput = useRef<HTMLInputElement>(null)
+  const [hidePassword, setHidePassword] = useState(true)
 
   useEffect(() => {
     // when the Address Modal closes.
@@ -77,46 +77,49 @@ const UserForm = ({
 
   return (
     <>
-      <div className="flex flex-col items-center gap-3">
-        <label className="form-control w-full max-w-xs">
-          <div className="label">
+      <div className="grid grid-cols-2 gap-3 space-y-3">
+        <div className="form-control col-span-full">
+          <label className="label">
             <span className="label-text">Nome</span>
-          </div>
-          <Input
-            placeholder="Nome do Usuário"
-            size="md"
+          </label>
+          <input
+            className="input input-bordered"
             value={user.name}
             onChange={(e) => setUser({ ...user, name: e.target.value })}
-            color="primary"
-            disabled={loading}
-            bordered
           />
-        </label>
+        </div>
 
-        <label className="form-control w-full max-w-xs">
-          <div className="label">
-            <span className="label-text">Foto</span>
-          </div>
-          <Input
-            placeholder="URL da Foto"
-            size="md"
-            value={getUserPhotoUrl(user)}
+        <div className="form-control">
+          <label className="label">
+            <span className="label-text">Foto de Perfil</span>
+          </label>
+          <input
+            className="input input-bordered"
+            value={user.photo?.location}
             onChange={(e) =>
               setUser({ ...user, photo: { location: e.target.value, type: "Link" } })
             }
-            color="primary"
-            disabled={loading}
-            bordered
           />
-        </label>
+        </div>
 
         <label className="form-control w-full max-w-xs">
           <div className="label">
-            <span className="label-text">Emails</span>
+            <span className="label-text">CPF</span>
           </div>
-          <Input
-            placeholder="Lista de Emails"
-            size="md"
+          <input
+            className="input input-bordered"
+            value={user.cpf}
+            onChange={(e) => setUser({ ...user, cpf: e.target.value })}
+          />
+        </label>
+
+        <div className="form-control">
+          <label className="label">
+            <span className="label-text">E-mails</span>
+          </label>
+          <input
+            className="input input-bordered"
+            placeholder="Insira Email + Enter"
             ref={emailInput}
             onKeyDown={(e) => {
               const email = emailInput.current?.value
@@ -127,13 +130,12 @@ const UserForm = ({
             }}
             color="primary"
             disabled={loading}
-            bordered
           />
-          <ul>
-            {(user.emails || []).map((email) => (
-              <li key={email.id}>
+          <ul className="mt-1 ml-2">
+            {(user.emails || []).map((email, i) => (
+              <li key={i}>
                 {email.value}
-                <Tooltip message="Remover este email">
+                <Tooltip message="Remover">
                   <Button
                     size="xs"
                     onClick={() =>
@@ -149,32 +151,34 @@ const UserForm = ({
               </li>
             ))}
           </ul>
-        </label>
+        </div>
 
-        <label className="form-control w-full max-w-xs">
-          <div className="label">
+        <div className="form-control">
+          <label className="label">
             <span className="label-text">Telefones</span>
-          </div>
-          <Input
-            placeholder="Lista de Telefones"
-            size="md"
+          </label>
+          <input
+            placeholder="Insira Telefone + Enter"
+            className="input input-bordered"
             ref={phoneInput}
             onKeyDown={(e) => {
               const phone = phoneInput.current?.value
               if (e.key == "Enter" && phone) {
-                setUser({ ...user, phones: [...(user.phones || []), { value: phone }] })
+                setUser({
+                  ...user,
+                  phones: [...(user.phones || []), { value: phone, isEmergency: false }],
+                })
                 phoneInput.current.value = ""
               }
             }}
             color="primary"
             disabled={loading}
-            bordered
           />
-          <ul>
-            {(user.phones || []).map((phone) => (
-              <li key={phone.id}>
+          <ul className="mt-1 ml-2">
+            {(user.phones || []).map((phone, i) => (
+              <li key={i}>
                 {phone.value}
-                <Tooltip message="Remover este Telefone">
+                <Tooltip message="Remover">
                   <Button
                     size="xs"
                     onClick={() =>
@@ -190,65 +194,73 @@ const UserForm = ({
               </li>
             ))}
           </ul>
-        </label>
+        </div>
 
-        <label className="form-control w-full max-w-xs">
+        <label className="form-control col-span-full">
           <div className="label">
-            <span className="label-text">Endereço</span>
+            <span className="label-text">
+              Endereço
+              <Button
+                onClick={() => setAddressModalOpen(true)}
+                color="primary"
+                size="xs"
+                className="ml-2"
+              >
+                <FaEdit />
+              </Button>
+            </span>
           </div>
-          <Input
-            size="md"
+          <input
+            className="input input-bordered btn text-left"
             value={
               user.address
-                ? `${user.address.name}, ${user.address.number}, ${user.address.neighborhood} (${user.address.complement}) ${user.address.city} (${user.address.state} - ${user.address.cep})`
+                ? `${user.address.street}, ${user.address.number}, ${user.address.neighborhood} (${user.address.complement}) ${user.address.city} (${user.address.state} - ${user.address.cep})`
                 : "Sem endereço"
             }
-            onChange={(e) => setUser({ ...user, name: e.target.value })}
-            color="primary"
             disabled
-            bordered
           />
-          <Button onClick={() => setAddressModalOpen(true)}>
-            <FaEdit />
-          </Button>
         </label>
 
-        <label className="form-control w-full max-w-xs">
-          <div className="label">
-            <span className="label-text">CPF</span>
-          </div>
-          <Input
-            placeholder="CPF"
-            size="md"
-            value={user.cpf}
-            onChange={(e) => setUser({ ...user, cpf: e.target.value })}
-            color="primary"
-            disabled={loading}
-            bordered
-          />
-        </label>
+        <div className="form-control w-full col-span-full">
+          <label className="label">
+            <span className="label-text">Senha</span>
+          </label>
+          <label className="input-group flex">
+            <input
+              type={hidePassword ? "password" : "text"}
+              className="input input-bordered w-full"
+              value={user.password}
+              onChange={(e) => setUser({ ...user, password: e.target.value })}
+            />
+            <button
+              onClick={() => setHidePassword(!hidePassword)}
+              className="btn btn-square btn-ghost"
+            >
+              {hidePassword ? <FaEye /> : <FaEyeSlash />}
+            </button>
+          </label>
+        </div>
 
         <label className="form-control w-full max-w-xs">
           <div className="label">
             <span className="label-text">Data de Nascimento</span>
           </div>
-          <Input
-            placeholder="DD/MM/AAAA"
-            size="md"
+          {/* TODO: Add a JQuery Mask here (https://github.com/igorescobar/jQuery-Mask-Plugin) */}
+          <input
+            placeholder="dd/mm/AAAA"
+            className="input input-bordered"
+            type="text"
             value={user.birthdate}
             onChange={(e) => setUser({ ...user, birthdate: e.target.value })}
-            color="primary"
-            disabled={loading}
-            bordered
           />
         </label>
 
-        <div className="form-control w-full max-w-xs">
+        <div className="form-control">
           <label className="label">
             <span className="label-text">Tipo de Usuário</span>
           </label>
           <Select
-            defaultValue={"default"}
+            value={user.type}
             onChange={(e) => {
               const value = e.target.value
               if (value !== "default") {
@@ -256,12 +268,10 @@ const UserForm = ({
               }
             }}
           >
-            <Select.Option value={"default"} disabled>
-              Selecione um Tipo
-            </Select.Option>
-            {USER_TYPES.map((serie) => (
-              <Select.Option key={serie} value={serie}>
-                {serie}
+            <Select.Option disabled>Selecione um Tipo</Select.Option>
+            {USER_TYPES.map((type, i) => (
+              <Select.Option key={i} value={type}>
+                {USER_TYPES_MASK[type as UserType]}
               </Select.Option>
             ))}
           </Select>
@@ -274,8 +284,7 @@ const UserForm = ({
                 <span className="label-text">Série</span>
               </label>
               <Select
-                color="primary"
-                defaultValue={"default"}
+                value={user.serie || "default"}
                 onChange={(e) => {
                   const value = e.target.value
                   if (value !== "default") {
@@ -287,11 +296,7 @@ const UserForm = ({
                   Selecione uma Série
                 </Select.Option>
                 {SERIES.map((serie) => (
-                  <Select.Option
-                    key={serie}
-                    value={serie}
-                    selected={serie === user.serie}
-                  >
+                  <Select.Option key={serie} value={serie}>
                     {serie}
                   </Select.Option>
                 ))}
@@ -302,23 +307,50 @@ const UserForm = ({
               <div className="label">
                 <span className="label-text">Valor da Bolsa</span>
               </div>
-              <Input
-                placeholder="MONEYYY $$$"
-                size="md"
+              <input
+                type="number"
+                className="input input-bordered"
                 value={user.scholarship}
-                onChange={(e) => {
-                  const value = parseFloat(e.target.value)
-                  setUser({ ...user, scholarship: value || 0 })
-                }}
-                color="primary"
-                disabled={loading}
-                bordered
+                onChange={(e) =>
+                  setUser({ ...user, scholarship: Number(e.target.value) })
+                }
+                step={0.01}
+                min={0}
               />
             </label>
+
+            <div className="form-control w-full max-w-xs">
+              <label className="label">
+                <span className="label-text">Nome do Responsável</span>
+              </label>
+              <input
+                type="text"
+                className="input input-bordered"
+                value={user.responsible_name}
+                onChange={(e) => setUser({ ...user, responsible_name: e.target.value })}
+              />
+            </div>
+
+            <div className="form-control w-full max-w-xs">
+              <label className="label">
+                <span className="label-text">Número do Responsável</span>
+              </label>
+              <input
+                type="text"
+                className="input input-bordered"
+                value={user.responsible_phone}
+                onChange={(e) => setUser({ ...user, responsible_phone: e.target.value })}
+              />
+            </div>
           </>
         )}
 
-        <Button variant="outline" color="accent" onClick={handleSubmit}>
+        <Button
+          variant="outline"
+          color="accent"
+          onClick={handleSubmit}
+          className="col-span-full"
+        >
           {action === "create" ? (
             <>
               <FaPlus /> Criar
