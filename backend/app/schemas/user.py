@@ -70,6 +70,8 @@ class UserBase(BaseModel):
     emails: Optional[List[Email]]
     phones: Optional[List[PhoneNumber]]
     address: Optional[Address]
+    responsible_name: Optional[str]
+    responsible_phone: Optional[str]
     cpf: str
     scholarship: float
     serie: Optional[Serie]

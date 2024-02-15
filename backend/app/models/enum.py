@@ -1,6 +1,6 @@
 from typing import Literal
 
-UserType = Literal['admin', 'other', 'student', 'responsible']
+UserType = Literal['admin', 'other', 'student']
 Serie = Literal['9º EF', '1º EM', '2º EM', '3º EM']
 AttachType = Literal['File', 'Link']
 AchievementType = Literal["olympic medal", "certificate"]

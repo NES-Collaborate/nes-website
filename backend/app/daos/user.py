@@ -14,14 +14,14 @@ class UserDao(BaseDao):
     def create(self, user_data: dict[str, Any]) -> User | None:
         user_data.update(birthdate=datetime.strptime(user_data["birthdate"],
                                                      "%d/%m/%Y").date())
-        _user = User(
-            name=user_data["name"],
-            type=user_data["type"],
-            cpf=user_data["cpf"],
-            birthdate=user_data["birthdate"],
-            scholarship=user_data["scholarship"],
-            serie=user_data["serie"],
-        )
+        _user = User(name=user_data["name"],
+                     type=user_data["type"],
+                     cpf=user_data["cpf"],
+                     birthdate=user_data["birthdate"],
+                     scholarship=user_data["scholarship"],
+                     serie=user_data["serie"],
+                     responsible_nane=user_data["responsible_name"],
+                     responsible_phone=user_data["responsible_phone"])
 
         _user.password = hash.bcrypt.hash(user_data["password"])
         self.session.add(_user)
@@ -90,13 +90,8 @@ class UserDao(BaseDao):
                 user_data["photo"])
 
         UPDATED_KEYS = [
-            "name",
-            "type",
-            "cpf",
-            "birthdate",
-            "scholarship",
-            "serie",
-            "photo",
+            "name", "type", "cpf", "birthdate", "scholarship", "serie",
+            "photo", "responsible_name", "responsible_phone"
         ]
 
         for key, value in user_data.items():
