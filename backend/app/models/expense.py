@@ -15,19 +15,43 @@ class ExpenseLog(BaseTable):
     value: Mapped[float]
     user_id: Mapped[int] = mapped_column(sa.Integer, sa.ForeignKey("users.id"))
     category_id: Mapped[int] = mapped_column(
-        sa.Integer, sa.ForeignKey("expense_categories.id"))
+        sa.Integer, sa.ForeignKey("expense_categories.id")
+    )
     proof_id: Mapped[Optional[int]] = mapped_column(
-        sa.Integer, sa.ForeignKey("attatches.id"))
+        sa.Integer, sa.ForeignKey("attatches.id")
+    )
     type: Mapped[ExpenseLogType] = mapped_column(
-        sa.Enum(*get_args(ExpenseLogType)))
+        sa.Enum(*get_args(ExpenseLogType))
+    )
     comment: Mapped[Optional[str]]
-    paidto_id: Mapped[Optional[int]] = mapped_column(sa.Integer,
-                                                     sa.ForeignKey("users.id"))
+    paidto_id: Mapped[Optional[int]] = mapped_column(
+        sa.Integer, sa.ForeignKey("users.id")
+    )
 
     addedBy: Mapped["User"] = relationship(foreign_keys=[user_id])
     category: Mapped["ExpenseCategory"] = relationship()
     proof: Mapped[Optional["Attach"]] = relationship()
     paidto: Mapped[Optional["User"]] = relationship(foreign_keys=[paidto_id])
+
+    def to_json(self):
+        type_mapper = {"Deposit": "Entrada", "Removal": "Saida"}
+        data = {
+            "Valor": self.value,
+            "Usuario": f"{self.addedBy.name} ({self.addedBy.id})",
+            "Categoria": f"{self.category.name} ({self.category.id})",
+            "Comprovante": (
+                f"{self.proof.location} ({self.proof.type})"
+                if self.proof
+                else ""
+            ),
+            "Tipo": type_mapper[self.type],
+            "Observação": getattr(self, "comment", "Nada"),
+            "Pago Para": (
+                f"{self.paidto.name} ({self.paidto.id})" if self.paidto else ""
+            ),
+        }
+
+        return data
 
 
 class ExpenseCategory(BaseTable):
