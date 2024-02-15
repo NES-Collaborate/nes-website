@@ -36,6 +36,8 @@ starlette = "0.32.0.post1"
 typing-extensions = "4.9.0"
 uvicorn = "0.25.0"
 python-multipart = "^0.0.6"
+pandas = "^2.2.0"
+xlsxwriter = "^3.1.9"
 
 
 [tool.poetry.group.dev.dependencies]
