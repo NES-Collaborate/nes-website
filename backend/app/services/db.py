@@ -15,7 +15,6 @@ SessionFactory = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 
 
 def create_default_user():
-
     password = hash.bcrypt.hash("admin")
     cpf = "00000000000"
 
@@ -41,16 +40,15 @@ def create_default_user():
 
 
 def create_test_student():
-
     session = SessionFactory()
 
     class_data = {
-        "name": "test 2024",
+        "name": "Teste 2024",
     }
 
     _class = Classroom(**class_data)
 
-    if not session.query(Classroom).filter_by(name="test 2024").first():
+    if not session.query(Classroom).filter_by(name=class_data["name"]).first():
         session.add(_class)
         session.commit()
         session.refresh(_class)
