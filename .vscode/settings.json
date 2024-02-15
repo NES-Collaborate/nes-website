@@ -1,6 +1,6 @@
 {
   "[python]": {
-    "editor.defaultFormatter": "eeyore.yapf",
+    "editor.defaultFormatter": "ms-python.black-formatter",
     "diffEditor.ignoreTrimWhitespace": false,
     "editor.formatOnSaveMode": "file",
     "editor.formatOnType": false,
