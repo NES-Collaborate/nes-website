@@ -6,7 +6,7 @@ import { ExpenseLog } from "@/types/finance"
 import { uploadAttach } from "@/utils/client"
 import clsx from "clsx"
 import { useRef, useState } from "react"
-import { Alert, Button, FileInput, Input, Select, Tooltip } from "react-daisyui"
+import { Alert, Button, FileInput, Input, Swap, Tooltip } from "react-daisyui"
 import { FaPlus } from "react-icons/fa"
 import { IoIosInformationCircle } from "react-icons/io"
 
@@ -25,7 +25,7 @@ const ExpenseLogForm = ({ toggle }: Props) => {
   const inputRefs = {
     value: useRef<HTMLInputElement>(null),
     category: useRef<HTMLInputElement>(null),
-    type: useRef<HTMLSelectElement>(null),
+    type: useRef<HTMLInputElement>(null),
     comment: useRef<HTMLInputElement>(null),
   }
 
@@ -89,7 +89,7 @@ const ExpenseLogForm = ({ toggle }: Props) => {
         placeholder="Transporte"
         message="Caso não exista será criada uma com o nome informado."
       />
-      <SelectField
+      <SwapField
         inputRef={inputRefs.type}
         label="Tipo"
         options={EXPENSE_LOG_QUERY_TYPES}
@@ -125,22 +125,20 @@ const InputField = ({ inputRef, label, message, ...rest }: any) => (
   </div>
 )
 
-const SelectField = ({ inputRef, label, options, ...rest }: any) => (
+const SwapField = ({ inputRef, label, options, ...rest }: any) => (
   <div className="form-control w-full max-w-xs">
     <label>
       <div className="label">
         <span className="label-text">{label}</span>
       </div>
     </label>
-    <Select ref={inputRef} size="md" color="primary" {...rest}>
-      {Object.keys(options).map((key: string, index: number) =>
-        key !== "all" ? (
-          <Select.Option key={index} value={key}>
-            {options[key as keyof typeof options]}
-          </Select.Option>
-        ) : null
-      )}
-    </Select>
+    <Swap
+      className="input input-primary !outline-none"
+      onElement="Entrada"
+      offElement="Saída"
+      ref={inputRef}
+      {...rest}
+    />
   </div>
 )
 
