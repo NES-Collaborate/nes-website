@@ -3,10 +3,12 @@ import { SERIES, USER_TYPES, USER_TYPES_MASK } from "@/data/constants"
 import { Serie, UserType } from "@/types/constants"
 import { Address } from "@/types/entities"
 import { User } from "@/types/user"
+import { maskPhone } from "@/utils/client"
 import clsx from "clsx"
 import { Dispatch, useEffect, useRef, useState } from "react"
-import { Button, Input, Select, Tooltip } from "react-daisyui"
+import { Button, Select, Tooltip } from "react-daisyui"
 import { FaEdit, FaEye, FaEyeSlash, FaPlus, FaTrash } from "react-icons/fa"
+import InputMask from "react-input-mask"
 
 type Props = {
   user: User
@@ -18,6 +20,7 @@ type Props = {
   addressModalOpen: boolean
   setAddressModalOpen: (open: boolean) => void
   addressModal: Address
+  closeModal: () => void
 }
 
 const UserForm = ({
@@ -29,12 +32,14 @@ const UserForm = ({
   setUsers,
   addressModalOpen,
   setAddressModalOpen,
+  closeModal,
   addressModal,
 }: Props) => {
   const [loading, setLoading] = useState(false)
   const { backend } = useBackend()
   const emailInput = useRef<HTMLInputElement>(null)
-  const phoneInput = useRef<HTMLInputElement>(null)
+  // const phoneInput = useRef<HTMLInputElement>(null)
+  const [currentPhone, setCurrentPhone] = useState("")
   const [hidePassword, setHidePassword] = useState(true)
   const [fillName, setFillName] = useState(false)
   const [fillCPF, setFillCPF] = useState(false)
@@ -48,9 +53,22 @@ const UserForm = ({
 
   const createUser = async () => {
     try {
-      const res = await backend.post("/admin/users", user)
+      const res = await backend.post("/admin/users", {
+        ...user,
+        cpf: user.cpf.replace(/\D/g, ""),
+        phones: (user.phones || []).map((phone) => ({
+          ...phone,
+          value: phone.value.replace(/\D/g, ""),
+        })),
+        address: {
+          ...user.address,
+          cep: user.address?.cep.replace(/\D/g, ""),
+        },
+        responsible_phone: (user.responsible_phone || "").replace(/\D/g, ""),
+      })
       setUsers([...users, res.data.user])
       setToast("Usuário criado com sucesso!")
+      closeModal()
     } catch {
       setToast("Erro ao criar usuário.")
     }
@@ -58,7 +76,19 @@ const UserForm = ({
 
   const editUser = async () => {
     try {
-      const res = await backend.put(`/admin/users/${user.id}`, user)
+      const res = await backend.put(`/admin/users/${user.id}`, {
+        ...user,
+        cpf: user.cpf.replace(/\D/g, ""),
+        phones: (user.phones || []).map((phone) => ({
+          ...phone,
+          value: phone.value.replace(/\D/g, ""),
+        })),
+        address: {
+          ...user.address,
+          cep: user.address?.cep.replace(/\D/g, ""),
+        },
+        responsible_phone: (user.responsible_phone || "").replace(/\D/g, ""),
+      })
       setUsers(users.map((u) => (u.id == user.id ? res.data.user : u)))
       setToast("Usuário editado com sucesso!")
     } catch {
@@ -162,7 +192,8 @@ const UserForm = ({
           <div className="label">
             <span className={clsx("label-text", fillCPF && "text-error")}>CPF*</span>
           </div>
-          <input
+          <InputMask
+            mask="999.999.999-99"
             className={clsx("input input-bordered", fillCPF && "input-error")}
             value={user.cpf}
             onChange={(e) => setUser({ ...user, cpf: e.target.value })}
@@ -176,9 +207,12 @@ const UserForm = ({
           <input
             className="input input-bordered"
             placeholder="Insira Email + Enter"
+            type="email"
             ref={emailInput}
             onKeyDown={(e) => {
               const email = emailInput.current?.value
+              // TODO: Add a email validator here.
+              if (!email?.includes("@") || email?.endsWith("@")) return
               if (e.key == "Enter" && email) {
                 setUser({ ...user, emails: [...(user.emails || []), { value: email }] })
                 emailInput.current.value = ""
@@ -213,18 +247,22 @@ const UserForm = ({
           <label className="label">
             <span className="label-text">Telefones</span>
           </label>
-          <input
+          <InputMask
+            mask="(99) 99999-9999"
             placeholder="Insira Telefone + Enter"
             className="input input-bordered"
-            ref={phoneInput}
+            onChange={(e) => setCurrentPhone(e.target.value)}
+            value={currentPhone}
             onKeyDown={(e) => {
-              const phone = phoneInput.current?.value
-              if (e.key == "Enter" && phone) {
+              if (e.key == "Enter" && currentPhone) {
                 setUser({
                   ...user,
-                  phones: [...(user.phones || []), { value: phone, isEmergency: false }],
+                  phones: [
+                    ...(user.phones || []),
+                    { value: currentPhone, isEmergency: false },
+                  ],
                 })
-                phoneInput.current.value = ""
+                setCurrentPhone(() => "")
               }
             }}
             color="primary"
@@ -233,7 +271,7 @@ const UserForm = ({
           <ul className="mt-1 ml-2">
             {(user.phones || []).map((phone, i) => (
               <li key={i}>
-                {phone.value}
+                {maskPhone(phone.value)}
                 <Tooltip message="Remover">
                   <Button
                     size="xs"
@@ -304,8 +342,9 @@ const UserForm = ({
             </span>
           </div>
           {/* TODO: Add a JQuery Mask here (https://github.com/igorescobar/jQuery-Mask-Plugin) */}
-          <input
-            placeholder="dd/mm/AAAA"
+          <InputMask
+            mask="99/99/9999"
+            placeholder="dd/mm/aaaa"
             className={clsx("input input-bordered", fillBirthdate && "input-error")}
             type="text"
             value={user.birthdate}
@@ -373,7 +412,8 @@ const UserForm = ({
               <label className="label">
                 <span className="label-text">Número do Responsável</span>
               </label>
-              <input
+              <InputMask
+                mask="(99) 99999-9999"
                 type="text"
                 className="input input-bordered"
                 value={user.responsible_phone}
