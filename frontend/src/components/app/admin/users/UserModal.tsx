@@ -35,6 +35,8 @@ const UserModal = ({ users, setUsers, action, userId, setUserId, setToast }: Pro
     scholarship: 0,
     password: "",
     type: "student",
+    responsible_name: "",
+    responsible_phone: "",
   })
 
   const [addressModalOpen, setAddressModalOpen] = useState(false)
@@ -53,6 +55,21 @@ const UserModal = ({ users, setUsers, action, userId, setUserId, setToast }: Pro
     if (action !== "create" && userId !== -1) {
       const user = users.find((n) => n.id === userId)
       if (user) setUser(user)
+    } else if (action === "create") {
+      setUser({
+        id: 0,
+        name: "",
+        photo: { location: getUserPhotoUrl({} as User), type: "Link" },
+        emails: [],
+        phones: [],
+        cpf: "",
+        birthdate: "",
+        scholarship: 0,
+        password: "",
+        type: "student",
+        responsible_name: "",
+        responsible_phone: "",
+      })
     }
   }, [userId, action, users])
 
@@ -111,6 +128,7 @@ const UserModal = ({ users, setUsers, action, userId, setUserId, setToast }: Pro
               addressModalOpen={addressModalOpen}
               setAddressModalOpen={setAddressModalOpen}
               addressModal={addressModal}
+              closeModal={closeModal}
             />
           )}
         </Modal.Body>

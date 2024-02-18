@@ -1,7 +1,7 @@
 import Toast from "@/components/Toast"
 import { useBackend } from "@/contexts/backend"
 import { User } from "@/types/user"
-import { getUserPhotoUrl } from "@/utils/client"
+import { getUserPhotoUrl, maskCPF } from "@/utils/client"
 import Image from "next/image"
 import Link from "next/link"
 import { useEffect, useState } from "react"
@@ -64,6 +64,7 @@ const UsersList = ({ query }: Props) => {
     <div className="overflow-x-auto mt-4">
       <Table zebra size="md">
         <Table.Head className="text-center">
+          <span>*</span>
           <span>Usuário</span>
           <span>CPF</span>
           <span>Ações</span>
@@ -72,17 +73,19 @@ const UsersList = ({ query }: Props) => {
         <Table.Body>
           {users.map((user) => (
             <Table.Row key={user.id} className="text-center">
-              <span className="flex gap-2 justify-center items-center">
+              <span className="flex justify-center">
                 <Image
                   src={getUserPhotoUrl(user)}
                   alt={user.name}
-                  width={40}
-                  height={40}
+                  width={45}
+                  height={45}
                   className="rounded-full"
                 />
+              </span>
+              <span>
                 <span className="font-bold">{user.name}</span>
               </span>
-              <span>{user.cpf || "-"}</span>
+              <span>{maskCPF(user.cpf)}</span>
               <span>
                 <Tooltip message="Editar">
                   <Button

@@ -1,4 +1,5 @@
 import UsersList from "@/components/app/admin/users/UsersList"
+import { withAuth } from "@/utils/auth"
 import { useState } from "react"
 import { Input } from "react-daisyui"
 
@@ -24,3 +25,5 @@ const AdminUsers = () => {
 }
 
 export default AdminUsers
+
+export const getServerSideProps = withAuth({ allowedUsers: ["admin"] })
