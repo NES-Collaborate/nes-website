@@ -1,9 +1,8 @@
 import { useBackend } from "@/contexts/backend"
 import { useExpenseLogs } from "@/contexts/expenseLogs"
 import { useSession } from "@/contexts/session"
-import { EXPENSE_LOG_QUERY_TYPES } from "@/data/translations"
 import { ExpenseLog } from "@/types/finance"
-import { uploadAttach } from "@/utils/client"
+import { maskMoney, uploadAttach } from "@/utils/client"
 import clsx from "clsx"
 import { useRef, useState } from "react"
 import { Alert, Button, FileInput, Input, Swap, Tooltip } from "react-daisyui"
@@ -25,10 +24,16 @@ const ExpenseLogForm = ({ toggle }: Props) => {
   const inputRefs = {
     value: useRef<HTMLInputElement>(null),
     category: useRef<HTMLInputElement>(null),
-    type: useRef<HTMLInputElement>(null),
     comment: useRef<HTMLInputElement>(null),
   }
 
+  const [money, setMoney] = useState("")
+  const [type, setType] = useState("Removal")
+
+  const toggleType = (e: any) => {
+    setType(() => (e.target.checked ? "Deposit" : "Removal"))
+    console.log(type)
+  }
   const handleSubmit = async () => {
     setIsLoading(true)
     try {
@@ -42,8 +47,9 @@ const ExpenseLogForm = ({ toggle }: Props) => {
       }
 
       form["category"] = { id: 0, name: form["category"], description: "" }
-      form["value"] = parseFloat(form["value"])
+      form["value"] = money.replace(".", "").replace(",", ".")
       form["proof"] = proof
+      form["type"] = type
 
       const res = await backend.post("/admin/finance", form)
 
@@ -76,28 +82,21 @@ const ExpenseLogForm = ({ toggle }: Props) => {
     <div className="flex flex-col items-center gap-3">
       {error && <Alert status="error">{error}</Alert>}
       <InputField
-        inputRef={inputRefs.value}
+        value={money}
+        onChange={(e: any) => setMoney(maskMoney(e.target.value))}
         label="Valor (R$)"
-        placeholder="0.00"
-        type="number"
-        min={0}
-        step={0.01}
       />
       <InputField
         inputRef={inputRefs.category}
         label="Categoria"
-        placeholder="Transporte"
         message="Caso não exista será criada uma com o nome informado."
       />
-      <SwapField
-        inputRef={inputRefs.type}
-        label="Tipo"
-        options={EXPENSE_LOG_QUERY_TYPES}
-      />
+      <SwapField label="Tipo" onChange={toggleType} />
+
       <InputField
         inputRef={inputRefs.comment}
         label="Comentário"
-        placeholder="Pão, Queijo..."
+        message="Caso queira adicionar alguma informação adicional."
       />
       <FileInputField label="Comprovante" onChange={handleProofChange} />
       <Button onClick={handleSubmit} disabled={isLoading}>
@@ -136,7 +135,6 @@ const SwapField = ({ inputRef, label, options, ...rest }: any) => (
       className="input input-primary !outline-none"
       onElement="Entrada"
       offElement="Saída"
-      ref={inputRef}
       {...rest}
     />
   </div>

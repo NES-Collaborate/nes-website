@@ -1,8 +1,8 @@
 import { Address } from "@/types/entities"
-import { useState } from "react"
 import { Button, Input, Modal } from "react-daisyui"
 import { FaEdit } from "react-icons/fa"
 import { IoMdClose } from "react-icons/io"
+import InputMask from "react-input-mask"
 
 type Props = {
   open: boolean
@@ -15,8 +15,6 @@ type Props = {
 // TODO: Add verifications of the filled values
 // TODO: Add input-select for Cities and States (UF)
 const AddressModal = ({ open, setOpen, address, setAddress }: Props) => {
-  const [loading, setLoading] = useState(false) // will be used when the API is being called
-
   return (
     <Modal open={open} responsive>
       <Button
@@ -40,7 +38,6 @@ const AddressModal = ({ open, setOpen, address, setAddress }: Props) => {
             <Input
               value={address.street}
               onChange={(e) => setAddress({ ...address, street: e.target.value })}
-              disabled={loading}
               bordered
             />
           </label>
@@ -52,7 +49,6 @@ const AddressModal = ({ open, setOpen, address, setAddress }: Props) => {
             <Input
               value={address.neighborhood}
               onChange={(e) => setAddress({ ...address, neighborhood: e.target.value })}
-              disabled={loading}
               bordered
             />
           </label>
@@ -68,7 +64,6 @@ const AddressModal = ({ open, setOpen, address, setAddress }: Props) => {
                 if (number === "") setAddress({ ...address, number: undefined })
                 else setAddress({ ...address, number: parseInt(number) || undefined })
               }}
-              disabled={loading}
               bordered
             />
           </label>
@@ -80,7 +75,6 @@ const AddressModal = ({ open, setOpen, address, setAddress }: Props) => {
             <Input
               value={address.complement || ""}
               onChange={(e) => setAddress({ ...address, complement: e.target.value })}
-              disabled={loading}
               bordered
             />
           </label>
@@ -92,7 +86,6 @@ const AddressModal = ({ open, setOpen, address, setAddress }: Props) => {
             <Input
               value={address.city}
               onChange={(e) => setAddress({ ...address, city: e.target.value })}
-              disabled={loading}
               bordered
             />
           </label>
@@ -101,11 +94,13 @@ const AddressModal = ({ open, setOpen, address, setAddress }: Props) => {
             <div className="label">
               <span className="label-text">Estado</span>
             </div>
-            <Input
+            <InputMask
+              mask="aa"
               value={address.state}
-              onChange={(e) => setAddress({ ...address, state: e.target.value })}
-              disabled={loading}
-              bordered
+              onChange={(e) =>
+                setAddress({ ...address, state: e.target.value.toUpperCase() })
+              }
+              className="input input-bordered"
             />
           </label>
 
@@ -113,11 +108,11 @@ const AddressModal = ({ open, setOpen, address, setAddress }: Props) => {
             <div className="label">
               <span className="label-text">CEP</span>
             </div>
-            <Input
+            <InputMask
+              mask="99999-999"
               value={address.cep}
               onChange={(e) => setAddress({ ...address, cep: e.target.value })}
-              disabled={loading}
-              bordered
+              className="input input-bordered"
             />
           </label>
 

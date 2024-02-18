@@ -3,7 +3,7 @@ import { useSession } from "@/contexts/session"
 import { USER_TYPES_MASK } from "@/data/constants"
 import { User } from "@/types/user"
 import { withAuth } from "@/utils/auth"
-import { getUserPhotoUrl } from "@/utils/client"
+import { getUserPhotoUrl, maskCEP, maskCPF, maskPhone } from "@/utils/client"
 import { getUser } from "@/utils/user"
 import Image from "next/image"
 import { useRouter } from "next/router"
@@ -78,7 +78,7 @@ const UserProfile = () => {
             </div>
             <p>
               <FaIdCard className="inline mr-2" />
-              <strong>CPF:</strong> {user.cpf}
+              <strong>CPF:</strong> {maskCPF(user.cpf)}
             </p>
             <p>
               <FaCalendarAlt className="inline mr-2" />
@@ -111,7 +111,7 @@ const UserProfile = () => {
             {(user.phones || []).map((phone, index) => (
               <p key={index}>
                 <FaPhone className="inline mr-2" />
-                <strong>Telefone {index + 1}:</strong> {phone.value}
+                <strong>Telefone {index + 1}:</strong> {maskPhone(phone.value)}
                 {phone.isEmergency && (
                   <Tooltip message="Telefone de emergência">
                     <FaExclamationCircle className="ml-2 text-red-500" />
@@ -136,7 +136,7 @@ const UserProfile = () => {
               <strong>Numero:</strong> {user.address?.number}
             </p>
             <p>
-              <strong>CEP:</strong> {user.address?.cep}
+              <strong>CEP:</strong> {maskCEP(user.address?.cep || "")}
             </p>
             <p>
               <strong>Complemento:</strong> {user.address?.complement || "-"}
