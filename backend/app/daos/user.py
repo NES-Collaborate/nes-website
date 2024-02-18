@@ -20,7 +20,7 @@ class UserDao(BaseDao):
                      birthdate=user_data["birthdate"],
                      scholarship=user_data["scholarship"],
                      serie=user_data["serie"],
-                     responsible_nane=user_data["responsible_name"],
+                     responsible_name=user_data["responsible_name"],
                      responsible_phone=user_data["responsible_phone"])
 
         _user.password = hash.bcrypt.hash(user_data["password"])
