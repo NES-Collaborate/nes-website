@@ -30,7 +30,7 @@ class ExpenseLogBase(BaseModel):
 
 
 class ExpenseLogIn(ExpenseLogBase):
-    proof: int
+    proof: Optional[int]
     pass
 
 

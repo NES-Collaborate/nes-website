@@ -39,7 +39,7 @@ async def upload_file(
     with open(save_path, "wb") as f:
         f.write(await data.read())
 
-    _attach = Attach(name=str(filename), location=str(save_path), type="file")
+    _attach = Attach(name=str(filename), location=str(save_path), type="File")
     session.add(_attach)
     session.commit()
     session.refresh(_attach)
