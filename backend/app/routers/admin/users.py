@@ -13,20 +13,29 @@ router = APIRouter(prefix="/users", tags=["users"])
 
 @router.get("")
 async def get_users(
-        current_user: User = Depends(UserService.get_current_user),
-        session: Session = Depends(get_session),
-        q: Optional[str] = None,
+    current_user: User = Depends(UserService.get_current_user),
+    session: Session = Depends(get_session),
+    q: Optional[str] = None,
+    id: Optional[int] = None,
 ):
-    allowed_users = ["admin", "teacher"]
+    allowed_users = ["admin", "teacher", "student"]
     if not current_user.type in allowed_users:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail="Usuário não autorizado",
         )
 
-    results = session.query(User).filter(User.name.contains(q or "")).all()
+    query = session.query(User)
+    if q:
+        query = query.filter(User.name.contains(q))
+    if id:
+        query = query.filter(User.id == id)
 
-    if current_user.type == "admin":
+    results = query.all()
+
+    if current_user.type == "admin" or (
+        current_user.type == "student" and current_user.id == id
+    ):
         users = [UserOut.model_validate(result) for result in results]
     else:
         users = [UserPoster.model_validate(result) for result in results]
@@ -34,10 +43,11 @@ async def get_users(
 
 
 @router.post("")
-async def create_user(user: UserIn,
-                      current_user: User = Depends(
-                          UserService.get_current_user),
-                      session: Session = Depends(get_session)):
+async def create_user(
+    user: UserIn,
+    current_user: User = Depends(UserService.get_current_user),
+    session: Session = Depends(get_session),
+):
 
     if current_user.type != "admin":
         raise HTTPException(
@@ -50,11 +60,12 @@ async def create_user(user: UserIn,
 
 
 @router.put("/{user_id}")
-async def update_user(user_id: int,
-                      user: UserBase,
-                      current_user: User = Depends(
-                          UserService.get_current_user),
-                      session: Session = Depends(get_session)):
+async def update_user(
+    user_id: int,
+    user: UserBase,
+    current_user: User = Depends(UserService.get_current_user),
+    session: Session = Depends(get_session),
+):
 
     if current_user.type != "admin":
         raise HTTPException(
@@ -76,10 +87,11 @@ async def update_user(user_id: int,
 
 
 @router.delete("/{user_id}")
-async def delete_user(user_id: int,
-                      current_user: User = Depends(
-                          UserService.get_current_user),
-                      session: Session = Depends(get_session)):
+async def delete_user(
+    user_id: int,
+    current_user: User = Depends(UserService.get_current_user),
+    session: Session = Depends(get_session),
+):
 
     if current_user.type != "admin":
         raise HTTPException(
