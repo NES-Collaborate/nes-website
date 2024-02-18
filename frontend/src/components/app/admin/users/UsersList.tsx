@@ -3,9 +3,10 @@ import { useBackend } from "@/contexts/backend"
 import { User } from "@/types/user"
 import { getUserPhotoUrl } from "@/utils/client"
 import Image from "next/image"
+import Link from "next/link"
 import { useEffect, useState } from "react"
 import { Button, Table, Tooltip } from "react-daisyui"
-import { FaEdit, FaPlus, FaTrash } from "react-icons/fa"
+import { FaEdit, FaEye, FaPlus, FaTrash } from "react-icons/fa"
 import UserModal from "./UserModal"
 
 type Props = {
@@ -94,8 +95,20 @@ const UsersList = ({ query }: Props) => {
                 </Tooltip>
 
                 <Tooltip message="Excluir">
-                  <Button onClick={() => openDeleteModal(user.id)} color="error">
+                  <Button
+                    onClick={() => openDeleteModal(user.id)}
+                    color="error"
+                    className="mr-2"
+                  >
                     <FaTrash />
+                  </Button>
+                </Tooltip>
+
+                <Tooltip message="Ver Perfil">
+                  <Button color="secondary">
+                    <Link href={`/app/profile?userId=${user.id}`} target="_blank">
+                      <FaEye />
+                    </Link>
                   </Button>
                 </Tooltip>
               </span>

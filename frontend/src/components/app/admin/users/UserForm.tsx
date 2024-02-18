@@ -3,6 +3,7 @@ import { SERIES, USER_TYPES, USER_TYPES_MASK } from "@/data/constants"
 import { Serie, UserType } from "@/types/constants"
 import { Address } from "@/types/entities"
 import { User } from "@/types/user"
+import clsx from "clsx"
 import { Dispatch, useEffect, useRef, useState } from "react"
 import { Button, Input, Select, Tooltip } from "react-daisyui"
 import { FaEdit, FaEye, FaEyeSlash, FaPlus, FaTrash } from "react-icons/fa"
@@ -35,6 +36,10 @@ const UserForm = ({
   const emailInput = useRef<HTMLInputElement>(null)
   const phoneInput = useRef<HTMLInputElement>(null)
   const [hidePassword, setHidePassword] = useState(true)
+  const [fillName, setFillName] = useState(false)
+  const [fillCPF, setFillCPF] = useState(false)
+  const [fillBirthdate, setFillBirthdate] = useState(false)
+  const [fillScholarship, setFillScholarship] = useState(false)
 
   useEffect(() => {
     // when the Address Modal closes.
@@ -61,9 +66,38 @@ const UserForm = ({
     }
   }
 
+  const verifyFields = (
+    comparison: boolean,
+    message: string,
+    setEmpty: React.Dispatch<React.SetStateAction<boolean>>
+  ) => {
+    if (comparison) {
+      setToast(`Por favor, informe ${message} do usuário.`)
+      setEmpty(true)
+      setLoading(false)
+      return true
+    } else {
+      setEmpty(false)
+      return false
+    }
+  }
+
   const handleSubmit = async () => {
     setLoading(true)
-    // TODO: Add filled fields verification
+
+    if (
+      verifyFields(user.name.trim() === "", "o nome", setFillName) ||
+      verifyFields(user.cpf.trim() === "", "o CPF", setFillCPF) ||
+      verifyFields(
+        user.birthdate.trim() === "",
+        "a data de nascimento",
+        setFillBirthdate
+      ) ||
+      verifyFields(user.scholarship === 0, "a bolsa", setFillScholarship)
+    ) {
+      return
+    }
+
     switch (action) {
       case "create":
         await createUser()
@@ -80,10 +114,32 @@ const UserForm = ({
       <div className="grid grid-cols-2 gap-3 space-y-3">
         <div className="form-control col-span-full">
           <label className="label">
-            <span className="label-text">Nome</span>
+            <span className="label-text">Tipo de Usuário</span>
+          </label>
+          <Select
+            value={user.type}
+            onChange={(e) => {
+              const value = e.target.value
+              if (value !== "default") {
+                setUser({ ...user, type: value as UserType })
+              }
+            }}
+          >
+            <Select.Option disabled>Selecione um Tipo</Select.Option>
+            {USER_TYPES.map((type, i) => (
+              <Select.Option key={i} value={type}>
+                {USER_TYPES_MASK[type as UserType]}
+              </Select.Option>
+            ))}
+          </Select>
+        </div>
+
+        <div className="form-control col-span-full">
+          <label className="label">
+            <span className={clsx("label-text", fillName && "text-error")}>Nome*</span>
           </label>
           <input
-            className="input input-bordered"
+            className={clsx("input input-bordered", fillName && "input-error")}
             value={user.name}
             onChange={(e) => setUser({ ...user, name: e.target.value })}
           />
@@ -104,10 +160,10 @@ const UserForm = ({
 
         <label className="form-control w-full max-w-xs">
           <div className="label">
-            <span className="label-text">CPF</span>
+            <span className={clsx("label-text", fillCPF && "text-error")}>CPF*</span>
           </div>
           <input
-            className="input input-bordered"
+            className={clsx("input input-bordered", fillCPF && "input-error")}
             value={user.cpf}
             onChange={(e) => setUser({ ...user, cpf: e.target.value })}
           />
@@ -243,39 +299,19 @@ const UserForm = ({
 
         <label className="form-control w-full max-w-xs">
           <div className="label">
-            <span className="label-text">Data de Nascimento</span>
+            <span className={clsx("label-text", fillBirthdate && "text-error")}>
+              Data de Nascimento*
+            </span>
           </div>
           {/* TODO: Add a JQuery Mask here (https://github.com/igorescobar/jQuery-Mask-Plugin) */}
           <input
             placeholder="dd/mm/AAAA"
-            className="input input-bordered"
+            className={clsx("input input-bordered", fillBirthdate && "input-error")}
             type="text"
             value={user.birthdate}
             onChange={(e) => setUser({ ...user, birthdate: e.target.value })}
           />
         </label>
-
-        <div className="form-control">
-          <label className="label">
-            <span className="label-text">Tipo de Usuário</span>
-          </label>
-          <Select
-            value={user.type}
-            onChange={(e) => {
-              const value = e.target.value
-              if (value !== "default") {
-                setUser({ ...user, type: value as UserType })
-              }
-            }}
-          >
-            <Select.Option disabled>Selecione um Tipo</Select.Option>
-            {USER_TYPES.map((type, i) => (
-              <Select.Option key={i} value={type}>
-                {USER_TYPES_MASK[type as UserType]}
-              </Select.Option>
-            ))}
-          </Select>
-        </div>
 
         {user.type === "student" && (
           <>
@@ -305,11 +341,13 @@ const UserForm = ({
 
             <label className="form-control w-full max-w-xs">
               <div className="label">
-                <span className="label-text">Valor da Bolsa</span>
+                <span className={clsx("label-text", fillScholarship && "text-error")}>
+                  Valor da Bolsa*
+                </span>
               </div>
               <input
                 type="number"
-                className="input input-bordered"
+                className={clsx("input input-bordered", fillScholarship && "input-error")}
                 value={user.scholarship}
                 onChange={(e) =>
                   setUser({ ...user, scholarship: Number(e.target.value) })
