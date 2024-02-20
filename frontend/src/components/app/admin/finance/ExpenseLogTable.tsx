@@ -1,8 +1,10 @@
 import { Attach } from "@/types/entities"
 import { ExpenseLog } from "@/types/finance"
 import clsx from "clsx"
+import { useState } from "react"
 import { Button } from "react-daisyui"
 import { IoMdEye } from "react-icons/io"
+import ExpenseLogDetailsModal from "./ExpenseLogDetailsModal"
 
 type Props = {
   logs: ExpenseLog[]
@@ -10,6 +12,15 @@ type Props = {
 }
 
 const ExpenseLogTable = ({ logs, setProof }: Props) => {
+  const [detailsModal, setDetailsModal] = useState(false)
+  const [expenseId, setExpenseId] = useState(-1)
+
+  const handleClick = (id: number) => {
+    setExpenseId(id)
+    setDetailsModal((_) => !_)
+  }
+
+  const toggleDetailsModal = () => setDetailsModal((_) => !_)
   return (
     <div className="overflow-x-auto mt-3">
       <table className="table table-sm text-center table-zebra-zebra">
@@ -52,12 +63,19 @@ const ExpenseLogTable = ({ logs, setProof }: Props) => {
                 </Button>
               </td>
               <td>
-                <Button>Detalhes</Button>
+                <Button onClick={() => handleClick(exp.id)}>Detalhes</Button>
               </td>
             </tr>
           ))}
         </tbody>
       </table>
+
+      <ExpenseLogDetailsModal
+        isOpen={detailsModal}
+        toggle={toggleDetailsModal}
+        logs={logs}
+        expenseId={expenseId}
+      />
     </div>
   )
 }
