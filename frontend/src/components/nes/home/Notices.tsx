@@ -23,7 +23,7 @@ const Notices = () => {
       .finally(() => setIsLoading(false))
   }, [])
 
-  if (!notices) {
+  if (notices.length === 0) {
     return null
   }
 

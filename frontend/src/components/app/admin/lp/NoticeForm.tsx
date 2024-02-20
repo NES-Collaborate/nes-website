@@ -1,7 +1,7 @@
 import { Notice } from "@/types/constants"
 import { axiosApi } from "@/utils/axiosClient"
 import { useState } from "react"
-import { Button, Input, Textarea } from "react-daisyui"
+import { Button, FileInput, Input, Textarea } from "react-daisyui"
 import { FaEdit, FaPlus } from "react-icons/fa"
 
 type Props = {
@@ -22,6 +22,17 @@ const NoticeForm = ({
   setNotices,
 }: Props) => {
   const [isLoading, setIsLoading] = useState(false)
+
+  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0]
+    if (file) {
+      const reader = new FileReader()
+      reader.onload = () => {
+        setNotice({ ...notice, image: reader.result as string })
+      }
+      reader.readAsDataURL(file)
+    }
+  }
 
   const createNotice = async () => {
     try {
@@ -113,12 +124,10 @@ const NoticeForm = ({
         <div className="label">
           <span className="label-text">Imagem</span>
         </div>
-        <Input
-          placeholder="Link para imagem da noticia"
+        <FileInput
           size="md"
-          value={notice.image}
-          onChange={(e) => setNotice({ ...notice, image: e.target.value })}
           color="primary"
+          onChange={handleImageChange}
           disabled={isLoading}
           bordered
         />
