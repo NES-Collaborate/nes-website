@@ -14,7 +14,7 @@ const Finance = (props: FinanceProps) => {
     <>
       <h1 className="text-2xl text-center my-3 font-semibold">Gestão Financeira</h1>
 
-      <div className="container mx-auto">
+      <div className="container mx-auto w-11/12">
         <ExpenseLogsProvider>
           <ExpenseLogStats {...props} />
           <ExpenseLogs />
