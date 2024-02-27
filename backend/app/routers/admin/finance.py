@@ -65,7 +65,7 @@ async def get_finances(
     paidTo = paidTo.strip()
     if paidTo:
         results = results.outerjoin(
-            paidToUsers, paidToUsers.id == ExpenseLog.paidto_id
+            paidToUsers, paidToUsers.id == ExpenseLog.paidTo_id
         )
         conditions.append(paidToUsers.name.contains(paidTo.strip()))
 
@@ -112,7 +112,7 @@ async def download_finances(
     paidTo = paidTo.strip()
     if paidTo:
         results = results.outerjoin(
-            paidToUsers, paidToUsers.id == ExpenseLog.paidto_id
+            paidToUsers, paidToUsers.id == ExpenseLog.paidTo_id
         )
         conditions.append(paidToUsers.name.contains(paidTo))
 
