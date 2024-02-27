@@ -56,8 +56,12 @@ const ExpenseLogStats = ({ currentBalance = 0, totalExpenses = 0 }: Props) => {
             currency: "BRL",
           })}
         </div>
-        <div className="stat-actions flex justify-end gap-3">
-          <Button color="secondary" onClick={toggleExpenseLogModal}>
+        <div className="stat-actions flex justify-end flex-wrap gap-3">
+          <Button
+            className=" max-w-fit"
+            color="secondary"
+            onClick={toggleExpenseLogModal}
+          >
             <IoIosAddCircle size={25} /> Adicionar Registro
           </Button>
           <Link href={"/app/admin/finance/scholarship"} className="btn btn-primary">

@@ -24,14 +24,14 @@ class ExpenseLog(BaseTable):
         sa.Enum(*get_args(ExpenseLogType))
     )
     comment: Mapped[Optional[str]]
-    paidto_id: Mapped[Optional[int]] = mapped_column(
+    paidTo_id: Mapped[Optional[int]] = mapped_column(
         sa.Integer, sa.ForeignKey("users.id")
     )
 
     addedBy: Mapped["User"] = relationship(foreign_keys=[user_id])
     category: Mapped["ExpenseCategory"] = relationship()
     proof: Mapped[Optional["Attach"]] = relationship()
-    paidto: Mapped[Optional["User"]] = relationship(foreign_keys=[paidto_id])
+    paidTo: Mapped[Optional["User"]] = relationship(foreign_keys=[paidTo_id])
 
     def to_json(self):
         type_mapper = {"Deposit": "Entrada", "Removal": "Saida"}
@@ -47,7 +47,7 @@ class ExpenseLog(BaseTable):
             "Tipo": type_mapper[self.type],
             "Observação": getattr(self, "comment", "Nada"),
             "Pago Para": (
-                f"{self.paidto.name} ({self.paidto.id})" if self.paidto else ""
+                f"{self.paidTo.name} ({self.paidTo.id})" if self.paidTo else ""
             ),
         }
 

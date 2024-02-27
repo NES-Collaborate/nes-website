@@ -47,7 +47,7 @@ class ExpenseLogOut(ExpenseLogBase):
 
     proof: Optional[Attach]
     addedBy: UserMinimal
-    paidto: Optional[UserMinimal]
+    paidTo: Optional[UserMinimal]
     id: int
     createdAt: datetime
 
