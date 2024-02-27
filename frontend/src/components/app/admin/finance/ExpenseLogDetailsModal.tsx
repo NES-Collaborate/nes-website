@@ -1,6 +1,6 @@
 import { EXPENSE_LOG_QUERY_TYPES } from "@/data/translations"
 import { ExpenseLog } from "@/types/finance"
-import clsx from "clsx"
+import { getAttachmentUrl, getUserPhotoUrl } from "@/utils/client"
 import Image from "next/image"
 import Link from "next/link"
 import { Button, Modal } from "react-daisyui"
@@ -14,104 +14,99 @@ type Props = {
 }
 
 const ExpenseLogDetailsModal = ({ isOpen, toggle, logs, expenseId }: Props) => {
+  const expense = logs.find((log) => log.id === expenseId)
+
   return (
-    <Modal open={isOpen} responsive className="!w-5/6 !max-w-full">
-      <Button
-        onClick={toggle}
-        className="absolute right-2 top-2"
-        color="error"
-        shape="circle"
-        size="xs"
-      >
-        <IoMdClose />
-      </Button>
-
-      <Modal.Header className="font-bold">Detalhes da Despesa</Modal.Header>
-
-      <Modal.Body className="container mx-auto p-4">
-        {logs.map((exp) => {
-          if (exp.id === expenseId) {
-            return (
-              <div className="flex flex-col" key={exp.id}>
-                <h2 className="card-title flex items-center gap-2 text-3xl">
-                  {exp.category.name}
-                </h2>
-                <p className="mb-4">{exp.comment}</p>
-
-                <div className="flex flex-wrap justify-evenly mb-4">
-                  <p>
-                    <strong>Adicionado por:</strong> {exp.addedBy.name}
-                  </p>
-                  <p>
-                    <strong>Criado em:</strong>{" "}
-                    {new Date(exp.createdAt).toLocaleDateString("pt-BR", {
-                      year: "numeric",
-                      month: "short",
-                      day: "numeric",
-                    })}
-                  </p>
-                </div>
-
-                <div className="flex flex-wrap justify-evenly">
-                  {exp.paidTo ? (
-                    <div>
-                      <strong>Pago à:</strong>
-
-                      <Link
-                        href={`/app/profile?userId=${exp.paidTo.id}`}
-                        className="p-2 flex flex-col items-center"
-                      >
-                        <Button shape="circle">
-                          {exp.paidTo?.photo?.location && (
-                            <Image
-                              src={exp.paidTo?.photo?.location}
-                              alt={`${exp.paidTo?.name} profile photo`}
-                              width={50}
-                              height={50}
-                              className="rounded-full"
-                            />
-                          )}
-                        </Button>
-                        <span className="text-md text-center">{exp.paidTo?.name}</span>
-                      </Link>
-                    </div>
-                  ) : null}
-
-                  {exp.proof?.location && (
-                    <div className="flex flex-col items-center">
-                      <strong>Comprovante:</strong>
-
+    <Modal open={isOpen} className="!max-w-5xl mx-auto">
+      <Modal.Body className="space-y-4">
+        <div className="flex justify-between items-start">
+          <Modal.Header className=" font-bold text-2xl">Detalhes da Despesa</Modal.Header>
+          <Button onClick={toggle} className="btn-circle btn-error" size="xs">
+            <IoMdClose />
+          </Button>
+        </div>
+        {expense && (
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 bg-base-200 p-4 rounded-box">
+            <div>
+              <h2 className="font-semibold text-xl mb-2">{expense.category.name}</h2>
+              <p className="text-base mb-4">{expense.comment}</p>
+              <div className="space-y-2">
+                <p className="flex items-center space-x-2">
+                  <strong>Adicionado por:</strong>
+                  <Link
+                    className="text-accent underline flex items-center space-x-2"
+                    href={`/app/profile?userId=${expense.addedBy.id}`}
+                  >
+                    {expense.addedBy.name}
+                    <Image
+                      src={getUserPhotoUrl(expense.addedBy)}
+                      alt={`${expense.addedBy.name} profile photo`}
+                      width={40}
+                      height={40}
+                      className="rounded-full"
+                    />
+                  </Link>
+                </p>
+                <p>
+                  <strong className="mr-2">Criado em:</strong>
+                  {new Date(expense.createdAt).toLocaleDateString("pt-BR", {
+                    year: "numeric",
+                    month: "short",
+                    day: "numeric",
+                  })}
+                </p>
+                {expense.paidTo && (
+                  <div className="flex items-center space-x-2">
+                    <strong>Pago à:</strong>
+                    <Link
+                      className="text-accent underline flex items-center space-x-2"
+                      href={`/app/profile?userId=${expense.paidTo.id}`}
+                    >
+                      {expense.paidTo.name}
                       <Image
-                        src={exp.proof.location}
-                        alt={`${exp.proof.name} proof`}
-                        width={75}
-                        height={75}
+                        src={getUserPhotoUrl(expense.paidTo)}
+                        alt={`${expense.paidTo.name} profile photo`}
+                        width={40}
+                        height={40}
+                        className="rounded-full"
                       />
-                    </div>
-                  )}
-                </div>
-
-                <div
-                  className={clsx(
-                    exp.type === "Removal" ? "text-error" : "text-success",
-                    "flex flex-col items-end text-2xl"
-                  )}
-                >
-                  <p>
-                    <strong>Tipo:</strong> {EXPENSE_LOG_QUERY_TYPES[exp.type]}
-                  </p>
-                  <p>
-                    {exp.value.toLocaleString("pt-BR", {
-                      style: "currency",
-                      currency: "BRL",
-                    })}
-                  </p>
-                </div>
+                    </Link>
+                  </div>
+                )}
               </div>
-            )
-          }
-          return null
-        })}
+            </div>
+            <div>
+              {expense.proof?.location && (
+                <div className="mb-4">
+                  <p className="font-semibold ">Comprovante:</p>
+                  <Image
+                    src={getAttachmentUrl(expense.proof)}
+                    alt={`${expense.proof.name} proof`}
+                    width={400}
+                    height={400}
+                    className="rounded-lg"
+                  />
+                </div>
+              )}
+              <div
+                className={`text-xl ${
+                  expense.type === "Removal" ? "text-error" : "text-success"
+                }`}
+              >
+                <p>
+                  <strong>Tipo:</strong> {EXPENSE_LOG_QUERY_TYPES[expense.type]}
+                </p>
+                <p>
+                  <strong className="mr-2">Valor:</strong>
+                  {expense.value.toLocaleString("pt-BR", {
+                    style: "currency",
+                    currency: "BRL",
+                  })}
+                </p>
+              </div>
+            </div>
+          </div>
+        )}
       </Modal.Body>
     </Modal>
   )
