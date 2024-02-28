@@ -7,6 +7,7 @@ from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from .base import BaseTable, char2, str10
 from .enum import (
+    AccountType,
     AchievementStatus,
     AchievementType,
     AttachType,
@@ -42,8 +43,10 @@ class User(BaseTable):
     classroom_id: Mapped[Optional[int]] = mapped_column(
         sa.Integer, sa.ForeignKey("classrooms.id")
     )
+    bank_account: Mapped[Optional["BankAccount"]] = relationship(
+        "BankAccount", back_populates="user"
+    )
     classroom = relationship("Classroom", back_populates="students")
-    bank_account = relationship("BankAccount.id", back_populates="user")
 
     def verify_password(self, password: str | bytes):
         return hash.bcrypt.verify(password, self.password)
@@ -151,7 +154,10 @@ class BankAccount(BaseTable):
     __tablename__ = "bank_account"
 
     bank_number: Mapped[int]
-    agency_number = Mapped[int]
-    cont_number = Mapped[int]
-    cont_type = Mapped[str]
-    pix = Mapped[str]
+    agency_number: Mapped[int]
+    account_number: Mapped[int]
+    account_type: Mapped[AccountType] = mapped_column(
+        sa.Enum(*get_args(AccountType))
+    )
+    pix: Mapped[str]
+    user = relationship("User", back_populates="bank_account")
