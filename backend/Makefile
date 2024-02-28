@@ -18,3 +18,8 @@ upgrade:
 
 downgrade:
 	@alembic downgrade -1
+
+init-db:
+	@python cli.py init-db
+	@alembic revision --autogenerate -m "init db"
+	@alembic upgrade head
