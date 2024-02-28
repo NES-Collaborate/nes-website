@@ -43,6 +43,9 @@ class User(BaseTable):
     classroom_id: Mapped[Optional[int]] = mapped_column(
         sa.Integer, sa.ForeignKey("classrooms.id")
     )
+    bank_account_id: Mapped[Optional[int]] = mapped_column(
+        sa.Integer, sa.ForeignKey("bank_accounts.id")
+    )
     bank_account: Mapped[Optional["BankAccount"]] = relationship(
         "BankAccount", back_populates="user"
     )
@@ -151,7 +154,7 @@ class Achievement(BaseTable):
 
 
 class BankAccount(BaseTable):
-    __tablename__ = "bank_account"
+    __tablename__ = "bank_accounts"
 
     bank_number: Mapped[int]
     agency_number: Mapped[int]

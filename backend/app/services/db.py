@@ -8,13 +8,18 @@ from sqlalchemy.orm import sessionmaker
 
 from .settings import settings
 
-engine = create_engine(settings.DATABASE_URL,
-                       connect_args={"check_same_thread": False})
+engine = create_engine(
+    settings.DATABASE_URL, connect_args={"check_same_thread": False}
+)
 
 SessionFactory = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 
 
 def create_default_user():
+    print("Creating default user...")
+    _password = "admin"
+    # TODO: uncomment this line to generate a random admin password
+    # _password = "".join(random.choices(string.ascii_lowercase + string.digits, k=10))
     password = hash.bcrypt.hash("admin")
     cpf = "00000000000"
 
@@ -24,7 +29,7 @@ def create_default_user():
         "cpf": cpf,
         "birthdate": date.today(),
         "scholarship": 0,
-        "type": "admin"
+        "type": "admin",
     }
 
     _user = User(**user_data)
@@ -32,14 +37,18 @@ def create_default_user():
     session = SessionFactory()
 
     if session.query(User).filter_by(cpf=cpf).first():
+        print("User already exists. Skipping...")
         return
 
     session.add(_user)
     session.commit()
     session.refresh(_user)
+    print("User created!")
+    print(f"\tCPF: {_user.cpf}\n\tPassword: {_password}")
 
 
 def create_test_student():
+    print("Creating test student...")
     session = SessionFactory()
 
     class_data = {
@@ -72,7 +81,7 @@ def create_test_student():
         "birthdate": date.today(),
         "scholarship": 0,
         "type": "student",
-        "classroom_id": 1
+        "classroom_id": 1,
     }
 
     _user = User(**user_data)
@@ -83,6 +92,7 @@ def create_test_student():
     session.add(_user)
     session.commit()
     session.refresh(_user)
+    print("Done.")
 
 
 def get_session():
