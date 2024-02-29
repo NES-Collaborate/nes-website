@@ -1,6 +1,7 @@
 from datetime import datetime
 
 import sqlalchemy as sa
+from app.daos.user import UserDao
 from app.models.admin import Property
 from app.models.user import User
 from app.schemas.admin import PropertyIn, PropertyOut
@@ -14,9 +15,9 @@ router = APIRouter(prefix="/property", tags=["property"])
 
 @router.get("", status_code=status.HTTP_200_OK)
 async def get_properties(
-        current_user: User = Depends(UserService.get_current_user),
-        session: Session = Depends(get_session),
-        q: str | None = None,
+    current_user: User = Depends(UserService.get_current_user),
+    session: Session = Depends(get_session),
+    q: str | None = None,
 ):
     if current_user.type != "admin":
         raise HTTPException(
@@ -27,12 +28,17 @@ async def get_properties(
     if not q:
         results = session.query(Property).all()
     else:
-        results = (session.query(Property).filter(
-            sa.or_(
-                Property.id.like(f"%{q}%"),
-                Property.name.like(f"%{q}%"),
-                Property.loanedTo.has(User.name.like(f"%{q}%")),
-            )).all())
+        results = (
+            session.query(Property)
+            .filter(
+                sa.or_(
+                    Property.id.like(f"%{q}%"),
+                    Property.name.like(f"%{q}%"),
+                    Property.loanedTo.has(User.name.like(f"%{q}%")),
+                )
+            )
+            .all()
+        )
 
     properties = [PropertyOut.model_validate(result) for result in results]
 
@@ -41,9 +47,9 @@ async def get_properties(
 
 @router.post("")
 async def create_property(
-        property: PropertyIn,
-        current_user: User = Depends(UserService.get_current_user),
-        session: Session = Depends(get_session),
+    property: PropertyIn,
+    current_user: User = Depends(UserService.get_current_user),
+    session: Session = Depends(get_session),
 ):
     if current_user.type != "admin":
         raise HTTPException(
@@ -54,12 +60,7 @@ async def create_property(
     _property = Property(**property.model_dump())
 
     if property.loanedTo:
-        _user = session.query(User).get(property.loanedTo.id)
-        if not _user:
-            raise HTTPException(
-                status_code=status.HTTP_404_NOT_FOUND,
-                detail="Usuário não encontrado",
-            )
+        _user = UserDao(session).get_by_id(property.loanedTo.id)
 
         _property.loanedTo = _user
         _property.loanedAt = datetime.now()
@@ -73,10 +74,10 @@ async def create_property(
 
 @router.put("/{property_id}")
 async def update_property(
-        property_id: int,
-        property: PropertyIn,
-        current_user: User = Depends(UserService.get_current_user),
-        session: Session = Depends(get_session),
+    property_id: int,
+    property: PropertyIn,
+    current_user: User = Depends(UserService.get_current_user),
+    session: Session = Depends(get_session),
 ):
     if current_user.type != "admin":
         raise HTTPException(
@@ -93,12 +94,7 @@ async def update_property(
         )
 
     if property.loanedTo:
-        _user = session.query(User).get(property.loanedTo.id)
-        if not _user:
-            raise HTTPException(
-                status_code=status.HTTP_404_NOT_FOUND,
-                detail="Usuário não encontrado",
-            )
+        _user = UserDao(session).get_by_id(property.loanedTo.id)
 
         if _property.loanedTo:
             if _property.loanedTo.id != _user.id:
@@ -123,9 +119,9 @@ async def update_property(
 
 @router.delete("/{property_id}")
 async def delete_property(
-        property_id: int,
-        current_user: User = Depends(UserService.get_current_user),
-        session: Session = Depends(get_session),
+    property_id: int,
+    current_user: User = Depends(UserService.get_current_user),
+    session: Session = Depends(get_session),
 ):
     if current_user.type != "admin":
         raise HTTPException(

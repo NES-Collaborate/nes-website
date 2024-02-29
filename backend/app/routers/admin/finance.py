@@ -60,20 +60,17 @@ async def get_finances(
         ExpenseLog.comment.contains(comment.strip()),
         ExpenseLog.type.contains(type.strip() if type.lower() != "all" else ""),
         User.name.contains(addedBy.strip()),
+        User.soft_delete == False,
     ]
 
     paidTo = paidTo.strip()
     if paidTo:
-        results = results.outerjoin(
-            paidToUsers, paidToUsers.id == ExpenseLog.paidto_id
-        )
+        results = results.outerjoin(paidToUsers, paidToUsers.id == ExpenseLog.paidto_id)
         conditions.append(paidToUsers.name.contains(paidTo.strip()))
 
     results = results.filter(*conditions)
 
-    expenses = [
-        ExpenseLogOut.model_validate(result) for result in results.all()
-    ]
+    expenses = [ExpenseLogOut.model_validate(result) for result in results.all()]
     return {"logs": expenses}
 
 
@@ -107,13 +104,12 @@ async def download_finances(
         ExpenseLog.comment.contains(comment.strip()),
         ExpenseLog.type.contains(type.strip() if type.lower() != "all" else ""),
         User.name.contains(addedBy.strip()),
+        User.soft_delete == False,
     ]
 
     paidTo = paidTo.strip()
     if paidTo:
-        results = results.outerjoin(
-            paidToUsers, paidToUsers.id == ExpenseLog.paidto_id
-        )
+        results = results.outerjoin(paidToUsers, paidToUsers.id == ExpenseLog.paidto_id)
         conditions.append(paidToUsers.name.contains(paidTo))
 
     results = results.filter(*conditions)
@@ -127,9 +123,7 @@ async def download_finances(
 
     return Response(
         buffer.getvalue(),
-        headers={
-            "Content-Disposition": f'attachment; filename="Finanças NES.xlsx"'
-        },
+        headers={"Content-Disposition": f'attachment; filename="Finanças NES.xlsx"'},
         media_type="application/vnd.ms-excel",
     )
 
