@@ -45,9 +45,7 @@ class UserDao(BaseDao):
 
     def get_by_id(self, id: int):
         _user = (
-            self.session.query(User)
-            .filter(User.id == id, User.soft_delete == False)
-            .first()
+            self.session.query(User).filter(User.id == id, ~User.soft_delete).first()
         )
 
         if not _user:
@@ -58,7 +56,7 @@ class UserDao(BaseDao):
     def get_by_classroom(self, classroomId: int) -> list[User]:
         _users = (
             self.session.query(User)
-            .filter(User.classroom_id == classroomId, User.soft_delete == False)
+            .filter(User.classroom_id == classroomId, ~User.soft_delete)
             .all()
         )
 
@@ -70,9 +68,7 @@ class UserDao(BaseDao):
     def get_by_cpf(self, cpf: str | None):
 
         _user = (
-            self.session.query(User)
-            .filter(User.cpf == cpf, User.soft_delete == False)
-            .first()
+            self.session.query(User).filter(User.cpf == cpf, ~User.soft_delete).first()
         )
 
         if not _user:

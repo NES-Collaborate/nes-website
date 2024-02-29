@@ -25,7 +25,7 @@ async def get_users(
             detail="Usuário não autorizado",
         )
 
-    query = session.query(User).filter(User.soft_delete == False)
+    query = session.query(User).filter(~User.soft_delete)
     if q:
         query = query.filter(User.name.contains(q))
     if id:

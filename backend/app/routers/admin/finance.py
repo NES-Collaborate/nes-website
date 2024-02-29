@@ -60,7 +60,7 @@ async def get_finances(
         ExpenseLog.comment.contains(comment.strip()),
         ExpenseLog.type.contains(type.strip() if type.lower() != "all" else ""),
         User.name.contains(addedBy.strip()),
-        User.soft_delete == False,
+        ~User.soft_delete,
     ]
 
     paidTo = paidTo.strip()
@@ -104,7 +104,7 @@ async def download_finances(
         ExpenseLog.comment.contains(comment.strip()),
         ExpenseLog.type.contains(type.strip() if type.lower() != "all" else ""),
         User.name.contains(addedBy.strip()),
-        User.soft_delete == False,
+        ~User.soft_delete,
     ]
 
     paidTo = paidTo.strip()
