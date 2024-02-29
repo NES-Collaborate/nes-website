@@ -55,7 +55,7 @@ class AdminDao(BaseDao):
                                 month: int) -> ExpenseLog | None:
 
         _result = self.session.query(ExpenseLog).filter(
-            (ExpenseLog.paidto_id == id)
+            (ExpenseLog.paidTo_id == id)
             & (func.extract("month", ExpenseLog.createdAt) == month)
             & (func.extract("year", ExpenseLog.createdAt) == year)).first()
 
@@ -72,7 +72,7 @@ class AdminDao(BaseDao):
         _payment = ExpenseLog(value=paidTo.scholarship,
                               type="Removal",
                               addedBy=addedBy,
-                              paidto=paidTo,
+                              paidTo=paidTo,
                               comment=f"Pagamento de {month}-{year}",
                               createdAt=created_at)
 

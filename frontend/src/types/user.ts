@@ -34,6 +34,6 @@ export type User = {
   cpf: string
   birthdate: string
   scholarship: number
-  serie?: Serie
+  serie?: Serie | null
   type: UserType
 }

@@ -57,7 +57,7 @@ const UserProfile = () => {
 
   return (
     <div className="container mx-auto p-4">
-      <div className="card bg-base-100 shadow-xl">
+      <div className="card bg-base-200 shadow-xl">
         <div className="card-body">
           <h2 className="card-title flex items-center gap-2 text-3xl">
             <FaUserCircle />
@@ -72,7 +72,7 @@ const UserProfile = () => {
                 alt="Foto do perfil"
                 width={144}
                 height={144}
-                className="rounded-full"
+                className="rounded-full border-accent border-4"
               />
               <p className="text-lg font-bold mt-2">{user.name}</p>
             </div>
