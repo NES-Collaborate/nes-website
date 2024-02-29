@@ -7,6 +7,7 @@ from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from .base import BaseTable, char2, str10
 from .enum import (
+    AccountType,
     AchievementStatus,
     AchievementType,
     AttachType,
@@ -32,13 +33,27 @@ class User(BaseTable):
     soft_delete: Mapped[bool] = mapped_column(sa.Boolean, default=False)
 
     photo: Mapped[Optional["Attach"]] = relationship()
-    emails: Mapped[Optional[List["Email"]]] = relationship(back_populates="user")
-    phones: Mapped[Optional[List["PhoneNumber"]]] = relationship(back_populates="user")
+
+    emails: Mapped[Optional[List["Email"]]] = relationship(
+        back_populates="user"
+    )
+    phones: Mapped[Optional[List["PhoneNumber"]]] = relationship(
+        back_populates="user"
+    )
+
     address: Mapped[Optional["Address"]] = relationship()
     achievements: Mapped[Optional[List["Achievement"]]] = relationship()
     classroom_id: Mapped[Optional[int]] = mapped_column(
         sa.Integer, sa.ForeignKey("classrooms.id")
     )
+
+    bank_account_id: Mapped[Optional[int]] = mapped_column(
+        sa.Integer, sa.ForeignKey("bank_accounts.id")
+    )
+    bank_account: Mapped[Optional["BankAccount"]] = relationship(
+        "BankAccount", back_populates="user"
+    )
+
     classroom = relationship("Classroom", back_populates="students")
 
     def verify_password(self, password: str | bytes):
@@ -127,7 +142,9 @@ class Achievement(BaseTable):
     __tablename__ = "achievements"
 
     name: Mapped[str]
-    type: Mapped[AchievementType] = mapped_column(sa.Enum(*get_args(AchievementType)))
+    type: Mapped[AchievementType] = mapped_column(
+        sa.Enum(*get_args(AchievementType))
+    )
     olympic_acronym: Mapped[str]
     year: Mapped[int]
     medal: Mapped[MedalType] = mapped_column(sa.Enum(*get_args(MedalType)))
@@ -139,3 +156,16 @@ class Achievement(BaseTable):
     user_id: Mapped[int] = mapped_column(sa.Integer, sa.ForeignKey("users.id"))
 
     images: Mapped[Optional[List["Attach"]]] = relationship()
+
+
+class BankAccount(BaseTable):
+    __tablename__ = "bank_accounts"
+
+    bank_number: Mapped[int]
+    agency_number: Mapped[int]
+    account_number: Mapped[int]
+    account_type: Mapped[AccountType] = mapped_column(
+        sa.Enum(*get_args(AccountType))
+    )
+    pix: Mapped[str]
+    user = relationship("User", back_populates="bank_account")

@@ -11,7 +11,7 @@ type Props = {
 const ExpenseLogFilter = ({ query, setQuery }: Props) => {
   return (
     <div className="flex justify-center my-2">
-      <Join>
+      <Join responsive={true}>
         <Input
           size="sm"
           value={query.category}

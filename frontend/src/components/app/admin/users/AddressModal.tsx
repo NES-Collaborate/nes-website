@@ -31,7 +31,7 @@ const AddressModal = ({ open, setOpen, address, setAddress }: Props) => {
 
       <Modal.Body>
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-3">
-          <label className="form-control w-full max-w-xs">
+          <label className="form-control w-full">
             <div className="label">
               <span className="label-text">Endereço</span>
             </div>
@@ -42,7 +42,7 @@ const AddressModal = ({ open, setOpen, address, setAddress }: Props) => {
             />
           </label>
 
-          <label className="form-control w-full max-w-xs">
+          <label className="form-control w-full">
             <div className="label">
               <span className="label-text">Bairro</span>
             </div>
@@ -53,7 +53,7 @@ const AddressModal = ({ open, setOpen, address, setAddress }: Props) => {
             />
           </label>
 
-          <label className="form-control w-full max-w-xs">
+          <label className="form-control w-full">
             <div className="label">
               <span className="label-text">Número</span>
             </div>
@@ -68,7 +68,7 @@ const AddressModal = ({ open, setOpen, address, setAddress }: Props) => {
             />
           </label>
 
-          <label className="form-control w-full max-w-xs">
+          <label className="form-control w-full">
             <div className="label">
               <span className="label-text">Complemento</span>
             </div>
@@ -79,7 +79,7 @@ const AddressModal = ({ open, setOpen, address, setAddress }: Props) => {
             />
           </label>
 
-          <label className="form-control w-full max-w-xs">
+          <label className="form-control w-full">
             <div className="label">
               <span className="label-text">Cidade</span>
             </div>
@@ -90,7 +90,7 @@ const AddressModal = ({ open, setOpen, address, setAddress }: Props) => {
             />
           </label>
 
-          <label className="form-control w-full max-w-xs">
+          <label className="form-control w-full">
             <div className="label">
               <span className="label-text">Estado</span>
             </div>
@@ -104,7 +104,7 @@ const AddressModal = ({ open, setOpen, address, setAddress }: Props) => {
             />
           </label>
 
-          <label className="form-control w-full max-w-xs">
+          <label className="form-control w-full">
             <div className="label">
               <span className="label-text">CEP</span>
             </div>

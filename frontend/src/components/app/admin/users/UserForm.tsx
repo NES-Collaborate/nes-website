@@ -6,7 +6,7 @@ import { User } from "@/types/user"
 import { maskPhone } from "@/utils/client"
 import clsx from "clsx"
 import { Dispatch, useEffect, useRef, useState } from "react"
-import { Button, Select, Tooltip } from "react-daisyui"
+import { Button, FileInput, Select, Tooltip } from "react-daisyui"
 import { FaEdit, FaEye, FaEyeSlash, FaPlus, FaTrash } from "react-icons/fa"
 import InputMask from "react-input-mask"
 
@@ -38,13 +38,26 @@ const UserForm = ({
   const [loading, setLoading] = useState(false)
   const { backend } = useBackend()
   const emailInput = useRef<HTMLInputElement>(null)
-  // const phoneInput = useRef<HTMLInputElement>(null)
   const [currentPhone, setCurrentPhone] = useState("")
   const [hidePassword, setHidePassword] = useState(true)
   const [fillName, setFillName] = useState(false)
   const [fillCPF, setFillCPF] = useState(false)
   const [fillBirthdate, setFillBirthdate] = useState(false)
   const [fillScholarship, setFillScholarship] = useState(false)
+
+  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0]
+    if (file) {
+      const reader = new FileReader()
+      reader.onload = () => {
+        setUser((prevUser) => ({
+          ...prevUser,
+          photo: { location: reader.result as string, type: "Link" },
+        }))
+      }
+      reader.readAsDataURL(file)
+    }
+  }
 
   useEffect(() => {
     // when the Address Modal closes.
@@ -123,7 +136,11 @@ const UserForm = ({
         "a data de nascimento",
         setFillBirthdate
       ) ||
-      verifyFields(user.scholarship === 0, "a bolsa", setFillScholarship)
+      verifyFields(
+        user.scholarship === 0 && user.type === "student",
+        "a bolsa",
+        setFillScholarship
+      )
     ) {
       return
     }
@@ -179,13 +196,7 @@ const UserForm = ({
           <label className="label">
             <span className="label-text">Foto de Perfil</span>
           </label>
-          <input
-            className="input input-bordered"
-            value={user.photo?.location}
-            onChange={(e) =>
-              setUser({ ...user, photo: { location: e.target.value, type: "Link" } })
-            }
-          />
+          <FileInput onChange={handleImageChange} disabled={loading} />
         </div>
 
         <label className="form-control w-full max-w-xs">
@@ -197,6 +208,7 @@ const UserForm = ({
             className={clsx("input input-bordered", fillCPF && "input-error")}
             value={user.cpf}
             onChange={(e) => setUser({ ...user, cpf: e.target.value })}
+            disabled={loading}
           />
         </label>
 
