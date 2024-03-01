@@ -30,25 +30,30 @@ class User(BaseTable):
     responsible_phone: Mapped[Optional[str]]
     serie: Mapped[Optional[Serie]] = mapped_column(sa.Enum(*get_args(Serie)))
     type: Mapped[UserType] = mapped_column(sa.Enum(*get_args(UserType)))
+    soft_delete: Mapped[bool] = mapped_column(sa.Boolean, default=False)
 
     photo: Mapped[Optional["Attach"]] = relationship()
+
     emails: Mapped[Optional[List["Email"]]] = relationship(
         back_populates="user"
     )
     phones: Mapped[Optional[List["PhoneNumber"]]] = relationship(
         back_populates="user"
     )
+
     address: Mapped[Optional["Address"]] = relationship()
     achievements: Mapped[Optional[List["Achievement"]]] = relationship()
     classroom_id: Mapped[Optional[int]] = mapped_column(
         sa.Integer, sa.ForeignKey("classrooms.id")
     )
+
     bank_account_id: Mapped[Optional[int]] = mapped_column(
         sa.Integer, sa.ForeignKey("bank_accounts.id")
     )
     bank_account: Mapped[Optional["BankAccount"]] = relationship(
         "BankAccount", back_populates="user"
     )
+
     classroom = relationship("Classroom", back_populates="students")
 
     def verify_password(self, password: str | bytes):

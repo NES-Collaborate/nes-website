@@ -25,7 +25,7 @@ async def get_users(
             detail="Usuário não autorizado",
         )
 
-    query = session.query(User)
+    query = session.query(User).filter(~User.soft_delete)
     if q:
         query = query.filter(User.name.contains(q))
     if id:
@@ -73,14 +73,7 @@ async def update_user(
             detail="Usuário não autorizado",
         )
 
-    _user = session.query(User).get(user_id)
-
-    if not _user:
-        raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND,
-            detail="Usuário não encontrado",
-        )
-
+    _user = UserDao(session).get_by_id(user_id)
     _user = UserDao(session).update(user.model_dump(), user_id)
 
     return {"user": UserOut.model_validate(_user)}
@@ -99,14 +92,8 @@ async def delete_user(
             detail="Usuário não autorizado",
         )
 
-    _user = session.query(User).get(user_id)
+    _user = UserDao(session).get_by_id(user_id)
 
-    if not _user:
-        raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND,
-            detail="Usuário não encontrado",
-        )
-
-    UserDao(session).delete_by_id(user_id)
+    UserDao(session).soft_delete_by_id(_user.id)
 
     return {"message": f"Usuário com id {user_id} deletado"}

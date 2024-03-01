@@ -1,3 +1,4 @@
+import { ConfirmModal } from "@/components/ConfirmModal"
 import { useBackend } from "@/contexts/backend"
 import { useSession } from "@/contexts/session"
 import { USER_TYPES_MASK } from "@/data/constants"
@@ -8,7 +9,7 @@ import { getUser } from "@/utils/user"
 import Image from "next/image"
 import { useRouter } from "next/router"
 import { useEffect, useState } from "react"
-import { Tooltip } from "react-daisyui"
+import { Button, Tooltip } from "react-daisyui"
 import {
   FaCalendarAlt,
   FaChalkboardTeacher,
@@ -17,14 +18,13 @@ import {
   FaEnvelope,
   FaExclamationCircle,
   FaIdCard,
-  FaInfo,
   FaLock,
   FaMapMarkerAlt,
   FaPhone,
   FaUserCircle,
   FaUserTag,
 } from "react-icons/fa"
-import { FaSackDollar } from "react-icons/fa6"
+import { FaSackDollar, FaTrashCan } from "react-icons/fa6"
 
 const UserProfile = () => {
   const router = useRouter()
@@ -55,9 +55,38 @@ const UserProfile = () => {
 
   if (!user) return <>Not found user with id: {requestedUserId}</>
 
+  const handleConfirmDelete = () => {
+    backend
+      .delete(`/admin/users/${requestedUserId}`)
+      .then(() => {
+        router.push("/app/admin/users")
+      })
+      .catch((err) => {
+        console.log(err)
+      })
+  }
+
   return (
     <div className="container mx-auto p-4">
       <div className="card bg-base-200 shadow-xl">
+        <Tooltip
+          message="Excluir Usuário"
+          className="absolute right-2 top-2"
+          position="bottom"
+          color="accent"
+        >
+          <ConfirmModal
+            title="Excluir Usuário"
+            description="Tem certeza que deseja excluir este usuário?"
+          >
+            {(show) => (
+              <Button color="error" shape="circle" onClick={show(handleConfirmDelete)}>
+                <FaTrashCan size={15} />
+              </Button>
+            )}
+          </ConfirmModal>
+        </Tooltip>
+
         <div className="card-body">
           <h2 className="card-title flex items-center gap-2 text-3xl">
             <FaUserCircle />

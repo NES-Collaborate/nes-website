@@ -12,16 +12,19 @@ from .general import GeneralDao
 class UserDao(BaseDao):
 
     def create(self, user_data: dict[str, Any]) -> User | None:
-        user_data.update(birthdate=datetime.strptime(user_data["birthdate"],
-                                                     "%d/%m/%Y").date())
-        _user = User(name=user_data["name"],
-                     type=user_data["type"],
-                     cpf=user_data["cpf"],
-                     birthdate=user_data["birthdate"],
-                     scholarship=user_data["scholarship"],
-                     serie=user_data["serie"],
-                     responsible_name=user_data["responsible_name"],
-                     responsible_phone=user_data["responsible_phone"])
+        user_data.update(
+            birthdate=datetime.strptime(user_data["birthdate"], "%d/%m/%Y").date()
+        )
+        _user = User(
+            name=user_data["name"],
+            type=user_data["type"],
+            cpf=user_data["cpf"],
+            birthdate=user_data["birthdate"],
+            scholarship=user_data["scholarship"],
+            serie=user_data["serie"],
+            responsible_name=user_data["responsible_name"],
+            responsible_phone=user_data["responsible_phone"],
+        )
 
         _user.password = hash.bcrypt.hash(user_data["password"])
         self.session.add(_user)
@@ -35,38 +38,41 @@ class UserDao(BaseDao):
 
         GeneralDao(self.session).create_address(user_data["address"], _user.id)
 
-        GeneralDao(self.session).create_attachment(user_data["photo"],
-                                                   _user.id)
+        GeneralDao(self.session).create_attachment(user_data["photo"], _user.id)
 
         self.session.refresh(_user)
         return _user
 
     def get_by_id(self, id: int):
-        _user = self.session.query(User).filter(User.id == id).first()
+        _user = (
+            self.session.query(User).filter(User.id == id, ~User.soft_delete).first()
+        )
 
         if not _user:
-            raise HTTPException(status_code=404,
-                                detail="Usuário não encontrado")
+            raise HTTPException(status_code=404, detail="Usuário não encontrado")
 
         return _user
 
     def get_by_classroom(self, classroomId: int) -> list[User]:
-        _users = self.session.query(User).filter(
-            User.classroom_id == classroomId).all()
+        _users = (
+            self.session.query(User)
+            .filter(User.classroom_id == classroomId, ~User.soft_delete)
+            .all()
+        )
 
         if not _users:
-            raise HTTPException(status_code=404,
-                                detail="Nenum usuário encontrado")
+            raise HTTPException(status_code=404, detail="Nenum usuário encontrado")
 
         return _users
 
     def get_by_cpf(self, cpf: str | None):
 
-        _user = self.session.query(User).filter(User.cpf == cpf).first()
+        _user = (
+            self.session.query(User).filter(User.cpf == cpf, ~User.soft_delete).first()
+        )
 
         if not _user:
-            raise HTTPException(status_code=404,
-                                detail="Usuário não encontrado")
+            raise HTTPException(status_code=404, detail="Usuário não encontrado")
 
         return _user
 
@@ -82,16 +88,23 @@ class UserDao(BaseDao):
                 GeneralDao(self.session).create_phone_number(phone, _user.id)
 
         if user_data.get("address"):
-            GeneralDao(self.session).update_address(user_data["address"],
-                                                    _user.id)
+            GeneralDao(self.session).update_address(user_data["address"], _user.id)
 
         if user_data.get("photo"):
             user_data["photo"] = GeneralDao(self.session).create_attachment(
-                user_data["photo"])
+                user_data["photo"]
+            )
 
         UPDATED_KEYS = [
-            "name", "type", "cpf", "birthdate", "scholarship", "serie",
-            "photo", "responsible_name", "responsible_phone"
+            "name",
+            "type",
+            "cpf",
+            "birthdate",
+            "scholarship",
+            "serie",
+            "photo",
+            "responsible_name",
+            "responsible_phone",
         ]
 
         for key, value in user_data.items():
@@ -119,3 +132,10 @@ class UserDao(BaseDao):
 
         self.session.delete(_user)
         self.session.commit()
+
+    def soft_delete_by_id(self, id: int):
+        _user = self.get_by_id(id)
+        _user.soft_delete = True
+        self.session.commit()
+        self.session.refresh(_user)
+        return _user
