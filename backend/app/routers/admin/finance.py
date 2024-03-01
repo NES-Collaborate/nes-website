@@ -72,7 +72,9 @@ async def get_finances(
 
     results = results.filter(*conditions)
 
-    expenses = [ExpenseLogOut.model_validate(result) for result in results.all()]
+    expenses = [
+        ExpenseLogOut.model_validate(result) for result in results.all()
+    ]
     return {"logs": expenses}
 
 
@@ -127,7 +129,9 @@ async def download_finances(
 
     return Response(
         buffer.getvalue(),
-        headers={"Content-Disposition": f'attachment; filename="Finanças NES.xlsx"'},
+        headers={
+            "Content-Disposition": f'attachment; filename="Finanças NES.xlsx"'
+        },
         media_type="application/vnd.ms-excel",
     )
 
