@@ -33,9 +33,7 @@ async def get_users(
 
     results = query.all()
 
-    if current_user.type == "admin" or (
-        current_user.type == "student" and current_user.id == id
-    ):
+    if current_user.type == "admin" or (current_user.type == "student" and current_user.id == id):
         users = [UserOut.model_validate(result) for result in results]
     else:
         users = [UserPoster.model_validate(result) for result in results]
@@ -90,6 +88,12 @@ async def delete_user(
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail="Usuário não autorizado",
+        )
+
+    if user_id == current_user.id:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Você não pode apagar você mesmo....",
         )
 
     _user = UserDao(session).get_by_id(user_id)

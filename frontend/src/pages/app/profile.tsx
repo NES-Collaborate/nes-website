@@ -1,4 +1,5 @@
 import { ConfirmModal } from "@/components/ConfirmModal"
+import Toast from "@/components/Toast"
 import { useBackend } from "@/contexts/backend"
 import { useSession } from "@/contexts/session"
 import { USER_TYPES_MASK } from "@/data/constants"
@@ -6,6 +7,7 @@ import { User } from "@/types/user"
 import { withAuth } from "@/utils/auth"
 import { getUserPhotoUrl, maskCEP, maskCPF, maskPhone } from "@/utils/client"
 import { getUser } from "@/utils/user"
+import { AxiosError } from "axios"
 import Image from "next/image"
 import { useRouter } from "next/router"
 import { useEffect, useState } from "react"
@@ -33,6 +35,7 @@ const UserProfile = () => {
   const { userId } = router.query
   const [requestedUserId, setRequestedUserId] = useState(0)
   const [user, setUser] = useState<User | null>(null)
+  const [toastMessage, setToastMessage] = useState("")
 
   useEffect(() => {
     if (session.user?.type === "student" && session.user.id !== requestedUserId) {
@@ -61,8 +64,10 @@ const UserProfile = () => {
       .then(() => {
         router.push("/app/admin/users")
       })
-      .catch((err) => {
-        console.log(err)
+      .catch((err: AxiosError) => {
+        if (err.response?.data) {
+          setToastMessage((err.response.data as { detail: string }).detail)
+        }
       })
   }
 
@@ -197,6 +202,14 @@ const UserProfile = () => {
           </div>
         </div>
       </div>
+
+      <Toast
+        message={toastMessage}
+        setMessage={setToastMessage}
+        alert="warning"
+        vertical="top"
+        horizontal="center"
+      />
     </div>
   )
 }
