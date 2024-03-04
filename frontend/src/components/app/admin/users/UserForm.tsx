@@ -1,7 +1,7 @@
 import { useBackend } from "@/contexts/backend"
 import { SERIES, USER_TYPES, USER_TYPES_MASK } from "@/data/constants"
 import { Serie, UserType } from "@/types/constants"
-import { Address } from "@/types/entities"
+import { Address, Classroom } from "@/types/entities"
 import { User } from "@/types/user"
 import { maskPhone } from "@/utils/client"
 import clsx from "clsx"
@@ -36,7 +36,7 @@ const UserForm = ({
   addressModal,
 }: Props) => {
   const [loading, setLoading] = useState(false)
-  const { backend } = useBackend()
+  const { backend, isLogged } = useBackend()
   const emailInput = useRef<HTMLInputElement>(null)
   const [currentPhone, setCurrentPhone] = useState("")
   const [hidePassword, setHidePassword] = useState(true)
@@ -44,6 +44,23 @@ const UserForm = ({
   const [fillCPF, setFillCPF] = useState(false)
   const [fillBirthdate, setFillBirthdate] = useState(false)
   const [fillScholarship, setFillScholarship] = useState(false)
+  const [isLoading, setIsLoading] = useState(true)
+  const [classrooms, setClassrooms] = useState<Classroom[]>([])
+
+  useEffect(() => {
+    setIsLoading(true)
+    const fetchClassrooms = async () => {
+      if (!isLogged) return
+      try {
+        const res = await backend.get("/teacher/classrooms")
+        setClassrooms(res.data)
+      } catch {
+        // TODO: Set some error message here
+      }
+    }
+    fetchClassrooms()
+    setIsLoading(false)
+  }, [backend, isLogged])
 
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0]
@@ -432,6 +449,31 @@ const UserForm = ({
                 onChange={(e) => setUser({ ...user, responsible_phone: e.target.value })}
               />
             </div>
+
+            <label className="form-control w-full max-w-xs">
+              <div className="label">
+                <span className="label-text">Turma</span>
+              </div>
+              <select
+                className="select select-bordered join-item"
+                onChange={(e) => {
+                  const value = parseInt(e.target.value)
+                  const classroom = classrooms.find((classroom) => classroom.id === value)
+                  setUser({ ...user, classroom: classroom })
+                }}
+                value={user.classroom?.id}
+                disabled={isLoading}
+              >
+                <option disabled selected value={0}>
+                  Selecione uma Turma
+                </option>
+                {classrooms.map((classroom) => (
+                  <option key={classroom.id} value={classroom.id}>
+                    {classroom.name}
+                  </option>
+                ))}
+              </select>
+            </label>
           </>
         )}
 

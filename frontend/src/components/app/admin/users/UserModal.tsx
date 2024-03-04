@@ -38,6 +38,7 @@ const UserModal = ({ users, setUsers, action, userId, setUserId, setToast }: Pro
     responsible_name: "",
     responsible_phone: "",
     serie: null,
+    classroom: null,
   })
 
   const [addressModalOpen, setAddressModalOpen] = useState(false)
@@ -71,6 +72,7 @@ const UserModal = ({ users, setUsers, action, userId, setUserId, setToast }: Pro
         responsible_name: "",
         responsible_phone: "",
         serie: null,
+        classroom: null,
       })
     }
   }, [userId, action, users])
