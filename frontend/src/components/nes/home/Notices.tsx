@@ -16,13 +16,16 @@ const Notices = () => {
     axiosApi
       .get("/notice/all")
       .then((res) => {
-        setNotices(res.data.notices)
+        if (res.data.notices !== null) {
+          setNotices(res.data.notices)
+        }
       })
       // TODO: Add visual feedback on error
       .catch((err) => console.log(err))
       .finally(() => setIsLoading(false))
   }, [])
 
+  console.log(notices)
   if (notices.length === 0) {
     return null
   }
