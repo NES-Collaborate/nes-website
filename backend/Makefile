@@ -21,5 +21,4 @@ downgrade:
 
 init-db:
 	@python cli.py init-db
-	@alembic revision --autogenerate -m "init db"
 	@alembic upgrade head
