@@ -1,7 +1,8 @@
+import AutoComplete from "@/components/AutoComplete"
 import { useBackend } from "@/contexts/backend"
 import { useExpenseLogs } from "@/contexts/expenseLogs"
 import { useSession } from "@/contexts/session"
-import { ExpenseLog } from "@/types/finance"
+import { ExpenseCategory, ExpenseLog } from "@/types/finance"
 import { maskMoney, uploadAttach } from "@/utils/client"
 import clsx from "clsx"
 import { useRef, useState } from "react"
@@ -14,6 +15,7 @@ type Props = {
 }
 
 const ExpenseLogForm = ({ toggle }: Props) => {
+  const [categories, setCategories] = useState<ExpenseCategory[]>([]) //TO-DO: Implementar setCategories
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState<string>("")
   const [proof, setProof] = useState<number | null>(null)
@@ -86,10 +88,11 @@ const ExpenseLogForm = ({ toggle }: Props) => {
         onChange={(e: any) => setMoney(maskMoney(e.target.value))}
         label="Valor (R$)"
       />
-      <InputField
+      <AutoComplete
         inputRef={inputRefs.category}
         label="Categoria"
         message="Caso não exista será criada uma com o nome informado."
+        options={categories}
       />
       <SwapField label="Tipo" onChange={toggleType} />
 
