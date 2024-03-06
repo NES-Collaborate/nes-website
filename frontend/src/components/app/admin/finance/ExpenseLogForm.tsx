@@ -32,7 +32,6 @@ const ExpenseLogForm = ({ toggle }: Props) => {
 
   const toggleType = (e: any) => {
     setType(() => (e.target.checked ? "Deposit" : "Removal"))
-    console.log(type)
   }
   const handleSubmit = async () => {
     setIsLoading(true)

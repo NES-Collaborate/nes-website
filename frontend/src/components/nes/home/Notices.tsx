@@ -25,7 +25,6 @@ const Notices = () => {
       .finally(() => setIsLoading(false))
   }, [])
 
-  console.log(notices)
   if (notices.length === 0) {
     return null
   }
