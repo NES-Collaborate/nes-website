@@ -1,7 +1,7 @@
 """
 
 Revision ID: cdde474ee3d4
-Revises: bb12193b9cd3
+Revises:
 Create Date: 2024-02-29 18:55:52.778062
 
 """
@@ -13,7 +13,7 @@ import sqlalchemy as sa
 
 # revision identifiers, used by Alembic.
 revision: str = 'cdde474ee3d4'
-down_revision: Union[str, None] = 'bb12193b9cd3'
+down_revision: Union[str, None] = None
 branch_labels: Union[str, Sequence[str], None] = None
 depends_on: Union[str, Sequence[str], None] = None
 
