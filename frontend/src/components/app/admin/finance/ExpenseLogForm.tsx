@@ -5,7 +5,7 @@ import { useSession } from "@/contexts/session"
 import { ExpenseCategory, ExpenseLog } from "@/types/finance"
 import { maskMoney, uploadAttach } from "@/utils/client"
 import clsx from "clsx"
-import { useRef, useState } from "react"
+import { useEffect, useRef, useState } from "react"
 import { Alert, Button, FileInput, Input, Swap, Tooltip } from "react-daisyui"
 import { FaPlus } from "react-icons/fa"
 import { IoIosInformationCircle } from "react-icons/io"
@@ -15,7 +15,7 @@ type Props = {
 }
 
 const ExpenseLogForm = ({ toggle }: Props) => {
-  const [categories, setCategories] = useState<ExpenseCategory[]>([]) //TO-DO: Implementar setCategories
+  const [categories, setCategories] = useState<ExpenseCategory[]>([])
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState<string>("")
   const [proof, setProof] = useState<number | null>(null)
@@ -78,6 +78,13 @@ const ExpenseLogForm = ({ toggle }: Props) => {
       }
     }
   }
+
+  useEffect(() => {
+    if (logs.length > 0) {
+      const categoriesFromLogs = logs.map((log) => log.category)
+      setCategories(categoriesFromLogs)
+    }
+  }, [logs])
 
   return (
     <div className="flex flex-col items-center gap-3">
