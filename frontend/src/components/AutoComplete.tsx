@@ -1,19 +1,18 @@
-import { ExpenseCategory } from "@/types/finance"
 import clsx from "clsx"
 import React, { useState } from "react"
 import { Input, Tooltip } from "react-daisyui"
 import { IoIosInformationCircle } from "react-icons/io"
 
-type Props = {
-  inputRef: any
-  label: string
-  message: string
-  options: ExpenseCategory[]
-}
-
-const AutoComplete = ({ inputRef, label, message, options }: Props) => {
+const AutoComplete = ({
+  inputRef,
+  label,
+  message,
+  options,
+  onChangeExtra,
+  ...rest
+}: any) => {
   const [inputValue, setInputValue] = useState("")
-  const [filteredOptions, setFilteredOptions] = useState<ExpenseCategory[]>(options)
+  const [filteredOptions, setFilteredOptions] = useState(options)
   const [inputFocused, setInputFocused] = useState(false)
   const [blurTimeout, setBlurTimeout] = useState<NodeJS.Timeout | null>(null)
 
@@ -21,13 +20,17 @@ const AutoComplete = ({ inputRef, label, message, options }: Props) => {
     const value = event.target.value
     setInputValue(value)
 
-    const filtered = options.filter((option: ExpenseCategory) =>
+    const filtered = options.filter((option: any) =>
       option.name.toLowerCase().includes(value.toLowerCase())
     )
     setFilteredOptions(filtered)
+
+    if (onChangeExtra) {
+      onChangeExtra(event)
+    }
   }
 
-  const handleOptionClick = (option: ExpenseCategory) => {
+  const handleOptionClick = (option: any) => {
     setInputValue(option.name)
     setFilteredOptions([])
   }
@@ -70,10 +73,11 @@ const AutoComplete = ({ inputRef, label, message, options }: Props) => {
         onFocus={handleFocus}
         onBlur={handleBlur}
         color="primary"
+        {...rest}
       />
       {inputFocused && (
         <ul className="menu bg-base-200 rounded-box">
-          {filteredOptions.map((option) => (
+          {filteredOptions.map((option: any) => (
             <li
               key={option.id}
               onClick={() => handleOptionClick(option)}
