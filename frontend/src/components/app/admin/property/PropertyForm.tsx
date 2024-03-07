@@ -1,3 +1,4 @@
+import AutoComplete from "@/components/AutoComplete"
 import { useBackend } from "@/contexts/backend"
 import { Property } from "@/types/entities"
 import { User } from "@/types/user"
@@ -91,20 +92,17 @@ const PropertyForm = ({
         />
       </label>
 
-      <label className="form-control w-full max-w-xs">
-        <div className="label">
-          <span className="label-text">Tipo</span>
-        </div>
-        <Input
-          placeholder="Tipo de Bem (notebook, mesa, etc.)"
-          size="md"
-          value={property.type}
-          onChange={(e) => setProperty({ ...property, type: e.target.value })}
-          color="primary"
-          disabled={isLoading}
-          bordered
-        />
-      </label>
+      <AutoComplete
+        label="Tipo"
+        message="Caso não exista será criada uma com o nome informado."
+        options={properties}
+        type="Property"
+        disabled={isLoading}
+        placeholder="Tipo de Bem (notebook, mesa, etc.)"
+        onChangeExtra={(e: any) => {
+          setProperty({ ...property, type: e.target.value })
+        }}
+      />
 
       <label className="form-control w-full max-w-xs">
         <div className="label">

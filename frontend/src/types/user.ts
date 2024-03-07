@@ -1,5 +1,5 @@
 import { Serie, UserType } from "./constants"
-import { Address, Attach } from "./entities"
+import { Address, Attach, Classroom } from "./entities"
 
 /**
  * Email representation on DB
@@ -36,4 +36,5 @@ export type User = {
   scholarship: number
   serie?: Serie | null
   type: UserType
+  classroom?: Classroom | null
 }
