@@ -8,6 +8,7 @@ const AutoComplete = ({
   label,
   message,
   options,
+  type,
   onChangeExtra,
   ...rest
 }: any) => {
@@ -20,9 +21,13 @@ const AutoComplete = ({
     const value = event.target.value
     setInputValue(value)
 
-    const filtered = options.filter((option: any) =>
-      option.name.toLowerCase().includes(value.toLowerCase())
-    )
+    const filtered = options.filter((option: any) => {
+      if (type === "Property") {
+        return option.type.toLowerCase().includes(value.toLowerCase())
+      } else {
+        return option.name.toLowerCase().includes(value.toLowerCase())
+      }
+    })
     setFilteredOptions(filtered)
 
     if (onChangeExtra) {
@@ -31,7 +36,11 @@ const AutoComplete = ({
   }
 
   const handleOptionClick = (option: any) => {
-    setInputValue(option.name)
+    if (type === "Property") {
+      setInputValue(option.type)
+    } else {
+      setInputValue(option.name)
+    }
     setFilteredOptions([])
   }
 
@@ -83,7 +92,7 @@ const AutoComplete = ({
               onClick={() => handleOptionClick(option)}
               className="hover:bg-base-100"
             >
-              {option.name}
+              {type === "Property" ? option.type : option.name}
             </li>
           ))}
         </ul>

@@ -96,6 +96,7 @@ const PropertyForm = ({
         label="Tipo"
         message="Caso não exista será criada uma com o nome informado."
         options={properties}
+        type="Property"
         disabled={isLoading}
         placeholder="Tipo de Bem (notebook, mesa, etc.)"
         onChangeExtra={(e: any) => {
