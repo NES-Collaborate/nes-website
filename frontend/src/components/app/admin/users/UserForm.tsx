@@ -370,7 +370,6 @@ const UserForm = ({
               Data de Nascimento*
             </span>
           </div>
-          {/* TODO: Add a JQuery Mask here (https://github.com/igorescobar/jQuery-Mask-Plugin) */}
           <InputMask
             mask="99/99/9999"
             placeholder="dd/mm/aaaa"
