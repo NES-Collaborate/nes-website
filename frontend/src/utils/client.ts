@@ -45,27 +45,59 @@ export const uploadAttach = async (attach: any, token: string) => {
 }
 
 // https://github.com/juliossena/vendas-online-web/blob/afd0b010310202cc84c27b73dc6faedf2d5abaa7/src/shared/functions/phone.ts
-export const maskPhone = (phone: string) => {
-  const noMask = phone.replace(/\D/g, "")
+export const maskPhone = (input: string) => {
+  const noMask = input.replace(/\D/g, "")
   const { length } = noMask
-  if (length <= 11) {
-    return noMask
-      .replace(/(\d{2})(\d)/, "($1) $2")
-      .replace(length === 11 ? /(\d{5})(\d)/ : /(\d{4})(\d)/, "$1-$2")
+  let formattedPhone = ""
+
+  if (length <= 2) {
+    formattedPhone = noMask
+  } else if (length <= 7) {
+    formattedPhone = noMask.replace(/(\d{2})(\d)/, "($1) $2")
+  } else {
+    formattedPhone = noMask.replace(/(\d{2})(\d{1,4})(\d{1,4})/, "($1) $2-$3")
   }
-  return phone
+
+  return formattedPhone.slice(0, 15)
 }
 
 export const maskCEP = (cep: string) => {
   const noMask = cep.replace(/\D/g, "")
   const formattedCEP = noMask.replace(/(\d{5})(\d{3})/, "$1-$2")
-  return formattedCEP
+  return formattedCEP.slice(0, 9)
 }
 
-export const maskCPF = (cpf: string) => {
-  const noMask = cpf.replace(/\D/g, "")
-  const formattedCPF = noMask.replace(/(\d{3})(\d{3})(\d{3})(\d{2})/, "$1.$2.$3-$4")
-  return formattedCPF
+export const maskCPF = (input: string) => {
+  const noMask = input.replace(/\D/g, "")
+  const { length } = noMask
+  let formattedCPF = ""
+
+  if (length <= 3) {
+    formattedCPF = noMask
+  } else if (length <= 6) {
+    formattedCPF = noMask.replace(/(\d{3})(\d)/, "$1.$2")
+  } else if (length <= 9) {
+    formattedCPF = noMask.replace(/(\d{3})(\d{3})(\d)/, "$1.$2.$3")
+  } else {
+    formattedCPF = noMask.replace(/(\d{3})(\d{3})(\d{3})(\d{2})/, "$1.$2.$3-$4")
+  }
+
+  return formattedCPF.slice(0, 14)
+}
+
+export const maskDate = (input: string) => {
+  const noMask = input.replace(/\D/g, "")
+  let formattedDate = ""
+
+  if (noMask.length <= 2) {
+    formattedDate = noMask
+  } else if (noMask.length <= 4) {
+    formattedDate = noMask.replace(/(\d{2})(\d{2})/, "$1/$2")
+  } else {
+    formattedDate = noMask.replace(/(\d{2})(\d{2})(\d{0,4})/, "$1/$2/$3")
+  }
+
+  return formattedDate.slice(0, 10)
 }
 
 export const maskMoney = (money: string) => {
