@@ -259,12 +259,12 @@ export const SELECTIONS_EXAMPLES = [
 /**
  * Possible series
  */
-export const SERIES: Serie[] = ["9º EF", "1º EM", "2º EM", "3º EM"]
+export const SERIES: [Serie, ...Serie[]] = ["9º EF", "1º EM", "2º EM", "3º EM"]
 
 /**
  * Possible user types
  */
-export const USER_TYPES: string[] = ["admin", "other", "student"]
+export const USER_TYPES: [string, ...string[]] = ["admin", "other", "student"]
 
 export const USER_TYPES_MASK: Record<UserType, string> = {
   admin: "Administrador",
