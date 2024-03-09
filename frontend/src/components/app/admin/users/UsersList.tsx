@@ -85,7 +85,11 @@ const UsersList = ({ query }: Props) => {
 
                 <span>
                   <Tooltip message="Editar">
-                    <Button onClick={() => {}} className="mr-2" color="primary">
+                    <Button
+                      onClick={() => openModal("edit", user)}
+                      className="mr-2"
+                      color="primary"
+                    >
                       <FaEdit />
                     </Button>
                   </Tooltip>
@@ -126,7 +130,11 @@ const UsersList = ({ query }: Props) => {
         position="left"
         className="fixed bottom-11 right-20"
       >
-        <Button onClick={() => {}} color="success" className="fixed bottom-5 right-5">
+        <Button
+          onClick={() => openModal("create", null)}
+          color="success"
+          className="fixed bottom-5 right-5"
+        >
           <FaPlus />
         </Button>
       </Tooltip>
