@@ -1,499 +1,235 @@
-import { useBackend } from "@/contexts/backend"
+import { InputField } from "@/components/ui/forms/InputField"
+import { SelectField } from "@/components/ui/forms/SelectField"
 import { SERIES, USER_TYPES, USER_TYPES_MASK } from "@/data/constants"
-import { Serie, UserType } from "@/types/constants"
-import { Address, Classroom } from "@/types/entities"
-import { User } from "@/types/user"
-import { maskPhone } from "@/utils/client"
-import clsx from "clsx"
-import { Dispatch, useEffect, useRef, useState } from "react"
-import { Button, FileInput, Select, Tooltip } from "react-daisyui"
-import { FaEdit, FaEye, FaEyeSlash, FaPlus, FaTrash } from "react-icons/fa"
-import InputMask from "react-input-mask"
+import { useClassrooms } from "@/hooks/teacher/classrooms"
+import {
+  EmailFormData,
+  PhoneNumberFormData,
+  UserFormData,
+  userSchema,
+} from "@/schemas/user"
+import { Serie } from "@/types/constants"
+import { maskCPF, maskDate, maskMoney, maskPhone } from "@/utils/client"
+import { zodResolver } from "@hookform/resolvers/zod"
+import { useEffect, useState } from "react"
+import { SubmitHandler, useForm } from "react-hook-form"
+import { FaTimes } from "react-icons/fa"
+import { AddressForm } from "./AddressForm"
+import { UserModalProps } from "./UserModal"
 
-type Props = {
-  user: User
-  setUser: Dispatch<React.SetStateAction<User>>
-  action: "create" | "edit"
-  setToast: (toast: string) => void
-  users: User[]
-  setUsers: (users: User[]) => void
-  addressModalOpen: boolean
-  setAddressModalOpen: (open: boolean) => void
-  addressModal: Address
-  closeModal: () => void
-}
+const UserForm = ({ user, action, setModalState }: Omit<UserModalProps, "isOpen">) => {
+  const {
+    register,
+    handleSubmit,
+    watch,
+    setError,
+    formState: { errors },
+  } = useForm<UserFormData>({
+    resolver: zodResolver(userSchema),
+    values: {
+      name: user?.name || "",
+      cpf: maskCPF(user?.cpf || ""),
+      birthdate: user?.birthdate || "",
+      address: {
+        city: user?.address?.city || "",
+        neighborhood: user?.address?.neighborhood || "",
+        number: user?.address?.number,
+        state: user?.address?.state || "",
+        street: user?.address?.street || "",
+        cep: user?.address?.cep || "",
+      },
+      responsible_name: user?.responsible_name || "",
+      responsible_phone: maskPhone(user?.responsible_phone || ""),
+      serie: user?.serie as Serie,
+      scholarship: user?.scholarship || 0,
+      type: user?.type || "other",
+      classroom: {
+        id: user?.classroom?.id || 0,
+      },
+      emails: [],
+      phones: [],
+    },
+  })
 
-const UserForm = ({
-  user,
-  setUser,
-  action,
-  setToast,
-  users,
-  setUsers,
-  addressModalOpen,
-  setAddressModalOpen,
-  closeModal,
-  addressModal,
-}: Props) => {
-  const [loading, setLoading] = useState(false)
-  const { backend, isLogged } = useBackend()
-  const emailInput = useRef<HTMLInputElement>(null)
-  const [currentPhone, setCurrentPhone] = useState("")
-  const [hidePassword, setHidePassword] = useState(true)
-  const [fillName, setFillName] = useState(false)
-  const [fillCPF, setFillCPF] = useState(false)
-  const [fillBirthdate, setFillBirthdate] = useState(false)
-  const [fillScholarship, setFillScholarship] = useState(false)
-  const [isLoading, setIsLoading] = useState(true)
-  const [classrooms, setClassrooms] = useState<Classroom[]>([])
+  const userType = watch("type")
 
-  useEffect(() => {
-    setIsLoading(true)
-    const fetchClassrooms = async () => {
-      if (!isLogged) return
-      try {
-        const res = await backend.get("/teacher/classrooms")
-        setClassrooms(res.data)
-      } catch {
-        // TODO: Set some error message here
-      }
-    }
-    fetchClassrooms()
-    setIsLoading(false)
-  }, [backend, isLogged])
+  const { data: classrooms } = useClassrooms()
 
-  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0]
-    if (file) {
-      const reader = new FileReader()
-      reader.onload = () => {
-        setUser((prevUser) => ({
-          ...prevUser,
-          photo: { location: reader.result as string, type: "Link" },
-        }))
-      }
-      reader.readAsDataURL(file)
-    }
-  }
+  const [emails, setEmails] = useState<EmailFormData[]>([])
+  const [phoneNumbers, setPhoneNumbers] = useState<PhoneNumberFormData[]>([])
 
   useEffect(() => {
-    // when the Address Modal closes.
-    if (!addressModalOpen) setUser((prevUser) => ({ ...prevUser, address: addressModal }))
-  }, [addressModalOpen, addressModal, setUser])
+    setEmails(user?.emails || [])
+    setPhoneNumbers(
+      (user?.phones || []).map((phone) => ({
+        value: maskPhone(phone.value),
+        isEmergency: phone.isEmergency || false,
+      })) || []
+    )
+  }, [user])
 
-  const createUser = async () => {
-    try {
-      const res = await backend.post("/admin/users", {
-        ...user,
-        cpf: user.cpf.replace(/\D/g, ""),
-        phones: (user.phones || []).map((phone) => ({
-          ...phone,
-          value: phone.value.replace(/\D/g, ""),
-        })),
-        address: {
-          ...user.address,
-          cep: user.address?.cep.replace(/\D/g, ""),
-        },
-        responsible_phone: (user.responsible_phone || "").replace(/\D/g, ""),
+  const submitForm: SubmitHandler<UserFormData> = async (data) => {
+    const formData = {
+      ...data,
+      emails,
+      phones: phoneNumbers,
+    }
+
+    const result = userSchema.safeParse(formData)
+
+    if (!result.success) {
+      result.error.issues.forEach((issue) => {
+        setError(issue.path[0] as any, {
+          type: "manual",
+          message: issue.message,
+        })
       })
-      setUsers([...users, res.data.user])
-      setToast("Usuário criado com sucesso!")
-      closeModal()
-    } catch {
-      setToast("Erro ao criar usuário.")
-    }
-  }
-
-  const editUser = async () => {
-    try {
-      const res = await backend.put(`/admin/users/${user.id}`, {
-        ...user,
-        cpf: user.cpf.replace(/\D/g, ""),
-        phones: (user.phones || []).map((phone) => ({
-          ...phone,
-          value: phone.value.replace(/\D/g, ""),
-        })),
-        address: {
-          ...user.address,
-          cep: user.address?.cep.replace(/\D/g, ""),
-        },
-        responsible_phone: (user.responsible_phone || "").replace(/\D/g, ""),
-      })
-      setUsers(users.map((u) => (u.id == user.id ? res.data.user : u)))
-      setToast("Usuário editado com sucesso!")
-    } catch {
-      setToast("Erro ao editar usuário.")
-    }
-  }
-
-  const verifyFields = (
-    comparison: boolean,
-    message: string,
-    setEmpty: React.Dispatch<React.SetStateAction<boolean>>
-  ) => {
-    if (comparison) {
-      setToast(`Por favor, informe ${message} do usuário.`)
-      setEmpty(true)
-      setLoading(false)
-      return true
-    } else {
-      setEmpty(false)
-      return false
-    }
-  }
-
-  const handleSubmit = async () => {
-    setLoading(true)
-
-    if (
-      verifyFields(user.name.trim() === "", "o nome", setFillName) ||
-      verifyFields(user.cpf.trim() === "", "o CPF", setFillCPF) ||
-      verifyFields(
-        user.birthdate.trim() === "",
-        "a data de nascimento",
-        setFillBirthdate
-      ) ||
-      verifyFields(
-        user.scholarship === 0 && user.type === "student",
-        "a bolsa",
-        setFillScholarship
-      )
-    ) {
       return
     }
 
-    switch (action) {
-      case "create":
-        await createUser()
-        break
-      case "edit":
-        await editUser()
-        break
-    }
-    setLoading(false)
+    // TODO: Implement user creation with tanstack mutation here
+
+    setModalState((prevState) => ({
+      ...prevState,
+      user: null,
+      isOpen: false,
+    }))
   }
 
   return (
-    <>
-      <div className="grid grid-cols-2 gap-3 space-y-3">
-        <div className="form-control col-span-full">
-          <label className="label">
-            <span className="label-text">Tipo de Usuário</span>
-          </label>
-          <Select
-            value={user.type}
-            onChange={(e) => {
-              const value = e.target.value
-              if (value !== "default") {
-                setUser({ ...user, type: value as UserType })
-              }
-            }}
-          >
-            <Select.Option disabled>Selecione um Tipo</Select.Option>
-            {USER_TYPES.map((type, i) => (
-              <Select.Option key={i} value={type}>
-                {USER_TYPES_MASK[type as UserType]}
-              </Select.Option>
-            ))}
-          </Select>
-        </div>
+    <form onSubmit={handleSubmit(submitForm)} className="grid grid-cols-3 gap-3 w-full">
+      <InputField label="Nome" {...register("name")} errors={errors.name} />
 
-        <div className="form-control col-span-full">
-          <label className="label">
-            <span className={clsx("label-text", fillName && "text-error")}>Nome*</span>
-          </label>
-          <input
-            className={clsx("input input-bordered", fillName && "input-error")}
-            value={user.name}
-            onChange={(e) => setUser({ ...user, name: e.target.value })}
-          />
-        </div>
+      <InputField label="CPF" mask={maskCPF} {...register("cpf")} errors={errors.cpf} />
 
-        <div className="form-control">
-          <label className="label">
-            <span className="label-text">Foto de Perfil</span>
-          </label>
-          <FileInput onChange={handleImageChange} disabled={loading} />
-        </div>
+      <InputField
+        label="Data de Nascimento"
+        mask={maskDate}
+        {...register("birthdate")}
+        errors={errors.birthdate}
+      />
 
-        <label className="form-control w-full max-w-xs">
-          <div className="label">
-            <span className={clsx("label-text", fillCPF && "text-error")}>CPF*</span>
-          </div>
-          <InputMask
-            mask="999.999.999-99"
-            className={clsx("input input-bordered", fillCPF && "input-error")}
-            value={user.cpf}
-            onChange={(e) => setUser({ ...user, cpf: e.target.value })}
-            disabled={loading}
-          />
-        </label>
+      <SelectField
+        label="Tipo de Usuário"
+        options={USER_TYPES.map((type) => ({
+          value: type,
+          label: USER_TYPES_MASK[type],
+        }))}
+        {...register("type")}
+        errors={errors.type}
+      />
 
-        <div className="form-control">
-          <label className="label">
-            <span className="label-text">E-mails</span>
-          </label>
-          <input
-            className="input input-bordered"
-            placeholder="Insira Email + Enter"
-            type="email"
-            ref={emailInput}
-            onKeyDown={(e) => {
-              const email = emailInput.current?.value
-              // TODO: Add a email validator here.
-              if (!email?.includes("@") || email?.endsWith("@")) return
-              if (e.key == "Enter" && email) {
-                setUser({ ...user, emails: [...(user.emails || []), { value: email }] })
-                emailInput.current.value = ""
-              }
-            }}
-            color="primary"
-            disabled={loading}
-          />
-          <ul className="mt-1 ml-2">
-            {(user.emails || []).map((email, i) => (
-              <li key={i}>
-                {email.value}
-                <Tooltip message="Remover">
-                  <Button
-                    size="xs"
-                    onClick={() =>
-                      setUser({
-                        ...user,
-                        emails: (user.emails || []).filter((e) => e !== email),
-                      })
-                    }
-                  >
-                    <FaTrash />
-                  </Button>
-                </Tooltip>
-              </li>
-            ))}
-          </ul>
-        </div>
-
-        <div className="form-control">
-          <label className="label">
-            <span className="label-text">Telefones</span>
-          </label>
-          <InputMask
-            mask="(99) 99999-9999"
-            placeholder="Insira Telefone + Enter"
-            className="input input-bordered"
-            onChange={(e) => setCurrentPhone(e.target.value)}
-            value={currentPhone}
-            onKeyDown={(e) => {
-              if (e.key == "Enter" && currentPhone) {
-                setUser({
-                  ...user,
-                  phones: [
-                    ...(user.phones || []),
-                    { value: currentPhone, isEmergency: false },
-                  ],
-                })
-                setCurrentPhone(() => "")
-              }
-            }}
-            color="primary"
-            disabled={loading}
-          />
-          <ul className="mt-1 ml-2">
-            {(user.phones || []).map((phone, i) => (
-              <li key={i}>
-                {maskPhone(phone.value)}
-                <Tooltip message="Remover">
-                  <Button
-                    size="xs"
-                    onClick={() =>
-                      setUser({
-                        ...user,
-                        phones: (user.phones || []).filter((n) => n !== phone),
-                      })
-                    }
-                  >
-                    <FaTrash />
-                  </Button>
-                </Tooltip>
-              </li>
-            ))}
-          </ul>
-        </div>
-
-        <label className="form-control col-span-full">
-          <div className="label">
-            <span className="label-text">
-              Endereço
-              <Button
-                onClick={() => setAddressModalOpen(true)}
-                color="primary"
-                size="xs"
-                className="ml-2"
+      <div>
+        <InputField
+          label="Emails"
+          helpText="Digite e pressione Enter para adicionar"
+          {...register("emails")}
+          errors={errors.emails}
+          onEnter={(value) => {
+            setEmails([...emails, { value }])
+          }}
+        />
+        <ol>
+          {emails.map(({ value }, index) => (
+            <li key={index} className="text-sm ml-3 flex gap-1 items-center">
+              <button
+                className="btn btn-error btn-xs"
+                onClick={() => setEmails(emails.filter((_, i) => i !== index))}
               >
-                <FaEdit />
-              </Button>
-            </span>
-          </div>
-          <input
-            className="input input-bordered btn text-left"
-            value={
-              user.address
-                ? `${user.address.street}, ${user.address.number}, ${user.address.neighborhood} (${user.address.complement}) ${user.address.city} (${user.address.state} - ${user.address.cep})`
-                : "Sem endereço"
-            }
-            disabled
-          />
-        </label>
-
-        <div className="form-control w-full col-span-full">
-          <label className="label">
-            <span className="label-text">Senha</span>
-          </label>
-          <label className="input-group flex">
-            <input
-              type={hidePassword ? "password" : "text"}
-              className="input input-bordered w-full"
-              value={user.password}
-              onChange={(e) => setUser({ ...user, password: e.target.value })}
-            />
-            <button
-              onClick={() => setHidePassword(!hidePassword)}
-              className="btn btn-square btn-ghost"
-            >
-              {hidePassword ? <FaEye /> : <FaEyeSlash />}
-            </button>
-          </label>
-        </div>
-
-        <label className="form-control w-full max-w-xs">
-          <div className="label">
-            <span className={clsx("label-text", fillBirthdate && "text-error")}>
-              Data de Nascimento*
-            </span>
-          </div>
-          <InputMask
-            mask="99/99/9999"
-            placeholder="dd/mm/aaaa"
-            className={clsx("input input-bordered", fillBirthdate && "input-error")}
-            type="text"
-            value={user.birthdate}
-            onChange={(e) => setUser({ ...user, birthdate: e.target.value })}
-          />
-        </label>
-
-        {user.type === "student" && (
-          <>
-            <div className="form-control w-full max-w-xs">
-              <label className="label">
-                <span className="label-text">Série</span>
-              </label>
-              <Select
-                value={user.serie || "default"}
-                onChange={(e) => {
-                  const value = e.target.value
-                  if (value !== "default") {
-                    setUser({ ...user, serie: value as Serie })
-                  }
-                }}
-              >
-                <Select.Option value={"default"} disabled>
-                  Selecione uma Série
-                </Select.Option>
-                {SERIES.map((serie) => (
-                  <Select.Option key={serie} value={serie}>
-                    {serie}
-                  </Select.Option>
-                ))}
-              </Select>
-            </div>
-
-            <label className="form-control w-full max-w-xs">
-              <div className="label">
-                <span className={clsx("label-text", fillScholarship && "text-error")}>
-                  Valor da Bolsa*
-                </span>
-              </div>
-              <input
-                type="number"
-                className={clsx("input input-bordered", fillScholarship && "input-error")}
-                value={user.scholarship}
-                onChange={(e) =>
-                  setUser({ ...user, scholarship: Number(e.target.value) })
-                }
-                step={0.01}
-                min={0}
-              />
-            </label>
-
-            <div className="form-control w-full max-w-xs">
-              <label className="label">
-                <span className="label-text">Nome do Responsável</span>
-              </label>
-              <input
-                type="text"
-                className="input input-bordered"
-                value={user.responsible_name}
-                onChange={(e) => setUser({ ...user, responsible_name: e.target.value })}
-              />
-            </div>
-
-            <div className="form-control w-full max-w-xs">
-              <label className="label">
-                <span className="label-text">Número do Responsável</span>
-              </label>
-              <InputMask
-                mask="(99) 99999-9999"
-                type="text"
-                className="input input-bordered"
-                value={user.responsible_phone}
-                onChange={(e) => setUser({ ...user, responsible_phone: e.target.value })}
-              />
-            </div>
-
-            <label className="form-control w-full max-w-xs">
-              <div className="label">
-                <span className="label-text">Turma</span>
-              </div>
-              <select
-                className="select select-bordered join-item"
-                onChange={(e) => {
-                  const value = parseInt(e.target.value)
-                  const classroom = classrooms.find((classroom) => classroom.id === value)
-                  setUser({ ...user, classroom: classroom })
-                }}
-                value={user.classroom?.id}
-                disabled={isLoading}
-              >
-                <option disabled selected value={0}>
-                  Selecione uma Turma
-                </option>
-                {classrooms.map((classroom) => (
-                  <option key={classroom.id} value={classroom.id}>
-                    {classroom.name}
-                  </option>
-                ))}
-              </select>
-            </label>
-          </>
-        )}
-
-        <Button
-          variant="outline"
-          color="accent"
-          onClick={handleSubmit}
-          className="col-span-full"
-        >
-          {action === "create" ? (
-            <>
-              <FaPlus /> Criar
-            </>
-          ) : (
-            <>
-              <FaEdit /> Editar
-            </>
-          )}
-        </Button>
+                <FaTimes />
+              </button>
+              <span>{value}</span>
+            </li>
+          ))}
+        </ol>
       </div>
-    </>
+
+      <div>
+        <InputField
+          label="Telefones"
+          helpText="Digite e pressione Enter para adicionar"
+          {...register("phones")}
+          errors={errors.phones}
+          mask={maskPhone}
+          onEnter={(value) => {
+            setPhoneNumbers([...phoneNumbers, { value, isEmergency: false }])
+          }}
+        />
+        <ol>
+          {phoneNumbers.map(({ value }, index) => (
+            <li key={index} className="text-sm ml-3 flex gap-1 items-center">
+              <button
+                className="btn btn-error btn-xs"
+                onClick={() =>
+                  setPhoneNumbers(phoneNumbers.filter((_, i) => i !== index))
+                }
+              >
+                <FaTimes />
+              </button>
+              <span>{value}</span>
+            </li>
+          ))}
+        </ol>
+      </div>
+
+      {userType === "student" && (
+        <>
+          <InputField
+            helpText="Bolsa do aluno em R$"
+            label="Bolsa"
+            mask={maskMoney}
+            {...register("scholarship")}
+            errors={errors.scholarship}
+          />
+
+          <InputField
+            label="Nome do Responsável"
+            {...register("responsible_name")}
+            errors={errors.responsible_name}
+          />
+
+          <InputField
+            label="Telefone do Responsável"
+            mask={maskPhone}
+            {...register("responsible_phone")}
+            errors={errors.responsible_phone}
+          />
+
+          <SelectField
+            label="Série"
+            helpText="Série escolar"
+            options={SERIES.map((serie) => ({
+              value: serie,
+              label: serie,
+            }))}
+            {...register("serie")}
+            errors={errors.serie}
+          />
+
+          <SelectField
+            label="Turma"
+            options={(classrooms || []).map(({ id, name }) => ({
+              value: id.toString(),
+              label: name,
+            }))}
+            {...register("classroom")}
+            errors={errors.serie}
+          />
+        </>
+      )}
+
+      <div className="collapse bg-base-200 col-span-full">
+        <input type="checkbox" className="peer" />
+        <div className="collapse-title text-center">Endereço</div>
+        <div className="collapse-content">
+          <AddressForm register={register} errors={errors} />
+        </div>
+      </div>
+
+      <button type="submit" className="btn btn-primary col-span-full">
+        {action === "create" ? "Criar Usuário" : "Editar Usuário"}
+      </button>
+    </form>
   )
 }
 
