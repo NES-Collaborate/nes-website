@@ -1,7 +1,7 @@
 import { ConfirmModal } from "@/components/ConfirmModal"
 import Loading from "@/components/Loading"
 import Toast from "@/components/Toast"
-import { useUsers } from "@/hooks/admin/users"
+import { useUserMutations, useUsers } from "@/hooks/admin/users"
 import { User } from "@/types/user"
 import { getUserPhotoUrl, maskCPF } from "@/utils/client"
 import Image from "next/image"
@@ -40,6 +40,8 @@ const UsersList = ({ query }: Props) => {
     const handler = setTimeout(() => setDebouncedQuery(query), 500)
     return () => clearTimeout(handler)
   }, [query])
+
+  const { deleteMutation } = useUserMutations()
 
   const { data: users, isLoading, isError, error } = useUsers(debouncedQuery)
 
@@ -100,7 +102,11 @@ const UsersList = ({ query }: Props) => {
                       description={`Tem certeza que deseja excluir o usuário ${user.name}?`}
                     >
                       {(show) => (
-                        <Button onClick={show(() => {})} color="error" className="mr-2">
+                        <Button
+                          onClick={show(() => deleteMutation.mutate(user.id))}
+                          color="error"
+                          className="mr-2"
+                        >
                           <FaTrash />
                         </Button>
                       )}
