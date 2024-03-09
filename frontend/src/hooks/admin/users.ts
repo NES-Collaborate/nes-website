@@ -1,7 +1,8 @@
 import { useBackend } from "@/contexts/backend"
-import { fetchUsers } from "@/services/admin/users"
+import { UserFormData } from "@/schemas/user"
+import { createUser, deleteUser, editUser, fetchUsers } from "@/services/admin/users"
 import { User } from "@/types/user"
-import { useQuery } from "@tanstack/react-query"
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 
 export const useUsers = (q: string) => {
   const { backend, isLogged } = useBackend()
@@ -11,4 +12,42 @@ export const useUsers = (q: string) => {
     queryFn: () => fetchUsers(backend, q),
     enabled: isLogged,
   })
+}
+
+export const useUserMutations = () => {
+  const { backend } = useBackend()
+  const queryClient = useQueryClient()
+
+  const createMutation = useMutation({
+    mutationFn: (data: UserFormData) => createUser(backend, data),
+    onSuccess: () => {
+      queryClient.invalidateQueries({
+        queryKey: ["users"],
+      })
+    },
+  })
+
+  const editMutation = useMutation({
+    mutationFn: (data: UserFormData) => editUser(backend, data),
+    onSuccess: () => {
+      queryClient.invalidateQueries({
+        queryKey: ["users"],
+      })
+    },
+  })
+
+  const deleteMutation = useMutation({
+    mutationFn: (userId: number) => deleteUser(backend, userId),
+    onSuccess: () => {
+      queryClient.invalidateQueries({
+        queryKey: ["users"],
+      })
+    },
+  })
+
+  return {
+    createMutation,
+    editMutation,
+    deleteMutation,
+  }
 }

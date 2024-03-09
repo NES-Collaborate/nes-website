@@ -1,6 +1,7 @@
 import { InputField } from "@/components/ui/forms/InputField"
 import { SelectField } from "@/components/ui/forms/SelectField"
 import { SERIES, USER_TYPES, USER_TYPES_MASK } from "@/data/constants"
+import { useUserMutations } from "@/hooks/admin/users"
 import { useClassrooms } from "@/hooks/teacher/classrooms"
 import {
   EmailFormData,
@@ -58,6 +59,8 @@ const UserForm = ({ user, action, setModalState }: Omit<UserModalProps, "isOpen"
   const [emails, setEmails] = useState<EmailFormData[]>([])
   const [phoneNumbers, setPhoneNumbers] = useState<PhoneNumberFormData[]>([])
 
+  const { createMutation, editMutation } = useUserMutations()
+
   useEffect(() => {
     setEmails(user?.emails || [])
     setPhoneNumbers(
@@ -87,13 +90,14 @@ const UserForm = ({ user, action, setModalState }: Omit<UserModalProps, "isOpen"
       return
     }
 
-    // TODO: Implement user creation with tanstack mutation here
-
-    setModalState((prevState) => ({
-      ...prevState,
-      user: null,
-      isOpen: false,
-    }))
+    switch (action) {
+      case "create":
+        createMutation.mutate(formData)
+        break
+      case "edit":
+        editMutation.mutate(formData)
+        break
+    }
   }
 
   return (
