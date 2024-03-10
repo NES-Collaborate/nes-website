@@ -1,3 +1,4 @@
+import { ConfirmModal } from "@/components/ConfirmModal"
 import Loading from "@/components/Loading"
 import Toast from "@/components/Toast"
 import NoticeModal from "@/components/app/admin/lp/NoticeModal"
@@ -79,13 +80,20 @@ const Notices = () => {
                     </Tooltip>
 
                     <Tooltip message="Excluir">
-                      <Button
-                        color="error"
-                        size="sm"
-                        onClick={() => deleteMutation.mutate(notice.id)}
+                      <ConfirmModal
+                        title="Excluir Notícia"
+                        description="Tem certeza que deseja excluir esta noticia?"
                       >
-                        <FaTrash />
-                      </Button>
+                        {(show) => (
+                          <Button
+                            color="error"
+                            size="sm"
+                            onClick={show(() => deleteMutation.mutate(notice.id))}
+                          >
+                            <FaTrash />
+                          </Button>
+                        )}
+                      </ConfirmModal>
                     </Tooltip>
                   </span>
                 </Table.Row>
