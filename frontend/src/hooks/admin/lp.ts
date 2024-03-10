@@ -32,7 +32,7 @@ export const useNoticeMutations = () => {
   })
 
   const createMutation = useMutation({
-    mutationFn: (notice: Notice) => createNotice(axiosApi, notice),
+    mutationFn: (notice: Omit<Notice, "id">) => createNotice(axiosApi, notice),
     onSuccess: () => {
       queryClient.invalidateQueries({
         queryKey: ["notices"],

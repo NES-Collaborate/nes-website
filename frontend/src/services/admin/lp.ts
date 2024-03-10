@@ -15,7 +15,7 @@ export const deleteNotice = async (
 
 export const createNotice = async (
   client: AxiosInstance,
-  notice: Notice
+  notice: Omit<Notice, "id">
 ): Promise<Notice> => {
   const res = await client.post("/notice/add", notice)
   return res.data.notice
