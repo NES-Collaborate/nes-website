@@ -6,7 +6,6 @@ import NoticeForm from "./NoticeForm"
 
 type Props = {
   notices: Notice[]
-  setNotices: (notices: Notice[]) => void
   action: "create" | "edit"
   index: number
   setIndex: (index: number) => void
@@ -15,7 +14,6 @@ type Props = {
 
 const NoticeModal = ({
   notices,
-  setNotices,
   action,
   index,
   setIndex,
@@ -78,7 +76,6 @@ const NoticeModal = ({
           action={action}
           setToast={setToast}
           notices={notices}
-          setNotices={setNotices}
         />
       </Modal.Body>
     </Modal>

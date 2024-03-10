@@ -1,5 +1,5 @@
+import { useNoticeMutations } from "@/hooks/admin/lp"
 import { Notice } from "@/types/constants"
-import { axiosApi } from "@/utils/axiosClient"
 import { useState } from "react"
 import { Button, FileInput, Input, Textarea } from "react-daisyui"
 import { FaEdit, FaPlus } from "react-icons/fa"
@@ -10,17 +10,9 @@ type Props = {
   action: "create" | "edit"
   setToast: (toast: string) => void
   notices: Notice[]
-  setNotices: (notices: Notice[]) => void
 }
 
-const NoticeForm = ({
-  notice,
-  setNotice,
-  action,
-  setToast,
-  notices,
-  setNotices,
-}: Props) => {
+const NoticeForm = ({ notice, setNotice, action, setToast, notices }: Props) => {
   const [isLoading, setIsLoading] = useState(false)
 
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -34,10 +26,11 @@ const NoticeForm = ({
     }
   }
 
+  const { createMutation, editMutation } = useNoticeMutations()
+
   const createNotice = async () => {
     try {
-      const res = await axiosApi.post("/notice/add", notice)
-      setNotices([...notices, res.data.notice])
+      await createMutation.mutateAsync(notice)
       setToast("Noticia criada com sucesso!")
     } catch {
       setToast("Erro ao criar notícia.")
@@ -46,8 +39,7 @@ const NoticeForm = ({
 
   const editNotice = async () => {
     try {
-      const res = await axiosApi.put(`/notice/${notice.id}`, notice)
-      setNotices(notices.map((n) => (n.id == notice.id ? res.data.notice : n)))
+      await editMutation.mutateAsync(notice)
       setToast("Notícia editada com sucesso!")
     } catch {
       setToast("Erro ao editar notícia.")
