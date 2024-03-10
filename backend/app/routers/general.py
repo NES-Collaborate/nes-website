@@ -44,7 +44,7 @@ async def upload_file(
     session.commit()
     session.refresh(_attach)
 
-    return {"id": _attach.id}
+    return {"id": _attach.id, "location": _attach.location, "type": _attach.type}
 
 
 @router.get("/attachments/{attach_id}", status_code=status.HTTP_200_OK)
