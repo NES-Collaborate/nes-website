@@ -9,10 +9,9 @@ type Props = {
   setNotice: (notice: Notice) => void
   action: "create" | "edit"
   setToast: (toast: string) => void
-  notices: Notice[]
 }
 
-const NoticeForm = ({ notice, setNotice, action, setToast, notices }: Props) => {
+const NoticeForm = ({ notice, setNotice, action, setToast }: Props) => {
   const [isLoading, setIsLoading] = useState(false)
 
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {

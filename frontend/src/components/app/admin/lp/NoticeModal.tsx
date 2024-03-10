@@ -12,13 +12,7 @@ type Props = {
   setToast: (toast: string) => void
 }
 
-const NoticeModal = ({
-  notices,
-  action,
-  index,
-  setIndex,
-  setToast,
-}: Props) => {
+const NoticeModal = ({ notices, action, index, setIndex, setToast }: Props) => {
   const isOpen = (action == "create" && index == -1) || (action == "edit" && index != -1)
 
   const [notice, setNotice] = useState<Notice>({
@@ -75,7 +69,6 @@ const NoticeModal = ({
           setNotice={setNotice}
           action={action}
           setToast={setToast}
-          notices={notices}
         />
       </Modal.Body>
     </Modal>
