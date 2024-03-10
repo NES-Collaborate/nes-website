@@ -64,12 +64,7 @@ const NoticeModal = ({ notices, action, index, setIndex, setToast }: Props) => {
       </Modal.Header>
 
       <Modal.Body>
-        <NoticeForm
-          notice={notice}
-          setNotice={setNotice}
-          action={action}
-          setToast={setToast}
-        />
+        <NoticeForm notice={notice} action={action} setToast={setToast} />
       </Modal.Body>
     </Modal>
   )

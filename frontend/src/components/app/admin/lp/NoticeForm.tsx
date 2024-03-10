@@ -1,130 +1,120 @@
+import { FileInputField } from "@/components/ui/forms/FileInputField"
+import { InputField } from "@/components/ui/forms/InputField"
+import { TextAreaField } from "@/components/ui/forms/TextAreaField"
+import { useSession } from "@/contexts/session"
 import { useNoticeMutations } from "@/hooks/admin/lp"
+import { NoticeFormData, noticeSchema } from "@/schemas/notices"
 import { Notice } from "@/types/constants"
-import { useState } from "react"
-import { Button, FileInput, Input, Textarea } from "react-daisyui"
+import { getAttachmentUrl, uploadAttach } from "@/utils/client"
+import { zodResolver } from "@hookform/resolvers/zod"
+import { Button } from "react-daisyui"
+import { SubmitHandler, useForm } from "react-hook-form"
 import { FaEdit, FaPlus } from "react-icons/fa"
 
 type Props = {
   notice: Notice
-  setNotice: (notice: Notice) => void
   action: "create" | "edit"
   setToast: (toast: string) => void
 }
 
-const NoticeForm = ({ notice, setNotice, action, setToast }: Props) => {
-  const [isLoading, setIsLoading] = useState(false)
+const NoticeForm = ({ notice, action, setToast }: Props) => {
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<NoticeFormData>({
+    resolver: zodResolver(noticeSchema),
+    values: { ...notice, image: false },
+  })
 
-  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0]
-    if (file) {
-      const reader = new FileReader()
-      reader.onload = () => {
-        setNotice({ ...notice, image: reader.result as string })
-      }
-      reader.readAsDataURL(file)
-    }
-  }
+  const { token } = useSession()
 
   const { createMutation, editMutation } = useNoticeMutations()
 
-  const createNotice = async () => {
+  const createNotice = async (formData: Notice) => {
     try {
-      await createMutation.mutateAsync(notice)
+      await createMutation.mutateAsync(formData)
       setToast("Noticia criada com sucesso!")
     } catch {
       setToast("Erro ao criar notícia.")
     }
   }
 
-  const editNotice = async () => {
+  const editNotice = async (formData: Notice) => {
     try {
-      await editMutation.mutateAsync(notice)
+      await editMutation.mutateAsync(formData)
       setToast("Notícia editada com sucesso!")
     } catch {
       setToast("Erro ao editar notícia.")
     }
   }
 
-  const handleSubmit = async () => {
-    setIsLoading(true)
-    // Verify if all fields are filled
-    if (!notice.title || !notice.description || !notice.url || !notice.image) {
-      setToast("Preencha todos os campos!")
-      setIsLoading(false)
-      return
+  const submitForm: SubmitHandler<NoticeFormData> = async (data) => {
+    var formData = {} as Notice
+    if (action === "create") {
+      var attach = await uploadAttach(data.image, token)
+      if (typeof attach === "string") {
+        setToast(attach)
+        return
+      }
+      formData = {
+        ...data,
+        image: getAttachmentUrl(attach),
+        id: notice.id,
+      }
+      await createNotice(formData)
+    } else if (action === "edit") {
+      if (data.image) {
+        var attach = await uploadAttach(data.image, token)
+        if (typeof attach === "string") {
+          setToast(attach)
+          return
+        } else {
+          formData = {
+            ...data,
+            image: getAttachmentUrl(attach),
+            id: notice.id,
+          }
+        }
+      } else {
+        formData = {
+          ...data,
+          image: notice.image,
+          id: notice.id,
+        }
+      }
     }
-    switch (action) {
-      case "create":
-        await createNotice()
-        break
-      case "edit":
-        await editNotice()
-        break
-    }
-    setIsLoading(false)
+    await editNotice(formData)
   }
 
   return (
-    <div className="flex flex-col items-center gap-3">
-      <label className="form-control w-full max-w-xs">
-        <div className="label">
-          <span className="label-text">Título</span>
-        </div>
-        <Input
-          placeholder="Eu sou um título..."
-          size="md"
-          value={notice.title}
-          onChange={(e) => setNotice({ ...notice, title: e.target.value })}
-          color="primary"
-          disabled={isLoading}
-          bordered
-        />
-      </label>
+    <form
+      className="flex flex-col items-center gap-2"
+      onSubmit={handleSubmit(submitForm)}
+    >
+      <InputField label="Título" {...register("title")} errors={errors.title} />
 
-      <label className="form-control w-full max-w-xs">
-        <div className="label">
-          <span className="label-text">Descrição</span>
-        </div>
-        <Textarea
-          placeholder="Uma descrição emocionante aqui..."
-          size="md"
-          value={notice.description}
-          color="primary"
-          onChange={(e) => setNotice({ ...notice, description: e.target.value })}
-          disabled={isLoading}
-          bordered
-        />
-      </label>
+      <TextAreaField
+        label="Descrição"
+        {...register("description")}
+        errors={errors.description}
+      />
 
-      <label className="form-control w-full max-w-xs">
-        <div className="label">
-          <span className="label-text">URL</span>
-        </div>
-        <Input
-          placeholder="Link para o site da notícia"
-          size="md"
-          value={notice.url}
-          onChange={(e) => setNotice({ ...notice, url: e.target.value })}
-          color="primary"
-          disabled={isLoading}
-          bordered
-        />
-      </label>
+      <InputField
+        label="Link"
+        helpText="Link para a página (URL)"
+        {...register("url")}
+        errors={errors.url}
+      />
 
-      <label className="form-control w-full max-w-xs">
-        <div className="label">
-          <span className="label-text">Imagem</span>
-        </div>
-        <FileInput
-          size="md"
-          color="primary"
-          onChange={handleImageChange}
-          disabled={isLoading}
-          bordered
-        />
-      </label>
+      <FileInputField
+        label="Imagem"
+        helpText="Capa da Notícia"
+        {...register("image")}
+        errors={errors.image}
+      />
 
-      <Button variant="outline" color="accent" onClick={handleSubmit}>
+      <Button variant="outline" color="accent">
         {action === "create" ? (
           <>
             <FaPlus /> Criar
@@ -135,7 +125,7 @@ const NoticeForm = ({ notice, setNotice, action, setToast }: Props) => {
           </>
         )}
       </Button>
-    </div>
+    </form>
   )
 }
 
