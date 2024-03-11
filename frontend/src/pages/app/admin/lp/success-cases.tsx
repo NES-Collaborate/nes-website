@@ -1,43 +1,23 @@
+import { ConfirmModal } from "@/components/ConfirmModal"
 import Loading from "@/components/Loading"
 import Toast from "@/components/Toast"
 import SuccessCaseModal from "@/components/app/admin/lp/SuccessCaseModal"
-import { SuccessCase } from "@/types/constants"
+import { useSuccessCases, useSuccessCasesMutations } from "@/hooks/admin/lp"
 import { withAuth } from "@/utils/auth"
-import { axiosApi } from "@/utils/axiosClient"
-import { useEffect, useState } from "react"
+import { useState } from "react"
 import { Alert, Button, Table, Tooltip } from "react-daisyui"
 import { FaEdit, FaPlus, FaTrash } from "react-icons/fa"
 import { MdErrorOutline } from "react-icons/md"
 
 const SuccessCases = () => {
-  const [successCases, setSuccessCases] = useState<SuccessCase[]>([])
-  const [isLoading, setIsLoading] = useState(true)
   const [toast, setToast] = useState("")
-  const [error, setError] = useState("")
 
   const [modalAction, setModalAction] = useState<"edit" | "create">("edit")
   const [targetCaseIndex, setTargetCaseIndex] = useState<number>(-1)
 
-  // Load Success Cases
-  useEffect(() => {
-    setIsLoading(true)
-    axiosApi
-      .get("/success-case/all")
-      .then((res) => setSuccessCases(res.data.successCases || []))
-      .catch(() => setError("Erro ao buscar casos de sucesso"))
-      .finally(() => setIsLoading(false))
-  }, [])
+  const { data: successCases = [], isLoading, error } = useSuccessCases()
 
-  // Delete Success Case
-  const deleteSuccessCase = async (successCase: SuccessCase) => {
-    try {
-      await axiosApi.delete(`/success-case/${successCase.id}`)
-      setSuccessCases(successCases.filter((n) => n.id !== successCase.id))
-      setToast(`Caso de Sucesso de '${successCase.name}' deletado com sucesso!`)
-    } catch (error) {
-      setError("Erro ao deletar caso de sucesso")
-    }
-  }
+  const { deleteMutation } = useSuccessCasesMutations()
 
   const openCreateModal = () => {
     setTargetCaseIndex(-1)
@@ -56,7 +36,7 @@ const SuccessCases = () => {
       {error && (
         <div className="flex justify-center items-center h-80">
           <Alert status="error" className="w-4/5" icon={<MdErrorOutline />}>
-            {error}
+            {error.message}
           </Alert>
         </div>
       )}
@@ -100,13 +80,20 @@ const SuccessCases = () => {
                     </Tooltip>
 
                     <Tooltip message="Excluir">
-                      <Button
-                        color="error"
-                        size="sm"
-                        onClick={() => deleteSuccessCase(successCase)}
+                      <ConfirmModal
+                        title="Excluir Caso de Sucesso"
+                        description="Tem certeza que deseja excluir este caso de sucesso?"
                       >
-                        <FaTrash />
-                      </Button>
+                        {(show) => (
+                          <Button
+                            color="error"
+                            size="sm"
+                            onClick={show(() => deleteMutation.mutate(successCase.id))}
+                          >
+                            <FaTrash />
+                          </Button>
+                        )}
+                      </ConfirmModal>
                     </Tooltip>
                   </span>
                 </Table.Row>
@@ -142,7 +129,6 @@ const SuccessCases = () => {
 
       <SuccessCaseModal
         successCases={successCases}
-        setSuccessCases={setSuccessCases}
         action={modalAction}
         index={targetCaseIndex}
         setIndex={setTargetCaseIndex}

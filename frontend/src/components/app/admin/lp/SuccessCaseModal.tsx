@@ -6,21 +6,13 @@ import SuccessCaseForm from "./SuccessCaseForm"
 
 type Props = {
   successCases: SuccessCase[]
-  setSuccessCases: (successCases: SuccessCase[]) => void
   action: "create" | "edit"
   index: number
   setIndex: (index: number) => void
   setToast: (toast: string) => void
 }
 
-const SuccessCaseModal = ({
-  successCases,
-  setSuccessCases,
-  action,
-  index,
-  setIndex,
-  setToast,
-}: Props) => {
+const SuccessCaseModal = ({ successCases, action, index, setIndex, setToast }: Props) => {
   const isOpen = (action == "create" && index == -1) || (action == "edit" && index != -1)
 
   const [successCase, setSuccessCase] = useState<SuccessCase>({
@@ -34,7 +26,7 @@ const SuccessCaseModal = ({
   })
 
   useEffect(() => {
-    if (action == "edit" && index != -1) {
+    if (action == "edit") {
       const successCase = successCases.find((n) => n.id == index)
       if (successCase) setSuccessCase(successCase)
     } else
@@ -78,11 +70,9 @@ const SuccessCaseModal = ({
       <Modal.Body>
         <SuccessCaseForm
           successCase={successCase}
-          setSuccessCase={setSuccessCase}
           action={action}
           setToast={setToast}
           successCases={successCases}
-          setSuccessCases={setSuccessCases}
         />
       </Modal.Body>
     </Modal>
