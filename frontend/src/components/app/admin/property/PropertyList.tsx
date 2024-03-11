@@ -54,7 +54,13 @@ const PropertyList = ({ query = "" }: Props) => {
         </Table.Head>
 
         <Table.Body>
-          {isLoading && <Loading text="Carregando propriedades..." center />}
+          {isLoading && (
+            <tr>
+              <td colSpan={5}>
+                <Loading text="Carregando propriedades..." center />
+              </td>
+            </tr>
+          )}
           {properties.map((property) => (
             <Table.Row key={property.id} className="text-center">
               <span>{property.id}</span>
