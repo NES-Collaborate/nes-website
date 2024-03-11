@@ -1,4 +1,9 @@
-import { createNotice, deleteNotice, editNotice, fetchNotices } from "@/services/admin/lp"
+import {
+  createNotice,
+  deleteNotice,
+  fetchNotices,
+  updateNotice,
+} from "@/services/admin/lp"
 import { Notice } from "@/types/constants"
 import { axiosApi } from "@/utils/axiosClient"
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
@@ -23,7 +28,7 @@ export const useNoticeMutations = () => {
   })
 
   const editMutation = useMutation({
-    mutationFn: (notice: Notice) => editNotice(axiosApi, notice),
+    mutationFn: (notice: Notice) => updateNotice(axiosApi, notice),
     onSuccess: () => {
       queryClient.invalidateQueries({
         queryKey: ["notices"],

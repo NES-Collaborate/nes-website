@@ -40,7 +40,7 @@ const NoticeForm = ({ notice, action, setToast }: Props) => {
     }
   }
 
-  const editNotice = async (formData: Notice) => {
+  const updateNotice = async (formData: Notice) => {
     try {
       await editMutation.mutateAsync(formData)
       setToast("Notícia editada com sucesso!")
@@ -84,7 +84,7 @@ const NoticeForm = ({ notice, action, setToast }: Props) => {
         }
       }
     }
-    await editNotice(formData)
+    await updateNotice(formData)
   }
 
   return (
