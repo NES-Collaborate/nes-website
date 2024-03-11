@@ -2,6 +2,7 @@ import {
   createNotice,
   createSuccessCase,
   deleteNotice,
+  deleteSuccessCase,
   fetchNotices,
   fetchSuccessCases,
   updateNotice,
@@ -62,7 +63,7 @@ export const useSuccessCasesMutations = () => {
   const queryClient = useQueryClient()
 
   const deleteMutation = useMutation({
-    mutationFn: (successCaseId: number) => deleteNotice(axiosApi, successCaseId),
+    mutationFn: (successCaseId: number) => deleteSuccessCase(axiosApi, successCaseId),
     onSuccess: () => {
       queryClient.invalidateQueries({
         queryKey: ["success-cases"],
