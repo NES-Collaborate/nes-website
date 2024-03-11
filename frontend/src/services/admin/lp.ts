@@ -29,7 +29,7 @@ export const updateNotice = async (
   return res.data.notice
 }
 
-export const fetchSuccessCases = async (client: AxiosInstance): Promise<string[]> => {
+export const fetchSuccessCases = async (client: AxiosInstance): Promise<SuccessCase[]> => {
   const res = await client.get("/success-case/all")
   return res.data.successCases || []
 }

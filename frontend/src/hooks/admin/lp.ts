@@ -3,6 +3,7 @@ import {
   createSuccessCase,
   deleteNotice,
   fetchNotices,
+  fetchSuccessCases,
   updateNotice,
   updateSuccessCase,
 } from "@/services/admin/lp"
@@ -51,9 +52,9 @@ export const useNoticeMutations = () => {
 }
 
 export const useSuccessCases = () => {
-  return useQuery<Notice[]>({
+  return useQuery<SuccessCase[]>({
     queryKey: ["success-cases"],
-    queryFn: () => fetchNotices(axiosApi),
+    queryFn: () => fetchSuccessCases(axiosApi),
   })
 }
 
