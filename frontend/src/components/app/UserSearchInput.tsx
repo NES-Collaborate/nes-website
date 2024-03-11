@@ -1,5 +1,4 @@
 import { useBackend } from "@/contexts/backend"
-import { useSession } from "@/contexts/session"
 import { User } from "@/types/user"
 import clsx from "clsx"
 import { useEffect, useRef, useState } from "react"

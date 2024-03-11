@@ -1,126 +1,74 @@
-import AutoComplete from "@/components/AutoComplete"
-import { useBackend } from "@/contexts/backend"
+import { InputField } from "@/components/ui/forms/InputField"
+import { useBensMutations } from "@/hooks/admin/bens"
+import { BenFormData, benSchema } from "@/schemas/ben"
 import { Property } from "@/types/entities"
-import { User } from "@/types/user"
-import { useEffect, useState } from "react"
-import { Button, Input } from "react-daisyui"
+import { zodResolver } from "@hookform/resolvers/zod"
+import { useState } from "react"
+import { Button } from "react-daisyui"
+import { SubmitHandler, useForm } from "react-hook-form"
 import { FaEdit, FaPlus } from "react-icons/fa"
-import UserSearchInput from "../../UserSearchInput"
+// import UserSearchInput from "../../UserSearchInput"
 
 type Props = {
   property: Property
-  setProperty: (property: Property) => void
   action: string
   setToast: (toast: string) => void
-  properties: Property[]
-  setProperties: (properties: Property[]) => void
 }
 
-const PropertyForm = ({
-  property,
-  setProperty,
-  action,
-  setToast,
-  setProperties,
-  properties,
-}: Props) => {
+const PropertyForm = ({ property, action }: Props) => {
   const [isLoading, setIsLoading] = useState(false)
-  const { backend } = useBackend()
-  const [loanedTo, setLoanedTo] = useState<User | null>(null)
 
-  useEffect(() => {
-    setLoanedTo(property.loanedTo as User)
-  }, [property])
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<BenFormData>({
+    resolver: zodResolver(benSchema),
+    values: {
+      name: property.name,
+      type: property.type,
+      loanedTo: property.loanedTo?.id.toString() || "",
+    },
+  })
 
-  const createProperty = async () => {
-    if (loanedTo) setProperty({ ...property, loanedTo: loanedTo })
-    try {
-      const res = await backend.post("/admin/property", { ...property, loanedTo })
-      setProperties([...properties, res.data.property])
-      setToast("Propriedade criada com sucesso!")
-    } catch {
-      setToast("Erro ao criar propriedade.")
-    }
-  }
+  const { createMutation, editMutation } = useBensMutations()
 
-  const editProperty = async () => {
-    try {
-      const res = await backend.put(`/admin/property/${property.id}`, {
-        ...property,
-        loanedTo,
-      })
-      setProperties(properties.map((p) => (p.id == property.id ? res.data.property : p)))
-      setToast("Propriedade editada com sucesso!")
-    } catch {
-      setToast("Erro ao editar propriedade.")
-    }
-  }
-
-  const handleSubmit = async () => {
+  const submit: SubmitHandler<BenFormData> = async (data) => {
     setIsLoading(true)
-    // Verify if all fields are filled
-    if (!property.name || !property.type) {
-      setToast("Preencha todos os campos!")
-      setIsLoading(false)
-      return
-    }
     switch (action) {
       case "create":
-        await createProperty()
+        await createMutation.mutateAsync(property)
         break
       case "edit":
-        await editProperty()
+        await editMutation.mutateAsync(property)
         break
     }
     setIsLoading(false)
   }
 
   return (
-    <div className="flex flex-col items-center gap-3">
-      <label className="form-control w-full max-w-xs">
-        <div className="label">
-          <span className="label-text">Nome</span>
-        </div>
-        <Input
-          placeholder="Nome do Bem (propiedade)"
-          size="md"
-          value={property.name}
-          onChange={(e) => setProperty({ ...property, name: e.target.value })}
-          color="primary"
-          disabled={isLoading}
-          bordered
-        />
-      </label>
+    <div className="flex flex-col items-center gap-0.5">
+      <InputField label="Nome" {...register("name")} errors={errors.name} />
 
-      <AutoComplete
+      <InputField
         label="Tipo"
-        message="Caso não exista será criada uma com o nome informado."
-        options={properties}
-        type="Property"
-        disabled={isLoading}
-        placeholder="Tipo de Bem (notebook, mesa, etc.)"
-        onChangeExtra={(e: any) => {
-          setProperty({ ...property, type: e.target.value })
-        }}
+        helpText="Caso não existe, será criado!"
+        {...register("type")}
+        errors={errors.type}
       />
 
-      <label className="form-control w-full max-w-xs">
-        <div className="label">
-          <span className="label-text">Emprestado</span>
-        </div>
+      <InputField
+        label="Emprestado a"
+        {...register("loanedTo")}
+        errors={errors.loanedTo}
+      />
 
-        <UserSearchInput
-          placeholder="Emprestado para..."
-          targetUser={loanedTo}
-          setTargetUser={setLoanedTo}
-          size="md"
-          color="primary"
-          disabled={isLoading}
-          bordered
-        />
-      </label>
-
-      <Button variant="outline" color="accent" onClick={handleSubmit}>
+      <Button
+        variant="outline"
+        color="accent"
+        onClick={handleSubmit(submit)}
+        disabled={isLoading}
+      >
         {action === "create" ? (
           <>
             <FaPlus /> Criar

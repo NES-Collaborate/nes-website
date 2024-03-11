@@ -1,6 +1,7 @@
+import { ConfirmModal } from "@/components/ConfirmModal"
+import Loading from "@/components/Loading"
 import Toast from "@/components/Toast"
-import { useBackend } from "@/contexts/backend"
-import { Property } from "@/types/entities"
+import { useBens } from "@/hooks/admin/bens"
 import { User } from "@/types/user"
 import { useEffect, useState } from "react"
 import { Button, Table, Tooltip } from "react-daisyui"
@@ -13,8 +14,6 @@ type Props = {
 }
 
 const PropertyList = ({ query = "" }: Props) => {
-  const [data, setData] = useState<Property[]>([])
-  const { backend } = useBackend()
   const [debouncedQuery, setDebouncedQuery] = useState(query)
   const debounceDelay = 500
 
@@ -30,28 +29,7 @@ const PropertyList = ({ query = "" }: Props) => {
     return () => clearTimeout(timer)
   }, [query])
 
-  useEffect(() => {
-    backend
-      .get("/admin/property", {
-        params: {
-          q: debouncedQuery,
-        },
-      })
-      .then((res) => {
-        setData(res.data.properties)
-      })
-      .catch(() => setData([]))
-  }, [debouncedQuery, setData, backend])
-
-  const deleteNotice = (propertyId: number) => {
-    backend
-      .delete(`/admin/property/${propertyId}`)
-      .then((res) => {
-        setData(data.filter((p) => p.id !== propertyId))
-        setToast(res.data.message || "Propriedade excluída com sucesso!")
-      })
-      .catch(() => setData([]))
-  }
+  const { data: properties = [], isLoading } = useBens(debouncedQuery)
 
   const openEditModal = (propertyId: number) => {
     setTargetIndex(propertyId)
@@ -75,7 +53,8 @@ const PropertyList = ({ query = "" }: Props) => {
         </Table.Head>
 
         <Table.Body>
-          {data.map((property) => (
+          {isLoading && <Loading text="Carregando propriedades..." center />}
+          {properties.map((property) => (
             <Table.Row key={property.id} className="text-center">
               <span>{property.id}</span>
               <span>{property.name}</span>
@@ -109,16 +88,20 @@ const PropertyList = ({ query = "" }: Props) => {
                 </Tooltip>
 
                 <Tooltip message="Excluir">
-                  <Button onClick={() => deleteNotice(property.id)} color="error">
-                    <FaTrash />
-                  </Button>
+                  <ConfirmModal title="Excluir Bem" description="Tem certeza?">
+                    {(show) => (
+                      <Button onClick={show(() => {})} color="error">
+                        <FaTrash />
+                      </Button>
+                    )}
+                  </ConfirmModal>
                 </Tooltip>
               </span>
             </Table.Row>
           ))}
         </Table.Body>
       </Table>
-      {data.length === 0 && (
+      {properties.length === 0 && (
         <p className="text-center text-xl my-3">Nenhum resultado encontrado</p>
       )}
 
@@ -139,8 +122,7 @@ const PropertyList = ({ query = "" }: Props) => {
       <Toast message={toast} setMessage={setToast} vertical="top" />
 
       <PropertyModal
-        properties={data}
-        setProperties={setData}
+        properties={properties}
         action={modelAction}
         index={targetIndex}
         setIndex={setTargetIndex}

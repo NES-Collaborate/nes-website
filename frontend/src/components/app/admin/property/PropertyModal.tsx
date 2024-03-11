@@ -6,21 +6,13 @@ import PropertyForm from "./PropertyForm"
 
 type Props = {
   properties: Property[]
-  setProperties: (properties: Property[]) => void
   action: "create" | "edit"
   index: number
   setIndex: (index: number) => void
   setToast: (toast: string) => void
 }
 
-const PropertyModal = ({
-  properties,
-  setProperties,
-  action,
-  index,
-  setIndex,
-  setToast,
-}: Props) => {
+const PropertyModal = ({ properties, action, index, setIndex, setToast }: Props) => {
   const isOpen = (action == "create" && index == -1) || (action == "edit" && index != -1)
 
   const [property, setProperty] = useState<Property>({
@@ -34,7 +26,7 @@ const PropertyModal = ({
       const property = properties.find((n) => n.id == index)
       if (property) setProperty(property)
     }
-  }, [setProperties, action, index, properties])
+  }, [action, index, properties])
 
   const closeModal = () => {
     switch (action) {
@@ -63,14 +55,7 @@ const PropertyModal = ({
       </Modal.Header>
 
       <Modal.Body>
-        <PropertyForm
-          property={property}
-          setProperty={setProperty}
-          action={action}
-          setToast={setToast}
-          properties={properties}
-          setProperties={setProperties}
-        />
+        <PropertyForm property={property} action={action} setToast={setToast} />
       </Modal.Body>
     </Modal>
   )
