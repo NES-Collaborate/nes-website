@@ -4,10 +4,10 @@ export const benSchema = z.object({
   name: z.string().min(1, "Nome é obrigatório!"),
   type: z.string().min(1, "Tipo é obrigatório!"),
   // photo: ...
-  loanedTo: z.preprocess(
-    (value) => (typeof value === "string" && value ? parseInt(value) : undefined),
-    z.number({ invalid_type_error: "ID inválido" }).optional()
-  ),
+  loanedTo: z.object({
+    id: z.number().optional(),
+    name: z.string().min(1, "Nome do responsável é obrigatório!"),
+  }),
 })
 
 export type BenFormData = z.infer<typeof benSchema>
