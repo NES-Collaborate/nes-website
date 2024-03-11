@@ -1,7 +1,7 @@
 import { ConfirmModal } from "@/components/ConfirmModal"
 import Loading from "@/components/Loading"
 import Toast from "@/components/Toast"
-import { useBens } from "@/hooks/admin/bens"
+import { useBens, useBensMutations } from "@/hooks/admin/bens"
 import { User } from "@/types/user"
 import { useEffect, useState } from "react"
 import { Button, Table, Tooltip } from "react-daisyui"
@@ -30,6 +30,7 @@ const PropertyList = ({ query = "" }: Props) => {
   }, [query])
 
   const { data: properties = [], isLoading } = useBens(debouncedQuery)
+  const { deleteMutation } = useBensMutations()
 
   const openEditModal = (propertyId: number) => {
     setTargetIndex(propertyId)
@@ -90,7 +91,10 @@ const PropertyList = ({ query = "" }: Props) => {
                 <Tooltip message="Excluir">
                   <ConfirmModal title="Excluir Bem" description="Tem certeza?">
                     {(show) => (
-                      <Button onClick={show(() => {})} color="error">
+                      <Button
+                        onClick={show(() => deleteMutation.mutate(property.id))}
+                        color="error"
+                      >
                         <FaTrash />
                       </Button>
                     )}

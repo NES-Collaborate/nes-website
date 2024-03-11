@@ -1,13 +1,14 @@
 import { InputField } from "@/components/ui/forms/InputField"
+import { useBackend } from "@/contexts/backend"
 import { useBensMutations } from "@/hooks/admin/bens"
 import { BenFormData, benSchema } from "@/schemas/ben"
+import { fetchUsers } from "@/services/admin/users"
 import { Property } from "@/types/entities"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useState } from "react"
 import { Button } from "react-daisyui"
 import { SubmitHandler, useForm } from "react-hook-form"
 import { FaEdit, FaPlus } from "react-icons/fa"
-// import UserSearchInput from "../../UserSearchInput"
 
 type Props = {
   property: Property
@@ -18,6 +19,7 @@ type Props = {
 const PropertyForm = ({ property, action }: Props) => {
   const [isLoading, setIsLoading] = useState(false)
 
+
   const {
     register,
     handleSubmit,
@@ -27,20 +29,35 @@ const PropertyForm = ({ property, action }: Props) => {
     values: {
       name: property.name,
       type: property.type,
-      loanedTo: property.loanedTo?.id.toString() || "",
+      loanedTo: property.loanedTo?.id,
     },
   })
 
+  const { backend } = useBackend()
   const { createMutation, editMutation } = useBensMutations()
 
   const submit: SubmitHandler<BenFormData> = async (data) => {
     setIsLoading(true)
+
+    const users = await fetchUsers(backend, "", data.loanedTo)
+    if (!users.length) {
+      return setIsLoading(false)
+    }
+    const user = users[0]
+
+    const formData = {
+      id: property.id,
+      name: data.name,
+      type: data.type,
+      loanedTo: user,
+    }
+
     switch (action) {
       case "create":
-        await createMutation.mutateAsync(property)
+        await createMutation.mutateAsync(formData)
         break
       case "edit":
-        await editMutation.mutateAsync(property)
+        await editMutation.mutateAsync(formData)
         break
     }
     setIsLoading(false)
@@ -58,6 +75,7 @@ const PropertyForm = ({ property, action }: Props) => {
       />
 
       <InputField
+        helpText="UserID aqui"
         label="Emprestado a"
         {...register("loanedTo")}
         errors={errors.loanedTo}

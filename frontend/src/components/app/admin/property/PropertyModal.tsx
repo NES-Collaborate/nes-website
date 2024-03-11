@@ -22,9 +22,15 @@ const PropertyModal = ({ properties, action, index, setIndex, setToast }: Props)
   })
 
   useEffect(() => {
-    if (action == "edit" && index != -1) {
+    if (action == "edit") {
       const property = properties.find((n) => n.id == index)
       if (property) setProperty(property)
+    } else {
+      setProperty({
+        id: 0,
+        name: "",
+        type: "",
+      })
     }
   }, [action, index, properties])
 

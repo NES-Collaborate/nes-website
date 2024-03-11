@@ -4,12 +4,12 @@ import { createUser, deleteUser, editUser, fetchUsers } from "@/services/admin/u
 import { User } from "@/types/user"
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 
-export const useUsers = (q: string) => {
+export const useUsers = (q: string, userId?: number) => {
   const { backend, isLogged } = useBackend()
 
   return useQuery<User[]>({
     queryKey: ["users", q],
-    queryFn: () => fetchUsers(backend, q),
+    queryFn: () => fetchUsers(backend, q, userId),
     enabled: isLogged,
   })
 }
