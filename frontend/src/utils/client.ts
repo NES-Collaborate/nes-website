@@ -117,3 +117,10 @@ export const maskMoney = (money: string) => {
 
   return formattedMoney
 }
+
+export const toReal = (value: number) => {
+  return value.toLocaleString("pt-BR", {
+    style: "currency",
+    currency: "BRL",
+  })
+}
