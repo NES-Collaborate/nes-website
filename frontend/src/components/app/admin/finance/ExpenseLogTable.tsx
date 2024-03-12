@@ -1,5 +1,6 @@
 import { Attach } from "@/types/entities"
 import { ExpenseLog } from "@/types/finance"
+import { toLocalDate } from "@/utils/client"
 import clsx from "clsx"
 import { useState } from "react"
 import { Button } from "react-daisyui"
@@ -36,13 +37,7 @@ const ExpenseLogTable = ({ logs, setProof }: Props) => {
         <tbody>
           {logs.map((exp, i) => (
             <tr key={i}>
-              <td>
-                {new Date(exp.createdAt).toLocaleDateString("pt-BR", {
-                  year: "numeric",
-                  month: "short",
-                  day: "numeric",
-                })}
-              </td>
+              <td>{toLocalDate(exp.createdAt)}</td>
               <td
                 className={clsx("font-semibold", {
                   "text-error": exp.type === "Removal",
