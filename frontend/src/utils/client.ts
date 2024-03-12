@@ -124,3 +124,11 @@ export const toReal = (value: number) => {
     currency: "BRL",
   })
 }
+
+export const toLocalDate = (date: string) => {
+  return new Date(date).toLocaleDateString("pt-BR", {
+    year: "numeric",
+    month: "short",
+    day: "numeric",
+  })
+}
