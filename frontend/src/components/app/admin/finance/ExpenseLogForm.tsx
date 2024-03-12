@@ -1,165 +1,91 @@
-import AutoComplete from "@/components/AutoComplete"
-import { useBackend } from "@/contexts/backend"
-import { useExpenseLogs } from "@/contexts/expenseLogs"
+import { FileInputField } from "@/components/ui/forms/FileInputField"
+import { InputField } from "@/components/ui/forms/InputField"
+import { SwapField } from "@/components/ui/forms/SwapField"
 import { useSession } from "@/contexts/session"
-import { ExpenseCategory, ExpenseLog } from "@/types/finance"
+import { useFinanceMutation } from "@/hooks/admin/finance"
+import { ExpenseLogFormData, expenseLogSchema } from "@/schemas/finance"
 import { maskMoney, uploadAttach } from "@/utils/client"
-import clsx from "clsx"
-import { useEffect, useRef, useState } from "react"
-import { Alert, Button, FileInput, Input, Swap, Tooltip } from "react-daisyui"
+import { zodResolver } from "@hookform/resolvers/zod"
+import { useState } from "react"
+import { Button } from "react-daisyui"
+import { SubmitHandler, useForm } from "react-hook-form"
 import { FaPlus } from "react-icons/fa"
-import { IoIosInformationCircle } from "react-icons/io"
 
 type Props = {
   toggle: () => void
 }
 
 const ExpenseLogForm = ({ toggle }: Props) => {
-  const [categories, setCategories] = useState<ExpenseCategory[]>([])
   const [isLoading, setIsLoading] = useState(false)
-  const [error, setError] = useState<string>("")
-  const [proof, setProof] = useState<number | null>(null)
-  const { logs, setLogs } = useExpenseLogs()
-  const { backend } = useBackend()
+  const [error, setError] = useState<string | null>(null)
   const { token } = useSession()
 
-  const inputRefs = {
-    value: useRef<HTMLInputElement>(null),
-    category: useRef<HTMLInputElement>(null),
-    comment: useRef<HTMLInputElement>(null),
-  }
+  const {
+    register,
+    formState: { errors },
+    setValue,
+    handleSubmit,
+  } = useForm<ExpenseLogFormData>({
+    resolver: zodResolver(expenseLogSchema),
+  })
 
-  const [money, setMoney] = useState("")
-  const [type, setType] = useState("Removal")
+  const { createMutation } = useFinanceMutation()
 
-  const toggleType = (e: any) => {
-    setType(() => (e.target.checked ? "Deposit" : "Removal"))
-  }
-  const handleSubmit = async () => {
+  const submit: SubmitHandler<ExpenseLogFormData> = async (data) => {
     setIsLoading(true)
-    try {
-      const form: Record<string, any> = {}
 
-      for (const key in inputRefs) {
-        const ref = inputRefs[key as keyof typeof inputRefs]
-        if (ref.current) {
-          form[key] = ref.current.value
-        }
-      }
-
-      form["category"] = { id: 0, name: form["category"], description: "" }
-      form["value"] = money.replace(".", "").replace(",", ".")
-      form["proof"] = proof
-      form["type"] = type
-
-      const res = await backend.post("/admin/finance", form)
-
-      setLogs([...logs, res.data.log as ExpenseLog])
-      toggle()
-    } catch {
-      setError("Erro ao registrar despesa. Tente novamente mais tarde.")
+    const attach = await uploadAttach(data.proof, token)
+    if (typeof attach === "string") {
+      setError(attach)
+      return
     }
 
+    const formData = { ...data, proof: attach.id! }
+
+    await createMutation.mutateAsync(formData)
+
+    toggle()
     setIsLoading(false)
   }
 
-  const handleProofChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0]
-    if (file) {
-      setIsLoading(true)
-      const attach = await uploadAttach(file, token)
-      if (typeof attach === "string") {
-        setError(attach)
-        setIsLoading(true)
-      } else {
-        setProof(attach.id || null)
-        setIsLoading(false)
-        setError("")
-      }
-    }
-  }
-
-  useEffect(() => {
-    if (logs.length > 0) {
-      const categoriesFromLogs = logs.map((log) => log.category)
-      setCategories(categoriesFromLogs)
-    }
-  }, [logs])
-
   return (
-    <div className="flex flex-col items-center gap-3">
-      {error && <Alert status="error">{error}</Alert>}
+    <form onSubmit={handleSubmit(submit)}>
+      {error && <div className="alert alert-error shadow-lg">{error}</div>}
       <InputField
-        value={money}
-        onChange={(e: any) => setMoney(maskMoney(e.target.value))}
-        label="Valor (R$)"
+        label="Valor"
+        helpText="R$"
+        mask={maskMoney}
+        {...register("value")}
+        errors={errors.value}
       />
-      <AutoComplete
-        inputRef={inputRefs.category}
-        label="Categoria"
-        message="Caso não exista será criada uma com o nome informado."
-        options={categories}
-      />
-      <SwapField label="Tipo" onChange={toggleType} />
 
       <InputField
-        inputRef={inputRefs.comment}
-        label="Comentário"
-        message="Caso queira adicionar alguma informação adicional."
+        label="Categoria"
+        helpText="Caso não exista, será criada automaticamente"
+        {...register("category")}
+        errors={errors.category}
       />
-      <FileInputField label="Comprovante" onChange={handleProofChange} />
-      <Button onClick={handleSubmit} disabled={isLoading}>
-        <FaPlus /> Inserir
-      </Button>
-    </div>
+
+      <SwapField
+        label="Tipo"
+        swapOn="Entrada"
+        swapOff="Saida"
+        onCheck={(checked) => {
+          setValue("type", checked ? "Deposit" : "Removal")
+        }}
+      />
+
+      <InputField label="Comentário" {...register("comment")} errors={errors.comment} />
+
+      <FileInputField label="Comprovante" {...register("proof")} errors={errors.proof} />
+
+      <div className="flex justify-center">
+        <Button disabled={isLoading}>
+          <FaPlus /> Inserir
+        </Button>
+      </div>
+    </form>
   )
 }
-
-const InputField = ({ inputRef, label, message, ...rest }: any) => (
-  <div className="form-control w-full max-w-xs">
-    <label>
-      <div className="label">
-        <span className={clsx("label-text", message && "flex items-center")}>
-          <p className="mr-1">{label}</p>
-          {message && (
-            <Tooltip message={message}>
-              <IoIosInformationCircle size={17} />
-            </Tooltip>
-          )}
-        </span>
-      </div>
-    </label>
-    <Input ref={inputRef} size="md" color="primary" {...rest} />
-  </div>
-)
-
-const SwapField = ({ inputRef, label, options, ...rest }: any) => (
-  <div className="form-control w-full max-w-xs">
-    <label>
-      <div className="label">
-        <span className="label-text">{label}</span>
-      </div>
-    </label>
-    <Swap
-      className="input input-primary !outline-none"
-      onElement="Entrada"
-      offElement="Saída"
-      {...rest}
-    />
-  </div>
-)
-
-const FileInputField = ({ onChange, label, ...rest }: any) => (
-  <div className="form-control w-full max-w-xs">
-    <label>
-      <div className="label">
-        <span className="label-text flex items-center">
-          <p className="mr-1">{label}</p>
-        </span>
-      </div>
-    </label>
-    <FileInput size="md" color="primary" {...rest} onChange={onChange} />
-  </div>
-)
 
 export default ExpenseLogForm
