@@ -8,12 +8,11 @@ type FileInputFieldProps = {
   errors?: {
     message?: string
   }
-  onEnter?: (value: string) => void
   onChange?: (event: ChangeEvent<HTMLInputElement>) => void
 }
 
 export const FileInputField = React.forwardRef<HTMLInputElement, FileInputFieldProps>(
-  ({ label, errors, helpText, onEnter, onChange, ...rest }, ref) => {
+  ({ label, errors, helpText, onChange, ...rest }, ref) => {
     return (
       <div className="form-control w-full max-w-lg">
         <label className="label">

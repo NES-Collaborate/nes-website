@@ -129,8 +129,9 @@ const UserForm = ({ user, action, setModalState }: Omit<UserModalProps, "isOpen"
           helpText="Digite e pressione Enter para adicionar"
           {...register("emails")}
           errors={errors.emails}
-          onEnter={(value) => {
-            setEmails([...emails, { value }])
+          onEnter={(input) => {
+            setEmails([...emails, { value: input.value }])
+            input.value = ""
           }}
         />
         <ol>
@@ -155,8 +156,9 @@ const UserForm = ({ user, action, setModalState }: Omit<UserModalProps, "isOpen"
           {...register("phones")}
           errors={errors.phones}
           mask={maskPhone}
-          onEnter={(value) => {
-            setPhoneNumbers([...phoneNumbers, { value, isEmergency: false }])
+          onEnter={(input) => {
+            setPhoneNumbers([...phoneNumbers, { value: input.value, isEmergency: false }])
+            input.value = ""
           }}
         />
         <ol>

@@ -8,11 +8,10 @@ type TextAreaFieldProps = {
   errors?: {
     message?: string
   }
-  onEnter?: (value: string) => void
 }
 
 export const TextAreaField = React.forwardRef<HTMLTextAreaElement, TextAreaFieldProps>(
-  ({ label, errors, helpText, onEnter, ...rest }, ref) => {
+  ({ label, errors, helpText, ...rest }, ref) => {
     return (
       <div className="form-control w-full max-w-lg">
         <label className="label">

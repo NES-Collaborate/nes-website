@@ -9,18 +9,15 @@ type InputFieldProps = {
   errors?: {
     message?: string
   }
-  onEnter?: (value: string) => void
-}
+  onEnter?: (input: HTMLInputElement) => void
+} & React.InputHTMLAttributes<HTMLInputElement>
 
 export const InputField = React.forwardRef<HTMLInputElement, InputFieldProps>(
   ({ label, errors, mask = (value) => value, helpText, onEnter, ...rest }, ref) => {
     const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
       if (e.key === "Enter") {
         e.preventDefault()
-        if (onEnter) {
-          onEnter(e.currentTarget.value)
-          e.currentTarget.value = ""
-        }
+        if (onEnter) onEnter(e.currentTarget)
       }
     }
 
