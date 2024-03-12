@@ -17,7 +17,7 @@ export const expenseLogSchema = z.object({
   type: z.enum(["Removal", "Deposit"]).default("Removal"),
   comment: z.string().optional(),
   proof: z
-    .instanceof(FileList)
+    .custom<FileList>()
     .refine((file) => file.length > 0, {
       message: "O Comprovante é obrigatório!",
     })
