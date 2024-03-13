@@ -1,5 +1,5 @@
 import { useBackend } from "@/contexts/backend"
-import { fetchClassrooms } from "@/schemas/classrooms"
+import { fetchClassrooms } from "@/services/classroom"
 import { Classroom } from "@/types/entities"
 import { useQuery } from "@tanstack/react-query"
 

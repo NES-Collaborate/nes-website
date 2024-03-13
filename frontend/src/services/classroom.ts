@@ -1,4 +1,4 @@
-import { Post } from "@/types/entities"
+import { Classroom, Post } from "@/types/entities"
 import { AxiosInstance } from "axios"
 
 type PostsPagination = {
@@ -19,5 +19,10 @@ export const fetchClassroomPosts = async (
       q: query,
     },
   })
+  return res.data
+}
+
+export const fetchClassrooms = async (client: AxiosInstance): Promise<Classroom[]> => {
+  const res = await client.get("/teacher/classrooms")
   return res.data
 }

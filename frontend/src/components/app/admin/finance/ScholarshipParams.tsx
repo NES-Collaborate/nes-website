@@ -1,7 +1,6 @@
-import { useBackend } from "@/contexts/backend"
-import { Classroom } from "@/types/entities"
+import { useClassrooms } from "@/hooks/teacher/classrooms"
 import { ScholarshipQuery } from "@/types/queries"
-import { useEffect, useMemo, useState } from "react"
+import { useEffect, useMemo } from "react"
 
 type Props = {
   query: ScholarshipQuery
@@ -9,7 +8,6 @@ type Props = {
 }
 
 const ScholarshipParams = ({ query, setQuery }: Props) => {
-  const { backend, isLogged } = useBackend()
   const currentDate = useMemo(() => new Date(), [])
 
   useEffect(() => {
@@ -20,23 +18,7 @@ const ScholarshipParams = ({ query, setQuery }: Props) => {
     })
   }, [currentDate, setQuery])
 
-  const [isLoading, setIsLoading] = useState(true)
-  const [classrooms, setClassrooms] = useState<Classroom[]>([])
-
-  useEffect(() => {
-    setIsLoading(true)
-    const fetchClassrooms = async () => {
-      if (!isLogged) return
-      try {
-        const res = await backend.get("/teacher/classrooms")
-        setClassrooms(res.data)
-      } catch {
-        // TODO: Set some error message here
-      }
-    }
-    fetchClassrooms()
-    setIsLoading(false)
-  }, [backend, isLogged])
+  const { data: classrooms = [], isLoading } = useClassrooms()
 
   return (
     <div className="join flex justify-center">

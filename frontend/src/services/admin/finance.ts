@@ -1,6 +1,7 @@
 import { ExpenseLogFormData } from "@/schemas/finance"
 import { ExpenseLog } from "@/types/finance"
-import { ExpenseLogQuery } from "@/types/queries"
+import { ExpenseLogQuery, ScholarshipQuery } from "@/types/queries"
+import { User } from "@/types/user"
 import { AxiosInstance } from "axios"
 
 export const getStats = async (
@@ -28,4 +29,29 @@ export const fetchExpenseLogs = async (
     params: query,
   })
   return res.data.logs
+}
+
+export const fetchStudents = async (
+  client: AxiosInstance,
+  query: ScholarshipQuery
+): Promise<(User & { alreadyPaid: boolean })[]> => {
+  if (query.classroomId === 0) return []
+  const res = await client.get("/admin/finance/students", {
+    params: query,
+  })
+
+  return res.data
+}
+
+export const payStudents = async (
+  client: AxiosInstance,
+  ids: number[],
+  month: number,
+  year: number
+) => {
+  await client.post("/admin/finance/students/pay", {
+    ids,
+    month,
+    year,
+  })
 }

@@ -1,7 +1,13 @@
 import { useBackend } from "@/contexts/backend"
 import { ExpenseLogFormData } from "@/schemas/finance"
-import { createExpenseLog, fetchExpenseLogs, getStats } from "@/services/admin/finance"
-import { ExpenseLogQuery } from "@/types/queries"
+import {
+  createExpenseLog,
+  fetchExpenseLogs,
+  fetchStudents,
+  getStats,
+  payStudents,
+} from "@/services/admin/finance"
+import { ExpenseLogQuery, ScholarshipQuery } from "@/types/queries"
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 
 export const useFinanceStats = () => {
@@ -44,5 +50,31 @@ export const useFinanceMutation = () => {
     },
   })
 
-  return { createMutation }
+  const payStudentsMutation = useMutation({
+    mutationFn: (data: { studentIds: number[]; month: number; year: number }) =>
+      payStudents(backend, data.studentIds, data.month, data.year),
+    onSuccess: () => {
+      queryClient.invalidateQueries({
+        queryKey: ["finance-stats"],
+      })
+      queryClient.invalidateQueries({
+        queryKey: ["expense-logs"],
+      })
+      queryClient.invalidateQueries({
+        queryKey: ["students"],
+      })
+    },
+  })
+
+  return { createMutation, payStudentsMutation }
+}
+
+export const useStudents = (query: ScholarshipQuery) => {
+  const { backend, isLogged } = useBackend()
+
+  return useQuery({
+    queryKey: ["students", JSON.stringify(query)],
+    queryFn: () => fetchStudents(backend, query),
+    enabled: isLogged,
+  })
 }
