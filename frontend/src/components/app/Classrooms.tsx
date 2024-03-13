@@ -1,49 +1,31 @@
 import Loading from "@/components/Loading"
-import { useBackend } from "@/contexts/backend"
 import { useSession } from "@/contexts/session"
-import { Classroom } from "@/types/entities"
+import { useClassrooms } from "@/hooks/teacher/classrooms"
 import Link from "next/link"
-import { useEffect, useState } from "react"
 import { Alert } from "react-daisyui"
 import { FaDoorOpen, FaEdit } from "react-icons/fa"
 import { MdErrorOutline } from "react-icons/md"
 
 const Classrooms = () => {
-  const [isLoading, setIsLoading] = useState(true)
-  const [error, setError] = useState<string | null>(null)
-  const [classrooms, setClassrooms] = useState<Classroom[]>([])
-  const { backend } = useBackend()
+  const { data: classrooms = [], isFetching, error } = useClassrooms()
   const { user } = useSession()
 
-  useEffect(() => {
-    setIsLoading(true)
-    const fetchClassrooms = async () => {
-      try {
-        const res = await backend.get("/teacher/classrooms")
-        setClassrooms(res.data)
-        setError(null)
-      } catch {
-        setError("Erro ao carregar turmas. Tente novamente mais tarde.")
-      }
-    }
-    fetchClassrooms()
-    setIsLoading(false)
-  }, [backend])
-
   return (
-    <div className="text-center mt-2">
-      <h1 className="text-3xl font-bold">Turmas</h1>
-      {error && (
-        <div className="my-4 mx-2 lg:mx-4">
-          <Alert status="error" icon={<MdErrorOutline />}>
-            {error}
-          </Alert>
-        </div>
-      )}
+    <>
+      <div className="text-center my-2">
+        <h1 className="text-3xl font-bold">Turmas</h1>
+        {error && (
+          <div className="my-4 mx-2 lg:mx-4">
+            <Alert status="error" icon={<MdErrorOutline />}>
+              {error.message}
+            </Alert>
+          </div>
+        )}
+      </div>
 
-      {isLoading && <Loading text="Carregando turmas..." center />}
+      {isFetching && <Loading text="Carregando turmas..." center />}
 
-      {!isLoading && (
+      {!isFetching && (
         <div className="flex justify-center items-center">
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
             {!classrooms.length && (
@@ -78,7 +60,7 @@ const Classrooms = () => {
           </div>
         </div>
       )}
-    </div>
+    </>
   )
 }
 
