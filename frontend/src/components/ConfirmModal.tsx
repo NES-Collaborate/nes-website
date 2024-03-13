@@ -40,27 +40,33 @@ export const ConfirmModal = ({
   return (
     <>
       {children(show)}
-      <Modal open={open} responsive>
-        <Button shape="circle" className="absolute right-2 top-2" onClick={hide}>
-          <IoClose size={15} />
-        </Button>
+      <div>
+        <input type="checkbox" className="modal-toggle" checked={open} />
 
-        <Modal.Header>
-          <h1 className="text-2xl">{title}</h1>
-          <p>{description}</p>
-        </Modal.Header>
+        <div className="modal" role="dialog">
+          <div className="modal-box">
+            <button
+              className="btn btn-sm btn-circle absolute right-2 top-2"
+              onClick={hide}
+            >
+              <IoClose />
+            </button>
 
-        <Modal.Body></Modal.Body>
+            <h1 className="text-2xl">{title}</h1>
 
-        <Modal.Actions>
-          <Button onClick={hide} color="error">
-            Cancelar
-          </Button>
-          <Button onClick={confirm} color="primary">
-            Confirmar
-          </Button>
-        </Modal.Actions>
-      </Modal>
+            <p className="text-lg text-secondary !break-words">{description}</p>
+
+            <div className="modal-action">
+              <button className="btn btn-error" onClick={hide}>
+                Cancelar
+              </button>
+              <button className="btn btn-primary" onClick={confirm}>
+                Confirmar
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
     </>
   )
 }
