@@ -2,7 +2,7 @@ import { createContext, useContext, useEffect, useState } from "react"
 
 type ThemeContext = {
   theme: string
-  setTheme: (updateTheme: (currentTheme: string) => "dark" | "light") => void
+  setTheme: (theme: string) => void
 }
 
 export const themeContext = createContext<ThemeContext>({

@@ -8,6 +8,7 @@ import Link from "next/link"
 import { Button, Menu } from "react-daisyui"
 import { IoClose } from "react-icons/io5"
 import LoginButtom from "./LoginButtom"
+import ThemeChanger from "./ThemeChanger"
 
 type Props = {
   toggleDrawerVisibility: () => void
@@ -74,6 +75,11 @@ const SideBar = ({ toggleDrawerVisibility }: Props) => {
           </Menu.Item>
         ))}
       </Menu>
+
+      <div className="p-4 max-w-lg flex flex-col mx-auto">
+        <h1 className="text-lg text-center">Tema do Site</h1>
+        <ThemeChanger />
+      </div>
     </div>
   )
 }

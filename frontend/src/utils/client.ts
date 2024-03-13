@@ -132,3 +132,19 @@ export const toLocalDate = (date: string) => {
     day: "numeric",
   })
 }
+
+export const isDarkTheme = (theme: string) =>
+  [
+    "dark",
+    "synthwave",
+    "halloween",
+    "forest",
+    "aqua",
+    "black",
+    "luxury",
+    "dracula",
+    "business",
+    "night",
+    "dim",
+    "sunset",
+  ].includes(theme)

@@ -3,7 +3,6 @@ import { Button } from "react-daisyui"
 import { FaBars } from "react-icons/fa6"
 import Breadcrumb from "./Breadcrumb"
 import Logo from "./Logo"
-import ThemeToggle from "./ThemeToggle"
 
 type Props = {
   toggleDrawerVisibility: () => void
@@ -37,7 +36,6 @@ const NavBar = ({ toggleDrawerVisibility }: Props) => {
         <Breadcrumb />
       </div>
       <div className="navbar-end gap-3">
-        <ThemeToggle />
         <Button shape="circle" onClick={toggleDrawerVisibility}>
           <FaBars />
         </Button>

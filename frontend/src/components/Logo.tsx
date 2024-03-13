@@ -1,5 +1,6 @@
 import { useTheme } from "@/contexts/theme"
 import { LOGOS } from "@/data/constants"
+import { isDarkTheme } from "@/utils/client"
 import Image from "next/image"
 
 type Props = {
@@ -31,7 +32,7 @@ const Logo = ({ type, size, alt = "Logo", className = "" }: Props) => {
   const { theme } = useTheme()
 
   const realType = () => {
-    if (type == "horizontal" && theme == "dark") return "whiteHorizontal"
+    if (type == "horizontal" && isDarkTheme(theme)) return "whiteHorizontal"
     return type
   }
 
