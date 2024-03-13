@@ -23,6 +23,7 @@ import {
   FaPhone,
   FaUserCircle,
   FaUserTag,
+  FaUserTie,
 } from "react-icons/fa"
 import { FaSackDollar, FaTrashCan } from "react-icons/fa6"
 
@@ -185,6 +186,21 @@ const UserProfile = () => {
               <strong>Estado:</strong> {user.address?.state}
             </p>
           </div>
+
+          {/* Informações do Responsável */}
+          {user.type === "student" && (
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 my-4">
+              <h3 className="col-span-full flex items-center gap-2 text-xl">
+                <FaUserTie className="text-accent" /> Responsável
+              </h3>
+              <p>
+                <strong>Nome:</strong> {user.responsible_name}
+              </p>
+              <p>
+                <strong>Telefone:</strong> {maskPhone(user.responsible_phone || "")}
+              </p>
+            </div>
+          )}
 
           {/* Botões de Ação */}
           <div className="flex justify-end gap-4 mt-4">
