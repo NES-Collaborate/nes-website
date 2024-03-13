@@ -3,6 +3,7 @@ import { UserFormData } from "@/schemas/user"
 import { createUser, deleteUser, editUser, fetchUsers } from "@/services/admin/users"
 import { User } from "@/types/user"
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
+import { AxiosError } from "axios"
 
 export const useUsers = (q: string, userId?: number) => {
   const { backend, isLogged } = useBackend()
@@ -18,7 +19,7 @@ export const useUserMutations = () => {
   const { backend } = useBackend()
   const queryClient = useQueryClient()
 
-  const createMutation = useMutation({
+  const createMutation = useMutation<User, AxiosError, UserFormData>({
     mutationFn: (data: UserFormData) => createUser(backend, data),
     onSuccess: () => {
       queryClient.invalidateQueries({
@@ -36,7 +37,7 @@ export const useUserMutations = () => {
     },
   })
 
-  const deleteMutation = useMutation({
+  const deleteMutation = useMutation<void, AxiosError, number>({
     mutationFn: (userId: number) => deleteUser(backend, userId),
     onSuccess: () => {
       queryClient.invalidateQueries({

@@ -64,7 +64,12 @@ const UserProfile = () => {
         setToastMessage("Usuário excluído com sucesso")
       },
       onError: (err) => {
-        setToastMessage(err.message)
+        const detail = (err.response?.data as { detail?: string })?.detail
+        if (detail) {
+          setToastMessage(detail)
+        } else {
+          setToastMessage(err.message)
+        }
       },
     })
   }

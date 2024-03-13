@@ -2,11 +2,15 @@ import { UserFormData } from "@/schemas/user"
 import { User } from "@/types/user"
 import { AxiosInstance } from "axios"
 
-export const fetchUsers = async (client: AxiosInstance, q: string, userId?: number|string): Promise<User[]> => {
+export const fetchUsers = async (
+  client: AxiosInstance,
+  q: string,
+  id?: number | string
+): Promise<User[]> => {
   const res = await client.get("/admin/users", {
     params: {
       q,
-      userId,
+      id,
     },
   })
   return res.data.users
