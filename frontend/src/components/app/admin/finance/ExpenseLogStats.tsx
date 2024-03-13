@@ -1,3 +1,5 @@
+import { useFinanceStats } from "@/hooks/admin/finance"
+import { toReal } from "@/utils/client"
 import Link from "next/link"
 import { useState } from "react"
 import { Button, Tooltip } from "react-daisyui"
@@ -10,22 +12,19 @@ import {
 } from "react-icons/io"
 import ExpenseLogModal from "./ExpenseLogModal"
 
-type Props = {
-  currentBalance: number
-  totalExpenses: number
-}
-
-const ExpenseLogStats = ({ currentBalance = 0, totalExpenses = 0 }: Props) => {
+const ExpenseLogStats = () => {
   const [hideBalance, setHideBalance] = useState(false)
   const [expenseLogModal, setExpenseLogModal] = useState(false)
+
+  const {
+    data: { currentBalance, totalExpenses },
+  } = useFinanceStats()
 
   const toggleExpenseLogModal = () => setExpenseLogModal((_) => !_)
   const toggleHideBalance = () => setHideBalance((_) => !_)
 
-  const formattedBalance = currentBalance.toLocaleString("pt-BR", {
-    style: "currency",
-    currency: "BRL",
-  })
+  const formattedBalance = toReal(currentBalance)
+
   const hiddenBalance = "●".repeat(formattedBalance.length - 3)
 
   return (
@@ -50,12 +49,7 @@ const ExpenseLogStats = ({ currentBalance = 0, totalExpenses = 0 }: Props) => {
 
       <div className="stat">
         <div className="stat-title">Total Gasto</div>
-        <div className="stat-value">
-          {totalExpenses.toLocaleString("pt-BR", {
-            style: "currency",
-            currency: "BRL",
-          })}
-        </div>
+        <div className="stat-value">{toReal(totalExpenses)}</div>
         <div className="stat-actions flex justify-end flex-wrap gap-3">
           <Button
             className=" max-w-fit"

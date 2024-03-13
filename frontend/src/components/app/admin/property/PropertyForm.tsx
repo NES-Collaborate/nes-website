@@ -1,126 +1,105 @@
-import AutoComplete from "@/components/AutoComplete"
+import { AutoCompleteInput } from "@/components/ui/forms/AutoCompleteInput"
+import { InputField } from "@/components/ui/forms/InputField"
 import { useBackend } from "@/contexts/backend"
+import { useBensMutations } from "@/hooks/admin/bens"
+import { BenFormData, benSchema } from "@/schemas/ben"
+import { fetchUsers } from "@/services/admin/users"
 import { Property } from "@/types/entities"
 import { User } from "@/types/user"
-import { useEffect, useState } from "react"
-import { Button, Input } from "react-daisyui"
+import { zodResolver } from "@hookform/resolvers/zod"
+import { useState } from "react"
+import { Button } from "react-daisyui"
+import { SubmitHandler, useForm } from "react-hook-form"
 import { FaEdit, FaPlus } from "react-icons/fa"
-import UserSearchInput from "../../UserSearchInput"
 
 type Props = {
   property: Property
-  setProperty: (property: Property) => void
   action: string
   setToast: (toast: string) => void
-  properties: Property[]
-  setProperties: (properties: Property[]) => void
 }
 
-const PropertyForm = ({
-  property,
-  setProperty,
-  action,
-  setToast,
-  setProperties,
-  properties,
-}: Props) => {
+const PropertyForm = ({ property, action }: Props) => {
   const [isLoading, setIsLoading] = useState(false)
+
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+    setValue,
+  } = useForm<BenFormData>({
+    resolver: zodResolver(benSchema),
+    values: {
+      name: property.name,
+      type: property.type,
+      loanedTo: property.loanedTo || { name: "" },
+    },
+  })
+
   const { backend } = useBackend()
-  const [loanedTo, setLoanedTo] = useState<User | null>(null)
+  const { createMutation, editMutation } = useBensMutations()
 
-  useEffect(() => {
-    setLoanedTo(property.loanedTo as User)
-  }, [property])
-
-  const createProperty = async () => {
-    if (loanedTo) setProperty({ ...property, loanedTo: loanedTo })
-    try {
-      const res = await backend.post("/admin/property", { ...property, loanedTo })
-      setProperties([...properties, res.data.property])
-      setToast("Propriedade criada com sucesso!")
-    } catch {
-      setToast("Erro ao criar propriedade.")
-    }
-  }
-
-  const editProperty = async () => {
-    try {
-      const res = await backend.put(`/admin/property/${property.id}`, {
-        ...property,
-        loanedTo,
-      })
-      setProperties(properties.map((p) => (p.id == property.id ? res.data.property : p)))
-      setToast("Propriedade editada com sucesso!")
-    } catch {
-      setToast("Erro ao editar propriedade.")
-    }
-  }
-
-  const handleSubmit = async () => {
+  const submit: SubmitHandler<BenFormData> = async (data) => {
     setIsLoading(true)
-    // Verify if all fields are filled
-    if (!property.name || !property.type) {
-      setToast("Preencha todos os campos!")
-      setIsLoading(false)
-      return
+
+    const formData = {
+      id: property.id,
+      name: data.name,
+      type: data.type,
+      loanedTo: data.loanedTo as User,
     }
+
     switch (action) {
       case "create":
-        await createProperty()
+        await createMutation.mutateAsync(formData)
         break
       case "edit":
-        await editProperty()
+        await editMutation.mutateAsync(formData)
         break
     }
     setIsLoading(false)
   }
 
   return (
-    <div className="flex flex-col items-center gap-3">
-      <label className="form-control w-full max-w-xs">
-        <div className="label">
-          <span className="label-text">Nome</span>
-        </div>
-        <Input
-          placeholder="Nome do Bem (propiedade)"
-          size="md"
-          value={property.name}
-          onChange={(e) => setProperty({ ...property, name: e.target.value })}
-          color="primary"
-          disabled={isLoading}
-          bordered
-        />
-      </label>
+    <div className="flex flex-col items-center gap-4 p-4">
+      <InputField label="Nome" {...register("name")} errors={errors.name} />
 
-      <AutoComplete
+      <InputField
         label="Tipo"
-        message="Caso não exista será criada uma com o nome informado."
-        options={properties}
-        type="Property"
-        disabled={isLoading}
-        placeholder="Tipo de Bem (notebook, mesa, etc.)"
-        onChangeExtra={(e: any) => {
-          setProperty({ ...property, type: e.target.value })
-        }}
+        helpText="Caso não exista, será criado!"
+        {...register("type")}
+        errors={errors.type}
       />
 
-      <label className="form-control w-full max-w-xs">
-        <div className="label">
-          <span className="label-text">Emprestado</span>
-        </div>
+      <AutoCompleteInput
+        label="Emprestado para"
+        helpText="Pessoa a quem foi emprestado"
+        {...register("loanedTo")}
+        fetchSuggestions={async (query) =>
+          (await fetchUsers(backend, query)).map((u) => ({
+            label: u.name,
+            value: u.id.toString(),
+          }))
+        }
+        onSuggestionSelect={(suggestion) => {
+          setValue(
+            "loanedTo",
+            {
+              id: parseInt(suggestion.value),
+              name: suggestion.label,
+            },
+            { shouldValidate: true }
+          )
+        }}
+        errors={errors.loanedTo}
+      />
 
-        <UserSearchInput
-          placeholder="Emprestado para..."
-          targetUser={loanedTo}
-          setTargetUser={setLoanedTo}
-          size="md"
-          color="primary"
-          disabled={isLoading}
-          bordered
-        />
-      </label>
-
-      <Button variant="outline" color="accent" onClick={handleSubmit}>
+      <Button
+        variant="outline"
+        color="accent"
+        className="flex items-center gap-2"
+        onClick={handleSubmit(submit)}
+        disabled={isLoading}
+      >
         {action === "create" ? (
           <>
             <FaPlus /> Criar

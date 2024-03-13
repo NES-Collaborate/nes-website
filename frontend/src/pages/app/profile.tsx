@@ -1,13 +1,11 @@
 import { ConfirmModal } from "@/components/ConfirmModal"
 import Toast from "@/components/Toast"
-import { useBackend } from "@/contexts/backend"
 import { useSession } from "@/contexts/session"
 import { USER_TYPES_MASK } from "@/data/constants"
+import { useUserMutations, useUsers } from "@/hooks/admin/users"
 import { User } from "@/types/user"
 import { withAuth } from "@/utils/auth"
 import { getUserPhotoUrl, maskCEP, maskCPF, maskPhone } from "@/utils/client"
-import { getUser } from "@/utils/user"
-import { AxiosError } from "axios"
 import Image from "next/image"
 import { useRouter } from "next/router"
 import { useEffect, useState } from "react"
@@ -25,17 +23,27 @@ import {
   FaPhone,
   FaUserCircle,
   FaUserTag,
+  FaUserTie,
 } from "react-icons/fa"
 import { FaSackDollar, FaTrashCan } from "react-icons/fa6"
 
 const UserProfile = () => {
   const router = useRouter()
   const session = useSession()
-  const { backend, isLogged } = useBackend()
   const { userId } = router.query
   const [requestedUserId, setRequestedUserId] = useState(0)
   const [user, setUser] = useState<User | null>(null)
   const [toastMessage, setToastMessage] = useState("")
+
+  const { deleteMutation } = useUserMutations()
+
+  const { data: users = [] } = useUsers("", requestedUserId)
+
+  useEffect(() => {
+    if (users?.length > 0) {
+      setUser(users[0])
+    }
+  }, [users])
 
   useEffect(() => {
     if (session.user?.type === "student" && session.user.id !== requestedUserId) {
@@ -49,26 +57,22 @@ const UserProfile = () => {
     }
   }, [session.user, requestedUserId, router, userId])
 
-  useEffect(() => {
-    if (!isLogged) return
-    getUser(requestedUserId, backend).then((res) => {
-      setUser(res)
-    })
-  }, [requestedUserId, backend, isLogged])
-
   if (!user) return <>Not found user with id: {requestedUserId}</>
 
   const handleConfirmDelete = () => {
-    backend
-      .delete(`/admin/users/${requestedUserId}`)
-      .then(() => {
-        router.push("/app/admin/users")
-      })
-      .catch((err: AxiosError) => {
-        if (err.response?.data) {
-          setToastMessage((err.response.data as { detail: string }).detail)
+    deleteMutation.mutate(user.id, {
+      onSuccess: () => {
+        setToastMessage("Usuário excluído com sucesso")
+      },
+      onError: (err) => {
+        const detail = (err.response?.data as { detail?: string })?.detail
+        if (detail) {
+          setToastMessage(detail)
+        } else {
+          setToastMessage(err.message)
         }
-      })
+      },
+    })
   }
 
   return (
@@ -182,6 +186,21 @@ const UserProfile = () => {
               <strong>Estado:</strong> {user.address?.state}
             </p>
           </div>
+
+          {/* Informações do Responsável */}
+          {user.type === "student" && (
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 my-4">
+              <h3 className="col-span-full flex items-center gap-2 text-xl">
+                <FaUserTie className="text-accent" /> Responsável
+              </h3>
+              <p>
+                <strong>Nome:</strong> {user.responsible_name}
+              </p>
+              <p>
+                <strong>Telefone:</strong> {maskPhone(user.responsible_phone || "")}
+              </p>
+            </div>
+          )}
 
           {/* Botões de Ação */}
           <div className="flex justify-end gap-4 mt-4">

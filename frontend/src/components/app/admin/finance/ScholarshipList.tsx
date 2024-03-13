@@ -1,135 +1,107 @@
+import { ConfirmModal } from "@/components/ConfirmModal"
 import Toast from "@/components/Toast"
-import { useBackend } from "@/contexts/backend"
+import { useFinanceMutation, useStudents } from "@/hooks/admin/finance"
 import { ScholarshipQuery } from "@/types/queries"
-import { User } from "@/types/user"
-import { getUserPhotoUrl } from "@/utils/client"
+import { getUserPhotoUrl, toReal } from "@/utils/client"
 import Image from "next/image"
-import { useEffect, useState } from "react"
+import { useState } from "react"
 import { Tooltip } from "react-daisyui"
 
 type Props = {
   query: ScholarshipQuery
 }
 
-type Student = User & { alreadyPaid: boolean }
-
 const ScholarshipList = ({ query }: Props) => {
-  const { backend, isLogged } = useBackend()
-  const [students, setStudents] = useState<Student[]>([])
+  const { data: students = [] } = useStudents(query)
   const [toast, setToast] = useState<string>("")
+  const { payStudentsMutation } = useFinanceMutation()
   const everyAlreadyPaid = students.every((s) => s.alreadyPaid)
-
-  useEffect(() => {
-    const fetchStudents = async () => {
-      if (query.classroomId === 0) return
-      try {
-        if (!isLogged) return
-        const res = await backend.get("/admin/finance/students", {
-          params: query,
-        })
-        setStudents(res.data)
-        if (res.data.students.length === 0) setToast("Nenhum estudante encontrado.")
-      } catch (error) {
-        console.error(error)
-      }
-    }
-
-    fetchStudents()
-  }, [query, backend, isLogged])
 
   const handlePayEveryStudent = async () => {
     if (everyAlreadyPaid) return
-    try {
-      await backend.post("/admin/finance/students/pay", {
-        ids: students.filter((s) => !s.alreadyPaid).map((s) => s.id),
-        month: query.month,
-        year: query.year,
-      })
-      setStudents(
-        students.map((s) => {
-          return { ...s, alreadyPaid: true }
-        })
-      )
-      setToast(
-        `Todos os estudantes foram marcados como pagos referente à mês de ${query.month}/${query.year}.`
-      )
-    } catch (error) {
-      console.error(error)
-    }
+    await payStudentsMutation.mutateAsync({
+      studentIds: students.filter((s) => !s.alreadyPaid).map((s) => s.id),
+      month: query.month,
+      year: query.year,
+    })
+    setToast("Estudantes marcados como pagos.")
   }
 
   const handlePayStudent = async (id: number) => {
-    if (students.find((s) => s.id === id)?.alreadyPaid) return
-    try {
-      await backend.post("/admin/finance/students/pay", {
-        ids: [id],
-        month: query.month,
-        year: query.year,
-      })
-      setStudents(students.map((s) => (s.id === id ? { ...s, alreadyPaid: true } : s)))
-      setToast(
-        `Estudante ${
-          students.find((s) => s.id === id)?.name
-        } marcado como pago referente à mês de ${query.month}/${query.year}.`
-      )
-    } catch (error) {
-      console.error(error)
-    }
+    const student = students.find((s) => s.id === id)
+    if (student?.alreadyPaid) return
+    await payStudentsMutation.mutateAsync({
+      studentIds: [id],
+      month: query.month,
+      year: query.year,
+    })
+    setToast(`Estudante ${student?.name} marcado como pago.`)
   }
 
   return (
     <div className="overflow-x-auto my-4">
       <table className="table table-zebra text-center">
-        <thead>
-          <tr>
-            <th>
-              <Tooltip message="Marcar TODOS como PAGOS" color="warning" position="right">
-                <input
-                  type="checkbox"
-                  className="checkbox"
-                  checked={everyAlreadyPaid}
-                  disabled={everyAlreadyPaid}
-                  onClick={handlePayEveryStudent}
-                />
-              </Tooltip>
-            </th>
-            <th>Aluno</th>
-            <th>Bolsa (R$)</th>
-          </tr>
-        </thead>
+        <ConfirmModal
+          title="Pagamento de Bolsa"
+          description={`Você tem certeza que deseja marcar TODOS os alunos desta turma como PAGOS no mês ${query.month}/${query.year}?`}
+        >
+          {(show) => (
+            <thead>
+              <tr>
+                <th>
+                  <Tooltip
+                    message="Marcar TODOS como PAGOS"
+                    color="warning"
+                    position="right"
+                  >
+                    <input
+                      type="checkbox"
+                      className="checkbox"
+                      checked={everyAlreadyPaid}
+                      disabled={everyAlreadyPaid}
+                      onClick={show(handlePayEveryStudent)}
+                    />
+                  </Tooltip>
+                </th>
+                <th>Aluno</th>
+                <th>Bolsa (R$)</th>
+              </tr>
+            </thead>
+          )}
+        </ConfirmModal>
         <tbody>
           {students.map((student) => (
             <tr key={student.id}>
               <th>
-                <input
-                  type="checkbox"
-                  className="checkbox"
-                  disabled={student.alreadyPaid}
-                  checked={student.alreadyPaid}
-                  onClick={() => handlePayStudent(student.id)}
-                />
+                <ConfirmModal
+                  title="Confirmação de Pagamento"
+                  description={`Você tem certeza que deseja marcar o estudante ${student.name} como PAGO no mês ${query.month}/${query.year}?`}
+                >
+                  {(show) => (
+                    <input
+                      type="checkbox"
+                      className="checkbox"
+                      disabled={student.alreadyPaid}
+                      checked={student.alreadyPaid}
+                      onClick={show(() => handlePayStudent(student.id))}
+                    />
+                  )}
+                </ConfirmModal>
               </th>
-              <th>
-                <div className="flex items-center gap-3">
-                  <div className="avatar">
-                    <div className="mask mask-squircle w-12 h-12">
-                      <Image
-                        width={56}
-                        height={56}
-                        src={getUserPhotoUrl(student)}
-                        alt="User photo"
-                      />
-                    </div>
+              <th className="flex items-center justify-center gap-3">
+                <div className="avatar">
+                  <div className="mask mask-squircle w-12 h-12">
+                    <Image
+                      width={56}
+                      height={56}
+                      src={getUserPhotoUrl(student)}
+                      alt="User photo"
+                    />
                   </div>
-                  <div className="font-bold">{student.name}</div>
                 </div>
+                <div className="font-bold">{student.name}</div>
               </th>
-              <th>
-                {student.scholarship.toLocaleString("pt-BR", {
-                  style: "currency",
-                  currency: "BRL",
-                })}
-              </th>
+              <th>{toReal(student.scholarship)}</th>
             </tr>
           ))}
         </tbody>

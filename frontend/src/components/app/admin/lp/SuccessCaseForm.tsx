@@ -1,171 +1,121 @@
+import { FileInputField } from "@/components/ui/forms/FileInputField"
+import { InputField } from "@/components/ui/forms/InputField"
+import { TextAreaField } from "@/components/ui/forms/TextAreaField"
+import { useSession } from "@/contexts/session"
+import { useSuccessCasesMutations } from "@/hooks/admin/lp"
+import { SuccessCaseFormData, successCaseSchema } from "@/schemas/success-case"
 import { SuccessCase } from "@/types/constants"
-import { axiosApi } from "@/utils/axiosClient"
+import { getAttachmentUrl, uploadAttach } from "@/utils/client"
+import { zodResolver } from "@hookform/resolvers/zod"
 import { useState } from "react"
-import { Button, Input, Textarea } from "react-daisyui"
+import { Button } from "react-daisyui"
+import { SubmitHandler, useForm } from "react-hook-form"
 import { FaEdit, FaPlus } from "react-icons/fa"
 
 type Props = {
   successCase: SuccessCase
-  setSuccessCase: (successCase: SuccessCase) => void
   action: "create" | "edit"
   setToast: (toast: string) => void
   successCases: SuccessCase[]
-  setSuccessCases: (successCases: SuccessCase[]) => void
 }
 
-const SuccessCaseForm = ({
-  successCase,
-  setSuccessCase,
-  action,
-  setToast,
-  successCases,
-  setSuccessCases,
-}: Props) => {
+const SuccessCaseForm = ({ successCase, action, setToast }: Props) => {
   const [isLoading, setIsLoading] = useState(false)
 
-  const createSuccessCase = async () => {
-    try {
-      const res = await axiosApi.post("/success-case/add", successCase)
-      setSuccessCases([...successCases, res.data.successCase])
-      setToast("Caso de sucesso criado com sucesso!")
-    } catch {
-      setToast("Erro ao criar caso de sucesso.")
-    }
-  }
+  const {
+    register,
+    handleSubmit,
+    setError,
+    formState: { errors },
+  } = useForm<SuccessCaseFormData>({
+    resolver: zodResolver(successCaseSchema),
+    values: {
+      name: successCase.name,
+      city: successCase.city,
+      results: successCase.results,
+      difficulties: successCase.difficulties,
+      phrase: successCase.phrase,
+      imagePath: false,
+    },
+  })
 
-  const editSuccessCase = async () => {
-    try {
-      const res = await axiosApi.put(`/success-case/${successCase.id}`, successCase)
-      setSuccessCases(
-        successCases.map((n) => (n.id == successCase.id ? res.data.successCase : n))
-      )
-      setToast("Caso de sucesso editado com sucesso!")
-    } catch {
-      setToast("Erro ao editar caso de sucesso.")
-    }
-  }
+  const { token } = useSession()
 
-  const handleSubmit = async () => {
+  const { createMutation, editMutation } = useSuccessCasesMutations()
+
+  const submit: SubmitHandler<SuccessCaseFormData> = async (data) => {
     setIsLoading(true)
-    // Verify if all fields are filled
-    if (
-      !successCase.name ||
-      !successCase.city ||
-      !successCase.results ||
-      !successCase.difficulties ||
-      !successCase.phrase ||
-      !successCase.imagePath
-    ) {
-      setToast("Preencha todos os campos!")
+    var formData = {
+      ...data,
+      id: successCase.id,
+      imagePath: successCase.imagePath,
+    } as SuccessCase
+
+    if (action == "create" && !data.imagePath) {
       setIsLoading(false)
-      return
+      return setError("imagePath", {
+        message: "Imagem é obrigatória!",
+      })
+    }
+
+    if (data.imagePath) {
+      const attach = await uploadAttach(data.imagePath, token)
+      if (typeof attach === "string") {
+        return setToast(attach)
+      }
+      formData = {
+        ...formData,
+        imagePath: getAttachmentUrl(attach),
+      }
     }
     switch (action) {
       case "create":
-        await createSuccessCase()
+        await createMutation.mutateAsync(formData)
         break
       case "edit":
-        await editSuccessCase()
+        await editMutation.mutateAsync(formData)
         break
     }
     setIsLoading(false)
   }
 
   return (
-    <div className="flex flex-col items-center gap-3">
-      <label className="form-control w-full max-w-xs">
-        <div className="label">
-          <span className="label-text">Nome</span>
-        </div>
-        <Input
-          placeholder="Eu sou um nome..."
-          size="md"
-          value={successCase.name}
-          onChange={(e) => setSuccessCase({ ...successCase, name: e.target.value })}
-          color="primary"
-          disabled={isLoading}
-          bordered
-        />
-      </label>
+    <form className="flex flex-col items-center gap-0.5" onSubmit={handleSubmit(submit)}>
+      <InputField label="Nome" {...register("name")} errors={errors.name} />
 
-      <label className="form-control w-full max-w-xs">
-        <div className="label">
-          <span className="label-text">Cidade - Estado</span>
-        </div>
-        <Input
-          placeholder="A cidade e o estado vão aqui..."
-          size="md"
-          value={successCase.city}
-          color="primary"
-          onChange={(e) => setSuccessCase({ ...successCase, city: e.target.value })}
-          disabled={isLoading}
-          bordered
-        />
-      </label>
+      <InputField
+        label="Cidade - Estado"
+        helpText="Use o padrão Cidade - UF (ex.: Maceió - AL)"
+        {...register("city")}
+        errors={errors.city}
+      />
 
-      <label className="form-control w-full max-w-xs">
-        <div className="label">
-          <span className="label-text">Resultados</span>
-        </div>
-        <Textarea
-          placeholder="Os resultados vão aqui..."
-          size="md"
-          value={successCase.results}
-          onChange={(e) => setSuccessCase({ ...successCase, results: e.target.value })}
-          color="primary"
-          disabled={isLoading}
-          bordered
-        />
-      </label>
+      <TextAreaField
+        label="Resultados"
+        {...register("results")}
+        errors={errors.results}
+      />
 
-      <label className="form-control w-full max-w-xs">
-        <div className="label">
-          <span className="label-text">Dificuldades</span>
-        </div>
-        <Textarea
-          placeholder="As dificuldades vão aqui..."
-          size="md"
-          value={successCase.difficulties}
-          onChange={(e) =>
-            setSuccessCase({ ...successCase, difficulties: e.target.value })
-          }
-          color="primary"
-          disabled={isLoading}
-          bordered
-        />
-      </label>
+      <TextAreaField
+        label="Dificuldades"
+        {...register("difficulties")}
+        errors={errors.difficulties}
+      />
 
-      <label className="form-control w-full max-w-xs">
-        <div className="label">
-          <span className="label-text">Frase Pessoal</span>
-        </div>
-        <Input
-          placeholder="Uma bela frase vai aqui..."
-          size="md"
-          value={successCase.phrase}
-          onChange={(e) => setSuccessCase({ ...successCase, phrase: e.target.value })}
-          color="primary"
-          disabled={isLoading}
-          bordered
-        />
-      </label>
+      <TextAreaField
+        label="Frase"
+        helpText="Uma frase de efeito!"
+        {...register("phrase")}
+        errors={errors.phrase}
+      />
 
-      <label className="form-control w-full max-w-xs">
-        <div className="label">
-          <span className="label-text">Imagem do Aluno</span>
-        </div>
-        <Input
-          placeholder="Link da imagem"
-          size="md"
-          value={successCase.imagePath}
-          onChange={(e) => setSuccessCase({ ...successCase, imagePath: e.target.value })}
-          color="primary"
-          disabled={isLoading}
-          bordered
-        />
-      </label>
+      <FileInputField
+        label="Foto da Pessoa"
+        {...register("imagePath")}
+        errors={errors.imagePath}
+      />
 
-      <Button variant="outline" color="accent" onClick={handleSubmit}>
+      <Button variant="outline" color="accent" type="submit" disabled={isLoading}>
         {action === "create" ? (
           <>
             <FaPlus /> Criar
@@ -176,7 +126,7 @@ const SuccessCaseForm = ({
           </>
         )}
       </Button>
-    </div>
+    </form>
   )
 }
 

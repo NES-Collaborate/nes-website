@@ -1,3 +1,4 @@
+import { fetchMe, logOut } from "@/services/general"
 import { User } from "@/types/user"
 import { axiosServer } from "@/utils/axiosClient"
 import Cookies from "js-cookie"
@@ -32,16 +33,7 @@ export const SessionProvider = ({ children }: { children: React.ReactNode }) => 
   useEffect(() => {
     if (!token) return
     Cookies.set("_token", token)
-    axiosServer
-      .get("/me", {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      })
-      .then((res) => {
-        setUser(res.data)
-      })
-      .catch((err) => null)
+    fetchMe(axiosServer, token).then((me) => setUser(me))
   }, [token])
 
   const session = {
@@ -51,10 +43,7 @@ export const SessionProvider = ({ children }: { children: React.ReactNode }) => 
       setUser(null)
       setToken("")
       Cookies.remove("_token")
-      axiosServer
-        .get("/logout")
-        .then(() => {})
-        .catch(() => {})
+      logOut(axiosServer).then(() => {})
     },
     token,
     setToken,

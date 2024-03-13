@@ -1,44 +1,23 @@
+import { ConfirmModal } from "@/components/ConfirmModal"
 import Loading from "@/components/Loading"
 import Toast from "@/components/Toast"
 import NoticeModal from "@/components/app/admin/lp/NoticeModal"
-import { Notice } from "@/types/constants"
+import { useNoticeMutations, useNotices } from "@/hooks/admin/lp"
 import { withAuth } from "@/utils/auth"
-import { axiosApi } from "@/utils/axiosClient"
 import Link from "next/link"
-import { useEffect, useState } from "react"
+import { useState } from "react"
 import { Alert, Button, Table, Tooltip } from "react-daisyui"
 import { FaEdit, FaPlus, FaTrash } from "react-icons/fa"
 import { MdErrorOutline } from "react-icons/md"
 
 const Notices = () => {
-  const [notices, setNotices] = useState<Notice[]>([])
-  const [isLoading, setIsLoading] = useState(true)
   const [toast, setToast] = useState("")
-  const [error, setError] = useState("")
 
   const [modalAction, setModalAction] = useState<"edit" | "create">("edit")
   const [targetNoticeIndex, setTargetNoticeIndex] = useState<number>(-1)
 
-  // Load Notices
-  useEffect(() => {
-    setIsLoading(true)
-    axiosApi
-      .get("/notice/all")
-      .then((res) => setNotices(res.data.notices || []))
-      .catch(() => setError("Erro ao buscar notícias"))
-      .finally(() => setIsLoading(false))
-  }, [])
-
-  // Delete Notice
-  const deleteNotice = async (notice: Notice) => {
-    try {
-      await axiosApi.delete(`/notice/${notice.id}`)
-      setNotices(notices.filter((n) => n.id !== notice.id))
-      setToast(`Notícia '${notice.title}' deletada com sucesso!`)
-    } catch (error) {
-      setError("Erro ao deletar notícias")
-    }
-  }
+  const { data: notices = [], isLoading, error } = useNotices()
+  const { deleteMutation } = useNoticeMutations()
 
   const openCreateModal = () => {
     setTargetNoticeIndex(-1)
@@ -57,7 +36,7 @@ const Notices = () => {
       {error && (
         <div className="flex justify-center items-center h-80">
           <Alert status="error" className="w-4/5" icon={<MdErrorOutline />}>
-            {error}
+            {error.message}
           </Alert>
         </div>
       )}
@@ -101,13 +80,20 @@ const Notices = () => {
                     </Tooltip>
 
                     <Tooltip message="Excluir">
-                      <Button
-                        color="error"
-                        size="sm"
-                        onClick={() => deleteNotice(notice)}
+                      <ConfirmModal
+                        title="Excluir Notícia"
+                        description="Tem certeza que deseja excluir esta noticia?"
                       >
-                        <FaTrash />
-                      </Button>
+                        {(show) => (
+                          <Button
+                            color="error"
+                            size="sm"
+                            onClick={show(() => deleteMutation.mutate(notice.id))}
+                          >
+                            <FaTrash />
+                          </Button>
+                        )}
+                      </ConfirmModal>
                     </Tooltip>
                   </span>
                 </Table.Row>
@@ -144,7 +130,6 @@ const Notices = () => {
       <NoticeModal
         action={modalAction}
         notices={notices}
-        setNotices={setNotices}
         index={targetNoticeIndex}
         setIndex={setTargetNoticeIndex}
         setToast={setToast}

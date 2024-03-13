@@ -1,18 +1,31 @@
-import ButtonNES from "@/components/ButtonNES"
 import Loading from "@/components/Loading"
+import Toast from "@/components/Toast"
+import { InputField } from "@/components/ui/forms/InputField"
 import { useSession } from "@/contexts/session"
 import { User } from "@/types/user"
 import { getUserSession, signIn } from "@/utils/auth"
-import clsx from "clsx"
+import { maskCPF } from "@/utils/client"
+import { zodResolver } from "@hookform/resolvers/zod"
 import { GetServerSidePropsContext } from "next"
 import { useRouter } from "next/navigation"
 import { useEffect, useState } from "react"
-import { AiFillWarning } from "react-icons/ai"
+import { SubmitHandler, useForm } from "react-hook-form"
 import { IoIosLogIn } from "react-icons/io"
+import { z } from "zod"
 
 type Props = {
   userSession: User
 }
+
+const loginSchema = z.object({
+  username: z
+    .string()
+    .min(1, "CPF deve ser preenchido")
+    .transform((cpf) => cpf.replace(/[^0-9]/g, "")),
+  password: z.string().min(1, "Senha deve ser preenchida"),
+})
+
+type FormData = z.infer<typeof loginSchema>
 
 /**
  * Login component for user authentication.
@@ -21,26 +34,32 @@ type Props = {
  * @return {JSX.Element} the login component
  */
 const Login = ({ userSession }: Props) => {
-  const [username, setUsername] = useState("")
-  const [password, setPassword] = useState("")
+  const {
+    register,
+    formState: { errors },
+    handleSubmit,
+  } = useForm<FormData>({
+    resolver: zodResolver(loginSchema),
+  })
+  const [toast, setToast] = useState("")
   const [isLoggingIn, setIsLoggingIn] = useState(false)
-  const [errors, setErrors] = useState<string[]>([])
   const session = useSession()
   const router = useRouter()
 
   useEffect(() => {
     if (userSession) {
       setIsLoggingIn(true)
-      setErrors([`Você já está logado como ${userSession.name}.`])
-      setTimeout(() => router.push("/app"), 3000)
+      setToast(`Você já está logado como ${userSession.name}.`)
+      setTimeout(() => router.push("/app"), 2000)
     }
   }, [router, userSession])
 
-  const handleSubmit = async () => {
+  const submit: SubmitHandler<FormData> = async (data) => {
+    console.log(data)
     setIsLoggingIn(true)
     const result = await signIn({
-      username,
-      password,
+      username: data.username,
+      password: data.password,
       session,
     })
 
@@ -48,83 +67,53 @@ const Login = ({ userSession }: Props) => {
       router.push("/app")
     } else {
       setIsLoggingIn(false)
-      setErrors([...errors, result.error ?? "Falha na autenticação."])
+      setToast(result.error ?? "Falha na autenticação.")
     }
-    setIsLoggingIn(false)
   }
 
   return (
     <div className="min-h-screen flex justify-center items-center">
-      <div className="w-full max-w-md p-6 rounded-md shadow-lg md:p-8 lg:max-w-xl">
+      <div className="w-full max-w-md p-6 rounded-lg shadow-lg md:p-8 lg:max-w-xl bg-base-300">
         <h1 className="text-3xl text-center font-semibold">Login</h1>
-        {errors.length > 0 && (
-          <div className="mt-6 space-y-2">
-            {errors.map((error, i) => (
-              <div
-                key={i}
-                role="alert"
-                className="alert alert-error shadow-lg rounded-md flex items-center p-2 text-sm text-white bg-red-500"
-              >
-                <AiFillWarning className="text-lg mr-2" />
-                {error}
-              </div>
-            ))}
-          </div>
-        )}
-
-        <label className="form-control w-full mt-6">
-          <div className="label">
-            <span className="label-text">Usuário</span>
-          </div>
-          <input
-            type="text"
-            placeholder="Seu CPF"
-            className={clsx(
-              "input input-accent w-full px-4 mt-1",
-              isLoggingIn && "cursor-not-allowed"
-            )}
-            onChange={(e) => setUsername(e.target.value.replace(/\D/g, ""))}
-            onClick={() => setErrors([])}
-            value={username}
-            disabled={isLoggingIn}
-          />
-        </label>
-
-        <label className="form-control w-full mt-4">
-          <div className="label">
-            <span className="label-text">Senha</span>
-          </div>
-          <input
-            type="password"
-            placeholder="Sua senha"
-            className={clsx(
-              "input input-accent w-full",
-              isLoggingIn && "cursor-not-allowed"
-            )}
-            onChange={(e) => setPassword(e.target.value)}
-            onClick={() => setErrors([])}
-            onKeyDown={(e) => e.key === "Enter" && handleSubmit()}
-            value={password}
-            disabled={isLoggingIn}
-          />
-        </label>
-
-        <ButtonNES
-          type="action"
-          style="outline"
-          onClick={handleSubmit}
+        <InputField
+          label="Usuário"
+          helpText="Seu CPF"
+          mask={maskCPF}
+          {...register("username")}
+          errors={errors.username}
           disabled={isLoggingIn}
-          className="mt-6 w-full py-3"
+        />
+
+        <InputField
+          label="Senha"
+          {...register("password")}
+          type="password"
+          errors={errors.password}
+          disabled={isLoggingIn}
+        />
+
+        <button
+          className="btn btn-primary w-full mt-6"
+          onClick={handleSubmit(submit)}
+          disabled={isLoggingIn}
         >
-          {isLoggingIn && <Loading text="Carregando..." textClassName="text-white" />}
-          {!isLoggingIn && (
-            <>
-              <IoIosLogIn />
-              Entrar
-            </>
+          {isLoggingIn ? (
+            <Loading center />
+          ) : (
+            <div className="flex items-center gap-2">
+              <IoIosLogIn className="text-xl" /> Entrar
+            </div>
           )}
-        </ButtonNES>
+        </button>
       </div>
+
+      <Toast
+        message={toast}
+        setMessage={setToast}
+        alert="warning"
+        horizontal="end"
+        vertical="top"
+      />
     </div>
   )
 }

@@ -1,4 +1,5 @@
 import { SessionContext } from "@/contexts/session"
+import { fetchMe } from "@/services/general"
 import { User } from "@/types/user"
 import { AxiosError } from "axios"
 import {
@@ -86,13 +87,7 @@ export const getUserSession = async (req: GetServerSidePropsContext["req"]) => {
   const token = req.cookies._token
   if (!token) return null
   try {
-    const res = await axiosServer.get("/me", {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    })
-
-    return res.data as User
+    return await fetchMe(axiosServer, token)
   } catch (err) {
     return null
   }

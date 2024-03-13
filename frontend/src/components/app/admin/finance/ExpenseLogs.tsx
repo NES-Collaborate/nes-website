@@ -1,37 +1,31 @@
 import AttachmentModal from "@/components/AttachmentModal"
-import { useBackend } from "@/contexts/backend"
-import { useExpenseLogs } from "@/contexts/expenseLogs"
+import Loading from "@/components/Loading"
+import { useExpenseLogs } from "@/hooks/admin/finance"
 import { Attach } from "@/types/entities"
-import { ExpenseLog } from "@/types/finance"
 import { ExpenseLogQuery } from "@/types/queries"
+import { useQueryClient } from "@tanstack/react-query"
 import { useEffect, useState } from "react"
 import { Alert } from "react-daisyui"
 import ExpenseLogFilter from "./ExpenseLogFilter"
 import ExpenseLogTable from "./ExpenseLogTable"
 
 const ExpenseLogs = () => {
-  const { logs, setLogs } = useExpenseLogs()
-  const [errorLog, setErrorLog] = useState("")
   const [proof, setProof] = useState<Attach | null>(null)
   const [query, setQuery] = useState<ExpenseLogQuery>({
     type: "all",
   })
-  const { backend } = useBackend()
+  const [debouncedQuery, setDebouncedQuery] = useState<ExpenseLogQuery>(query)
+  const queryClient = useQueryClient()
 
   useEffect(() => {
-    const fetch = async () => {
-      try {
-        const res = await backend.get<{ logs: ExpenseLog[] }>("/admin/finance", {
-          params: query,
-        })
-        setLogs(res.data.logs)
-      } catch {
-        setErrorLog("Erro ao carregar movimentações")
-      }
-    }
-    const timer = setTimeout(() => fetch(), 500)
-    return () => clearTimeout(timer)
-  }, [query, backend, setLogs])
+    const handler = setTimeout(() => {
+      setDebouncedQuery(query)
+    }, 700)
+
+    return () => clearTimeout(handler)
+  }, [query, queryClient])
+
+  const { data: logs = [], isFetching } = useExpenseLogs(debouncedQuery)
 
   return (
     <>
@@ -39,12 +33,13 @@ const ExpenseLogs = () => {
         <h2 className="text-xl text-center">Movimentações</h2>
         <ExpenseLogFilter query={query} setQuery={setQuery} />
         <ExpenseLogTable logs={logs} setProof={setProof} />
-        {errorLog ||
-          (logs.length === 0 && (
-            <Alert status="error" className="my-3">
-              {errorLog || "Nenhuma movimentação encontrada"}
-            </Alert>
-          ))}
+        {logs.length === 0 && !isFetching && (
+          <Alert status="error" className="my-3">
+            Nenhuma movimentação encontrada
+          </Alert>
+        )}
+
+        {isFetching && <Loading center />}
       </div>
 
       <AttachmentModal attach={proof} setAttach={setProof} title="Comprovante" />

@@ -1,7 +1,5 @@
 import Loading from "@/components/Loading"
-import { Notice } from "@/types/constants"
-import { axiosApi } from "@/utils/axiosClient"
-import { useEffect, useState } from "react"
+import { useNotices } from "@/hooks/admin/lp"
 import NoticeCard from "./NoticeCard"
 
 /**
@@ -9,21 +7,7 @@ import NoticeCard from "./NoticeCard"
  * @returns {JSX.Element} Notices list
  */
 const Notices = () => {
-  const [notices, setNotices] = useState<Notice[]>([])
-  const [isLoading, setIsLoading] = useState(true)
-
-  useEffect(() => {
-    axiosApi
-      .get("/notice/all")
-      .then((res) => {
-        if (res.data.notices !== null) {
-          setNotices(res.data.notices)
-        }
-      })
-      // TODO: Add visual feedback on error
-      .catch((err) => console.log(err))
-      .finally(() => setIsLoading(false))
-  }, [])
+  const { data: notices = [], isLoading } = useNotices()
 
   if (notices.length === 0) {
     return null

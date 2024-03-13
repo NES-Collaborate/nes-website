@@ -3,26 +3,9 @@ import Logo from "@/components/Logo"
 import Brief from "@/components/nes/about/success-cases/Brief"
 import SuccessCase from "@/components/nes/about/success-cases/SuccessCase"
 import Footer from "@/components/nes/Footer"
-import { SuccessCase as SuccessCaseType } from "@/types/constants"
-import { axiosApi } from "@/utils/axiosClient"
-import { useEffect, useState } from "react"
-
+import { useSuccessCases } from "@/hooks/admin/lp"
 const Home = () => {
-  const [successCases, setSuccessCases] = useState<SuccessCaseType[]>([])
-  const [isLoading, setIsLoading] = useState(true)
-
-  useEffect(() => {
-    setIsLoading(true)
-    axiosApi
-      .get("/success-case/all")
-      .then((res) => {
-        setSuccessCases(res.data.successCases || [])
-      })
-      .catch((err) => {
-        console.log(err)
-      })
-    setIsLoading(false)
-  }, [])
+  const { data: successCases = [], isLoading } = useSuccessCases()
 
   return (
     <div className="min-height flex flex-col">

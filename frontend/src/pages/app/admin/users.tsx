@@ -13,7 +13,7 @@ const AdminUsers = () => {
       <div className="flex justify-center items-center">
         <Input
           className="w-3/4"
-          placeholder="Pesquisar usuário (nome, cpf, email, telefone) ..."
+          placeholder="Pesquisar usuário (nome, cpf, email, telefone)"
           value={query}
           onChange={(e) => setQuery(e.target.value)}
         />

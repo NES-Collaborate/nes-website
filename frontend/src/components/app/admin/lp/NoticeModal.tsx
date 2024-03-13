@@ -6,21 +6,13 @@ import NoticeForm from "./NoticeForm"
 
 type Props = {
   notices: Notice[]
-  setNotices: (notices: Notice[]) => void
   action: "create" | "edit"
   index: number
   setIndex: (index: number) => void
   setToast: (toast: string) => void
 }
 
-const NoticeModal = ({
-  notices,
-  setNotices,
-  action,
-  index,
-  setIndex,
-  setToast,
-}: Props) => {
+const NoticeModal = ({ notices, action, index, setIndex, setToast }: Props) => {
   const isOpen = (action == "create" && index == -1) || (action == "edit" && index != -1)
 
   const [notice, setNotice] = useState<Notice>({
@@ -72,14 +64,7 @@ const NoticeModal = ({
       </Modal.Header>
 
       <Modal.Body>
-        <NoticeForm
-          notice={notice}
-          setNotice={setNotice}
-          action={action}
-          setToast={setToast}
-          notices={notices}
-          setNotices={setNotices}
-        />
+        <NoticeForm notice={notice} action={action} setToast={setToast} />
       </Modal.Body>
     </Modal>
   )

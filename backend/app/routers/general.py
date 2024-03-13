@@ -13,9 +13,9 @@ router = APIRouter()
 
 @router.post("/upload")
 async def upload_file(
-        data: UploadFile = File(...),
-        current_user: User = Depends(UserService.get_current_user),
-        session: Session = Depends(get_session),
+    data: UploadFile = File(...),
+    current_user: User = Depends(UserService.get_current_user),
+    session: Session = Depends(get_session),
 ):
 
     # TODO: ext validation by mimetype
@@ -44,13 +44,13 @@ async def upload_file(
     session.commit()
     session.refresh(_attach)
 
-    return {"id": _attach.id}
+    return {"id": _attach.id, "location": _attach.location, "type": _attach.type}
 
 
 @router.get("/attachments/{attach_id}", status_code=status.HTTP_200_OK)
 async def get_attachments(
-        attach_id: int,
-        session: Session = Depends(get_session),
+    attach_id: int,
+    session: Session = Depends(get_session),
 ):
 
     _attach = session.query(Attach).get(attach_id)
@@ -71,6 +71,4 @@ async def get_attachments(
             detail="Anexo não encontrado",
         )
 
-    return FileResponse(_path,
-                        filename=_attach.name,
-                        content_disposition_type="inline")
+    return FileResponse(_path, filename=_attach.name, content_disposition_type="inline")
