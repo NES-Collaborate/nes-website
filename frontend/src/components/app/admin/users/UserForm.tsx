@@ -28,6 +28,7 @@ const UserForm = ({ user, action, setModalState }: Omit<UserModalProps, "isOpen"
   } = useForm<UserFormData>({
     resolver: zodResolver(userSchema),
     values: {
+      id: user?.id || 0,
       name: user?.name || "",
       cpf: maskCPF(user?.cpf || ""),
       birthdate: user?.birthdate || "",
