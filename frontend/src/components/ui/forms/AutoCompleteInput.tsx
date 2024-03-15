@@ -75,6 +75,7 @@ const AutoCompleteInputBase = ({
   }
 
   const handleSelectSuggestion = (suggestion: Suggestion) => {
+    if (!suggestion) return
     if (inputRef.current) {
       inputRef.current.value = suggestion.label
     }
