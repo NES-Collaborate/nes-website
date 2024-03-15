@@ -78,6 +78,8 @@ export const maskCPF = (input: string) => {
     formattedCPF = noMask.replace(/(\d{3})(\d)/, "$1.$2")
   } else if (length <= 9) {
     formattedCPF = noMask.replace(/(\d{3})(\d{3})(\d)/, "$1.$2.$3")
+  } else if (length === 10) {
+    formattedCPF = noMask.replace(/(\d{3})(\d{3})(\d{3})(\d)/, "$1.$2.$3-$4")
   } else {
     formattedCPF = noMask.replace(/(\d{3})(\d{3})(\d{3})(\d{2})/, "$1.$2.$3-$4")
   }
