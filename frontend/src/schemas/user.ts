@@ -1,12 +1,12 @@
 import { SERIES, USER_TYPES } from "@/data/constants"
 import { z } from "zod"
 
-const attachSchema = z.object({
-  id: z.number().optional(),
-  name: z.string().optional(),
-  location: z.string().min(1, "Localização da imagem não pode ser vazia"),
-  type: z.enum(["File", "Link"]),
-})
+// const attachSchema = z.object({
+//   id: z.number().optional(),
+//   name: z.string().optional(),
+//   location: z.string().min(1, "Localização da imagem não pode ser vazia"),
+//   type: z.enum(["File", "Link"]),
+// })
 
 const emailSchema = z.object({
   id: z.number().optional(),
@@ -42,7 +42,12 @@ const addressSchema = z.object({
 const userBaseSchema = z.object({
   id: z.number().optional(),
   name: z.string().min(1, "Nome deve ser preenchido"),
-  photo: attachSchema.optional(),
+  photo: z
+    .custom<FileList>()
+    .transform((file) => file.length > 0 && file.item(0))
+    .refine((file) => !!file && file.type?.startsWith("image/"), {
+      message: "Somente imagens são permitidas",
+    }),
   emails: z.preprocess(
     (value) => {
       if (typeof value === "string") {

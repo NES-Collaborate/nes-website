@@ -1,3 +1,4 @@
+import { UserFormData } from "@/schemas/user"
 import { Serie, UserType } from "./constants"
 import { Address, Attach, Classroom } from "./entities"
 
@@ -38,3 +39,8 @@ export type User = {
   type: UserType
   classroom?: Classroom | null
 }
+
+/**
+ * User Representation in the Backend /users API
+ */
+export type UserFormDataBackend = Omit<UserFormData, "photo"> & { photo: Attach }

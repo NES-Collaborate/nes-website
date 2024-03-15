@@ -1,5 +1,4 @@
-import { UserFormData } from "@/schemas/user"
-import { User } from "@/types/user"
+import { User, UserFormDataBackend } from "@/types/user"
 import { AxiosInstance } from "axios"
 
 export const fetchUsers = async (
@@ -18,7 +17,7 @@ export const fetchUsers = async (
 
 export const createUser = async (
   client: AxiosInstance,
-  user: UserFormData
+  user: UserFormDataBackend
 ): Promise<User> => {
   const res = await client.post("/admin/users", user)
   return res.data.user
@@ -26,7 +25,7 @@ export const createUser = async (
 
 export const editUser = async (
   client: AxiosInstance,
-  user: UserFormData
+  user: UserFormDataBackend
 ): Promise<User> => {
   const res = await client.put(`/admin/users/${user.id}`, user)
   return res.data.user

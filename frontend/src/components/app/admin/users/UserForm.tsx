@@ -1,5 +1,7 @@
+import { FileInputField } from "@/components/ui/forms/FileInputField"
 import { InputField } from "@/components/ui/forms/InputField"
 import { SelectField } from "@/components/ui/forms/SelectField"
+import { useSession } from "@/contexts/session"
 import { SERIES, USER_TYPES, USER_TYPES_MASK } from "@/data/constants"
 import { useUserMutations } from "@/hooks/admin/users"
 import { useClassrooms } from "@/hooks/teacher/classrooms"
@@ -10,7 +12,7 @@ import {
   userSchema,
 } from "@/schemas/user"
 import { Serie } from "@/types/constants"
-import { maskCPF, maskDate, maskMoney, maskPhone } from "@/utils/client"
+import { maskCPF, maskDate, maskMoney, maskPhone, uploadAttach } from "@/utils/client"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useEffect, useState } from "react"
 import { SubmitHandler, useForm } from "react-hook-form"
@@ -51,6 +53,7 @@ const UserForm = ({ user, action, setModalState }: Omit<UserModalProps, "isOpen"
       emails: [],
       phones: [],
       password: "",
+      photo: null,
     },
   })
 
@@ -62,6 +65,7 @@ const UserForm = ({ user, action, setModalState }: Omit<UserModalProps, "isOpen"
   const [phoneNumbers, setPhoneNumbers] = useState<PhoneNumberFormData[]>([])
 
   const { createMutation, editMutation } = useUserMutations()
+  const { token } = useSession()
 
   useEffect(() => {
     setEmails(user?.emails || [])
@@ -74,13 +78,16 @@ const UserForm = ({ user, action, setModalState }: Omit<UserModalProps, "isOpen"
   }, [user])
 
   const submitForm: SubmitHandler<UserFormData> = async (data) => {
-    const formData = {
+    var formData = {
       ...data,
       emails,
       phones: phoneNumbers,
     }
 
-    const result = userSchema.safeParse(formData)
+    const result = await userSchema.safeParseAsync({
+      ...formData,
+      photo: { length: 1, item: (_: number) => data.photo },
+    })
 
     if (!result.success) {
       result.error.issues.forEach((issue) => {
@@ -92,12 +99,16 @@ const UserForm = ({ user, action, setModalState }: Omit<UserModalProps, "isOpen"
       return
     }
 
+    const attach = await uploadAttach(data.photo, token)
+
+    if (typeof attach === "string") return setError("photo", { message: attach })
+
     switch (action) {
       case "create":
-        createMutation.mutate(formData)
+        createMutation.mutate({ ...formData, photo: attach })
         break
       case "edit":
-        editMutation.mutate(formData)
+        editMutation.mutate({ ...formData, photo: attach })
         break
     }
   }
@@ -185,6 +196,12 @@ const UserForm = ({ user, action, setModalState }: Omit<UserModalProps, "isOpen"
         type="password"
         {...register("password")}
         errors={errors.password}
+      />
+
+      <FileInputField
+        label="Foto de Perfil"
+        {...register("photo")}
+        errors={errors.photo}
       />
 
       {userType === "student" && (

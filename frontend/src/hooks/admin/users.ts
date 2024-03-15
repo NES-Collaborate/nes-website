@@ -1,7 +1,6 @@
 import { useBackend } from "@/contexts/backend"
-import { UserFormData } from "@/schemas/user"
 import { createUser, deleteUser, editUser, fetchUsers } from "@/services/admin/users"
-import { User } from "@/types/user"
+import { User, UserFormDataBackend } from "@/types/user"
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 import { AxiosError } from "axios"
 
@@ -19,8 +18,10 @@ export const useUserMutations = () => {
   const { backend } = useBackend()
   const queryClient = useQueryClient()
 
-  const createMutation = useMutation<User, AxiosError, UserFormData>({
-    mutationFn: (data: UserFormData) => createUser(backend, data),
+  
+
+  const createMutation = useMutation<User, AxiosError, UserFormDataBackend>({
+    mutationFn: (data: UserFormDataBackend) => createUser(backend, data),
     onSuccess: () => {
       queryClient.invalidateQueries({
         queryKey: ["users"],
@@ -29,7 +30,7 @@ export const useUserMutations = () => {
   })
 
   const editMutation = useMutation({
-    mutationFn: (data: UserFormData) => editUser(backend, data),
+    mutationFn: (data: UserFormDataBackend) => editUser(backend, data),
     onSuccess: () => {
       queryClient.invalidateQueries({
         queryKey: ["users"],
