@@ -55,7 +55,7 @@ export const maskPhone = (input: string) => {
   } else if (length <= 7) {
     formattedPhone = noMask.replace(/(\d{2})(\d)/, "($1) $2")
   } else {
-    formattedPhone = noMask.replace(/(\d{2})(\d{1,4})(\d{1,4})/, "($1) $2-$3")
+    formattedPhone = noMask.replace(/(\d{2})(\d{1,5})(\d{1,4})/, "($1) $2-$3")
   }
 
   return formattedPhone.slice(0, 15)
@@ -109,7 +109,7 @@ export const maskMoney = (money: string) => {
     return ""
   }
 
-  const integerPart = cleanedMoney.slice(0, -2)
+  const integerPart = parseInt(cleanedMoney.slice(0, -2) || "0").toString()
   const decimalPart = cleanedMoney.slice(-2)
 
   // Insert dot every three digits from the end of integer part
