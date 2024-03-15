@@ -63,7 +63,7 @@ export const maskPhone = (input: string) => {
 
 export const maskCEP = (cep: string) => {
   const noMask = cep.replace(/\D/g, "")
-  const formattedCEP = noMask.replace(/(\d{5})(\d{3})/, "$1-$2")
+  const formattedCEP = noMask.replace(/(\d{5})(\d{1,3})/, "$1-$2")
   return formattedCEP.slice(0, 9)
 }
 
