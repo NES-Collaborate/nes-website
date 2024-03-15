@@ -68,7 +68,7 @@ const userBaseSchema = z.object({
       .transform((phones) => phones || [])
   ),
   address: addressSchema.optional(),
-  password: z.string().optional(),
+  password: z.string().min(5, "Senha deve ter pelo menos 5 dígitos"),
   cpf: z
     .string({ required_error: "CPF deve ser preenchido" })
     .min(1, "CPF deve ser preenchido")
@@ -83,7 +83,7 @@ const userBaseSchema = z.object({
 
 const scholarshipSchema = z.preprocess((value) => {
   if (typeof value === "string") {
-    const parsedValue = parseFloat(value.replace(/[^\d.-]/g, ""))
+    const parsedValue = parseFloat(value.replace(".", "").replace(",", "."))
     return isNaN(parsedValue) ? value : parsedValue
   }
   return value
