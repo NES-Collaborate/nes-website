@@ -111,6 +111,8 @@ const UserForm = ({ user, action, setModalState }: Omit<UserModalProps, "isOpen"
         editMutation.mutate({ ...formData, photo: attach })
         break
     }
+
+    setModalState((prevState) => ({ ...prevState, isOpen: false }))
   }
 
   return (
@@ -251,7 +253,7 @@ const UserForm = ({ user, action, setModalState }: Omit<UserModalProps, "isOpen"
       )}
 
       <div className="collapse bg-base-200 col-span-full">
-        <input type="checkbox" className="peer" />
+        <input type="checkbox" className="peer" defaultChecked />
         <div className="collapse-title text-center">Endereço</div>
         <div className="collapse-content">
           <AddressForm register={register} errors={errors} />
