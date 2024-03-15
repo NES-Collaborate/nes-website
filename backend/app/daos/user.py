@@ -12,9 +12,7 @@ from .general import GeneralDao
 class UserDao(BaseDao):
 
     def create(self, user_data: dict[str, Any]) -> User | None:
-        user_data.update(
-            birthdate=datetime.strptime(user_data["birthdate"], "%d/%m/%Y").date()
-        )
+        user_data.update(birthdate=datetime.strptime(user_data["birthdate"], "%d/%m/%Y").date())
         _user = User(
             name=user_data["name"],
             type=user_data["type"],
@@ -38,15 +36,14 @@ class UserDao(BaseDao):
 
         GeneralDao(self.session).create_address(user_data["address"], _user.id)
 
-        GeneralDao(self.session).create_attachment(user_data["photo"], _user.id)
+        if user_photo := user_data.get("photo"):
+            GeneralDao(self.session).create_attachment(user_photo, _user.id)
 
         self.session.refresh(_user)
         return _user
 
     def get_by_id(self, id: int):
-        _user = (
-            self.session.query(User).filter(User.id == id, ~User.soft_delete).first()
-        )
+        _user = self.session.query(User).filter(User.id == id, ~User.soft_delete).first()
 
         if not _user:
             raise HTTPException(status_code=404, detail="Usuário não encontrado")
@@ -67,9 +64,7 @@ class UserDao(BaseDao):
 
     def get_by_cpf(self, cpf: str | None):
 
-        _user = (
-            self.session.query(User).filter(User.cpf == cpf, ~User.soft_delete).first()
-        )
+        _user = self.session.query(User).filter(User.cpf == cpf, ~User.soft_delete).first()
 
         if not _user:
             raise HTTPException(status_code=404, detail="Usuário não encontrado")
@@ -91,9 +86,7 @@ class UserDao(BaseDao):
             GeneralDao(self.session).update_address(user_data["address"], _user.id)
 
         if user_data.get("photo"):
-            user_data["photo"] = GeneralDao(self.session).create_attachment(
-                user_data["photo"]
-            )
+            user_data["photo"] = GeneralDao(self.session).create_attachment(user_data["photo"])
 
         UPDATED_KEYS = [
             "name",

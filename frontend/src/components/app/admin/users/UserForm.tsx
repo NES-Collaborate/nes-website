@@ -50,6 +50,7 @@ const UserForm = ({ user, action, setModalState }: Omit<UserModalProps, "isOpen"
       },
       emails: [],
       phones: [],
+      password: "",
     },
   })
 
@@ -178,6 +179,13 @@ const UserForm = ({ user, action, setModalState }: Omit<UserModalProps, "isOpen"
           ))}
         </ol>
       </div>
+
+      <InputField
+        label="Senha"
+        type="password"
+        {...register("password")}
+        errors={errors.password}
+      />
 
       {userType === "student" && (
         <>

@@ -40,8 +40,8 @@ class PhoneNumber(BaseModel):
 
 class Address(BaseModel):
     street: str
-    number: Optional[int]
-    neighborhood: Optional[str]
+    number: Optional[int] = None
+    neighborhood: Optional[str] = None
     city: str
     state: char2
     cep: str10
@@ -66,15 +66,15 @@ class Achievement(BaseModel):
 
 class UserBase(BaseModel):
     name: str
-    photo: Optional[Attach]
-    emails: Optional[List[Email]]
-    phones: Optional[List[PhoneNumber]]
-    address: Optional[Address]
-    responsible_name: Optional[str]
-    responsible_phone: Optional[str]
+    photo: Optional[Attach] = None
+    emails: Optional[List[Email]] = None
+    phones: Optional[List[PhoneNumber]] = None
+    address: Optional[Address] = None
+    responsible_name: Optional[str] = None
+    responsible_phone: Optional[str] = None
     cpf: str
-    scholarship: float
-    serie: Optional[Serie]
+    scholarship: Optional[float] = 0
+    serie: Optional[Serie] = None
     type: UserType
 
     class Config:
