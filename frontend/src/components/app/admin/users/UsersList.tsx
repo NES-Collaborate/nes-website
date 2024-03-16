@@ -10,6 +10,7 @@ import React, { useEffect, useState } from "react"
 import { Button, Table, Tooltip } from "react-daisyui"
 import { FaEdit, FaEye, FaPlus, FaTrash } from "react-icons/fa"
 import UserModal from "./UserModal"
+import { USER_TYPES_MASK } from "@/data/constants"
 
 type Props = {
   query: string
@@ -46,25 +47,26 @@ const UsersList = ({ query }: Props) => {
   const { data: users, isLoading, isError, error } = useUsers(debouncedQuery)
 
   return (
-    <div className="overflow-x-auto mt-4 h-96">
+    <div className="mt-4 overflow-x-auto h-full">
       <Table zebra size="md">
         <Table.Head className="text-center">
           <span>*</span>
           <span>Usuário</span>
           <span>CPF</span>
+          <span>Tipo</span>
           <span>Ações</span>
         </Table.Head>
 
         <Table.Body>
           {isLoading ? (
             <tr>
-              <td colSpan={4}>
+              <td colSpan={5}>
                 <Loading text="Carregando usuários..." center />
               </td>
             </tr>
           ) : isError && error instanceof Error ? (
             <tr>
-              <td colSpan={4}>{error.message}</td>
+              <td colSpan={5}>{error.message}</td>
             </tr>
           ) : (
             users?.map((user) => (
@@ -84,6 +86,8 @@ const UsersList = ({ query }: Props) => {
                 </span>
 
                 <span>{maskCPF(user.cpf)}</span>
+
+                <span>{USER_TYPES_MASK[user.type]}</span>
 
                 <span>
                   <Tooltip message="Editar">
