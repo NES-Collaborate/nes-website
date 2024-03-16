@@ -22,6 +22,7 @@ class UserDao(BaseDao):
             serie=user_data["serie"],
             responsible_name=user_data["responsible_name"],
             responsible_phone=user_data["responsible_phone"],
+            classroom_id=user_data.get("classroom", {"id": 0})["id"],
         )
 
         _user.password = hash.bcrypt.hash(user_data["password"])
@@ -88,6 +89,12 @@ class UserDao(BaseDao):
         if user_data.get("photo"):
             user_data["photo"] = GeneralDao(self.session).create_attachment(user_data["photo"])
 
+        if user_data.get("birthdate"):
+            user_data["birthdate"] = datetime.strptime(user_data["birthdate"], "%d/%m/%Y").date()
+
+        if classroom := user_data.get("classroom"):
+            user_data["classroom_id"] = classroom["id"]
+
         UPDATED_KEYS = [
             "name",
             "type",
@@ -98,6 +105,7 @@ class UserDao(BaseDao):
             "photo",
             "responsible_name",
             "responsible_phone",
+            "classroom_id",
         ]
 
         for key, value in user_data.items():

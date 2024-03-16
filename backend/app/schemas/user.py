@@ -64,6 +64,13 @@ class Achievement(BaseModel):
         from_attributes = True
 
 
+class ClassroomCustomIn(BaseModel):
+    id: Optional[int] = None
+
+    class Config:
+        from_attributes = True
+
+
 class UserBase(BaseModel):
     name: str
     photo: Optional[Attach] = None
@@ -76,6 +83,7 @@ class UserBase(BaseModel):
     scholarship: Optional[float] = 0
     serie: Optional[Serie] = None
     type: UserType
+    classroom: Optional[ClassroomCustomIn]
 
     class Config:
         from_attributes = True

@@ -2,7 +2,7 @@ from typing import Optional
 
 from app.daos.user import UserDao
 from app.models.user import User
-from app.schemas.user import UserBase, UserIn, UserOut, UserPoster
+from app.schemas.user import UserIn, UserOut, UserPoster
 from app.services.db import get_session
 from app.services.user import UserService
 from fastapi import APIRouter, Depends, HTTPException, status
@@ -60,7 +60,7 @@ async def create_user(
 @router.put("/{user_id}")
 async def update_user(
     user_id: int,
-    user: UserBase,
+    user: UserIn,
     current_user: User = Depends(UserService.get_current_user),
     session: Session = Depends(get_session),
 ):
