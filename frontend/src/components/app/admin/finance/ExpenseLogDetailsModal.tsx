@@ -34,8 +34,9 @@ const ExpenseLogDetailsModal = ({ isOpen, toggle, logs, expenseId }: Props) => {
                 <p className="flex items-center space-x-2">
                   <strong>Adicionado por:</strong>
                   <Link
-                    className="text-accent underline flex items-center space-x-2"
+                    className="text-accent underline flex items-center gap-1"
                     href={`/app/profile?userId=${expense.addedBy.id}`}
+                    target="_blank"
                   >
                     {expense.addedBy.name}
                     <Image
@@ -59,8 +60,9 @@ const ExpenseLogDetailsModal = ({ isOpen, toggle, logs, expenseId }: Props) => {
                   <div className="flex items-center space-x-2">
                     <strong>Pago à:</strong>
                     <Link
-                      className="text-accent underline flex items-center space-x-2"
+                      className="text-accent underline flex items-center gap-1"
                       href={`/app/profile?userId=${expense.paidTo.id}`}
+                      target="_blank"
                     >
                       {expense.paidTo.name}
                       <Image
