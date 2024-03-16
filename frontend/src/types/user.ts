@@ -43,4 +43,4 @@ export type User = {
 /**
  * User Representation in the Backend /users API
  */
-export type UserFormDataBackend = Omit<UserFormData, "photo"> & { photo: Attach }
+export type UserFormDataBackend = Omit<UserFormData, "photo"> & { photo: Attach | null }

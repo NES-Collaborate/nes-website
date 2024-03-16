@@ -43,11 +43,17 @@ const userBaseSchema = z.object({
   id: z.number().optional(),
   name: z.string().min(1, "Nome deve ser preenchido"),
   photo: z
-    .custom<FileList>()
-    .transform((file) => file.length > 0 && file.item(0))
-    .refine((file) => !!file && file.type?.startsWith("image/"), {
-      message: "Somente imagens são permitidas",
-    }),
+    .custom<FileList | null>()
+    .transform((file) => file && file.length > 0 && file.item(0))
+    .refine(
+      (file) => {
+        if (!file) return true
+        return file.type?.startsWith("image/")
+      },
+      {
+        message: "Somente imagens são permitidas",
+      }
+    ),
   emails: z.preprocess(
     (value) => {
       if (typeof value === "string") {
@@ -73,7 +79,15 @@ const userBaseSchema = z.object({
       .transform((phones) => phones || [])
   ),
   address: addressSchema.optional(),
-  password: z.string().min(5, "Senha deve ter pelo menos 5 dígitos"),
+  password: z.string().refine(
+    (password) => {
+      if (password.length === 0) return true
+      return password.length >= 5
+    },
+    {
+      message: "Senha deve ter pelo menos 5 caracteres",
+    }
+  ),
   cpf: z
     .string({ required_error: "CPF deve ser preenchido" })
     .min(1, "CPF deve ser preenchido")

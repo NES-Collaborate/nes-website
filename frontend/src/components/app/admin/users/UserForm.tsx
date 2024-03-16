@@ -99,16 +99,21 @@ const UserForm = ({ user, action, setModalState }: Omit<UserModalProps, "isOpen"
       return
     }
 
-    const attach = await uploadAttach(data.photo, token)
+    if (action === "create" && !data.photo)
+      return setError("photo", { message: "Imagem é obrigatória!" })
 
-    if (typeof attach === "string") return setError("photo", { message: attach })
+    var attach = null
+    if (data.photo) {
+      attach = await uploadAttach(data.photo, token)
+      if (typeof attach === "string") return setError("photo", { message: attach })
+    }
 
     switch (action) {
       case "create":
-        createMutation.mutate({ ...formData, photo: attach })
+        await createMutation.mutateAsync({ ...formData, photo: attach })
         break
       case "edit":
-        editMutation.mutate({ ...formData, photo: attach })
+        await editMutation.mutateAsync({ ...formData, photo: attach })
         break
     }
 
