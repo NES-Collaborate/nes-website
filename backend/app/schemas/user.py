@@ -112,6 +112,7 @@ class UserPoster(BaseModel):
 class UserMinimal(BaseModel):
     id: int
     name: str
+    photo: Optional[Attach]
 
     class Config:
         from_attributes = True
