@@ -126,10 +126,12 @@ const UserProfile = () => {
               <FaSackDollar className="inline mr-2" />
               <strong>Bolsa:</strong> {user.scholarship}
             </p>
-            <p>
-              <FaChalkboardTeacher className="inline mr-2" />
-              <strong>Série:</strong> {user.serie}
-            </p>
+            {user.type === "student" && (
+              <p>
+                <FaChalkboardTeacher className="inline mr-2" />
+                <strong>Série:</strong> {user.serie}
+              </p>
+            )}
             <p>
               <FaUserTag className="inline mr-2" />
               <strong>Tipo:</strong> {USER_TYPES_MASK[user.type]}
@@ -165,25 +167,25 @@ const UserProfile = () => {
               <FaMapMarkerAlt className="text-accent" /> Endereço
             </h3>
             <p>
-              <strong>Rua/Avenida:</strong> {user.address?.street}
+              <strong>Rua/Avenida:</strong> {user.address?.street || "-"}
             </p>
             <p>
-              <strong>Bairro:</strong> {user.address?.neighborhood}
+              <strong>Bairro:</strong> {user.address?.neighborhood || "-"}
             </p>
             <p>
-              <strong>Numero:</strong> {user.address?.number}
+              <strong>Numero:</strong> {user.address?.number || "-"}
             </p>
             <p>
-              <strong>CEP:</strong> {maskCEP(user.address?.cep || "")}
+              <strong>CEP:</strong> {maskCEP(user.address?.cep || "-")}
             </p>
             <p>
               <strong>Complemento:</strong> {user.address?.complement || "-"}
             </p>
             <p>
-              <strong>Cidade:</strong> {user.address?.city}
+              <strong>Cidade:</strong> {user.address?.city || "-"}
             </p>
             <p>
-              <strong>Estado:</strong> {user.address?.state}
+              <strong>Estado:</strong> {user.address?.state || "-"}
             </p>
           </div>
 
