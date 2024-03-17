@@ -21,7 +21,7 @@ const LandingPage = () => {
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 justify-items-center">
         {PAGES.map((page, i) => (
-          <div className="card w-96 bg-base-100 shadow-xl hover:bg-base-200" key={i}>
+          <div className="card w-96 bg-base-200 shadow-xl hover:bg-base-300" key={i}>
             <div className="card-body">
               <h2 className="card-title">{page.name}</h2>
               <p>{page.description}</p>
