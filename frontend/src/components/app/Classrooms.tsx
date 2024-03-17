@@ -1,14 +1,30 @@
 import Loading from "@/components/Loading"
 import { useSession } from "@/contexts/session"
 import { useClassrooms } from "@/hooks/teacher/classrooms"
+import { Classroom } from "@/types/entities"
 import Link from "next/link"
-import { Alert } from "react-daisyui"
-import { FaDoorOpen, FaEdit } from "react-icons/fa"
+import { useState } from "react"
+import { Alert, Tooltip } from "react-daisyui"
+import { FaChalkboardTeacher, FaDoorOpen, FaEdit } from "react-icons/fa"
 import { MdErrorOutline } from "react-icons/md"
+import { ClassroomModal } from "./ClassroomModal"
 
 const Classrooms = () => {
   const { data: classrooms = [], isFetching, error } = useClassrooms()
   const { user } = useSession()
+
+  const [openModal, setOpenModal] = useState(false)
+  const [modalTargetClassroom, setModalTargetClassroom] = useState<Classroom | null>(null)
+
+  const toggleCreateModal = () => {
+    setModalTargetClassroom(null)
+    setOpenModal(!openModal)
+  }
+
+  const toggleEditModal = (classroom: Classroom) => {
+    setModalTargetClassroom(classroom)
+    setOpenModal(!openModal)
+  }
 
   return (
     <>
@@ -33,7 +49,7 @@ const Classrooms = () => {
             )}
 
             {classrooms.map((classroom) => (
-              <div className="card w-96 bg-base-100 shadow-xl" key={classroom.id}>
+              <div className="card w-96 bg-base-200 shadow-xl" key={classroom.id}>
                 <div className="card-body">
                   <h2 className="card-title">{classroom.name}</h2>
                   <div className="card-actions justify-center">
@@ -46,12 +62,12 @@ const Classrooms = () => {
                     </Link>
 
                     {user?.type === "admin" && (
-                      <Link
-                        href={`/app/classrooms/${classroom.id}/edit`}
+                      <button
+                        onClick={() => toggleEditModal(classroom)}
                         className="btn btn-secondary"
                       >
                         <FaEdit /> Editar
-                      </Link>
+                      </button>
                     )}
                   </div>
                 </div>
@@ -60,6 +76,18 @@ const Classrooms = () => {
           </div>
         </div>
       )}
+
+      <Tooltip message="Criar turma" className="fixed bottom-5 right-5">
+        <button className="btn btn-accent" onClick={toggleCreateModal}>
+          <FaChalkboardTeacher size={22} />
+        </button>
+      </Tooltip>
+
+      <ClassroomModal
+        isOpen={openModal}
+        setIsOpen={setOpenModal}
+        classroom={modalTargetClassroom}
+      />
     </>
   )
 }

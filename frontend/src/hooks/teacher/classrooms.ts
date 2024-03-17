@@ -1,7 +1,7 @@
 import { useBackend } from "@/contexts/backend"
-import { fetchClassrooms } from "@/services/classroom"
+import { createClassroom, fetchClassrooms, updateClassroom } from "@/services/classroom"
 import { Classroom } from "@/types/entities"
-import { useQuery } from "@tanstack/react-query"
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 
 export const useClassrooms = () => {
   const { backend, isLogged } = useBackend()
@@ -11,4 +11,29 @@ export const useClassrooms = () => {
     queryFn: () => fetchClassrooms(backend),
     enabled: isLogged,
   })
+}
+
+export const useClassroomMutation = () => {
+  const { backend, isLogged } = useBackend()
+  const queryClient = useQueryClient()
+
+  const createMutation = useMutation({
+    mutationFn: (data: Omit<Classroom, "id">) => createClassroom(backend, data),
+    onSuccess: () => {
+      queryClient.invalidateQueries({
+        queryKey: ["classrooms"],
+      })
+    },
+  })
+
+  const updateMutation = useMutation({
+    mutationFn: (data: Classroom) => updateClassroom(backend, data),
+    onSuccess: () => {
+      queryClient.invalidateQueries({
+        queryKey: ["classrooms"],
+      })
+    },
+  })
+
+  return { createMutation, updateMutation }
 }
