@@ -29,10 +29,12 @@ const Home = () => {
           </div>
         )}
 
-        {!isLoading &&
-          successCases.map((successCase) => (
-            <SuccessCase key={successCase.id} {...successCase} />
-          ))}
+        <div className="flex flex-col items-center">
+          {!isLoading &&
+            successCases.map((successCase) => (
+              <SuccessCase key={successCase.id} {...successCase} />
+            ))}
+        </div>
       </div>
 
       <Footer />
