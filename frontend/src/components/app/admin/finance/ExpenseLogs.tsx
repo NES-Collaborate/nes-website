@@ -6,6 +6,7 @@ import { ExpenseLogQuery } from "@/types/queries"
 import { useQueryClient } from "@tanstack/react-query"
 import { useEffect, useState } from "react"
 import { Alert } from "react-daisyui"
+import { MdErrorOutline } from "react-icons/md"
 import ExpenseLogFilter from "./ExpenseLogFilter"
 import ExpenseLogTable from "./ExpenseLogTable"
 
@@ -34,8 +35,12 @@ const ExpenseLogs = () => {
         <ExpenseLogFilter query={query} setQuery={setQuery} />
         <ExpenseLogTable logs={logs} setProof={setProof} />
         {logs.length === 0 && !isFetching && (
-          <Alert status="error" className="my-3">
-            Nenhuma movimentação encontrada
+          <Alert
+            status="info"
+            className="my-3 place-items-center"
+            icon={<MdErrorOutline />}
+          >
+            Nenhuma movimentação encontrada. Que tal adicionar uma acima?
           </Alert>
         )}
 
