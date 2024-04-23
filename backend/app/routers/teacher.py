@@ -1,6 +1,6 @@
 from app.daos.admin import AdminDao
-from app.models.classroom import Classroom, Subject
-from app.models.relationships import teacher_subject as ts
+from app.models.classroom import Classroom
+from app.models.relationships import Enrollment
 from app.models.user import User
 from app.schemas.classroom import ClassroomBase, ClassroomOut
 from app.services.db import get_session
@@ -25,12 +25,8 @@ async def get_classrooms(
     if current_user.type == "admin":
         query = session.query(Classroom)
     else:
-        query = (
-            session.query(Classroom.id, Classroom.name)
-            .join(Subject, Subject.classroom_id == Classroom.id)
-            .join(ts, ts.columns.subject_id == Subject.id)
-            .filter(ts.columns.teacher_id == current_user.id)
-            .distinct()
+        query = session.query(Enrollment.classroom).filter_by(
+            userId=current_user.id, role="teacher"
         )
 
     results = query.all()
@@ -67,5 +63,7 @@ async def update_classroom(
 
     _classroom = AdminDao(session).update_classroom(classroom, classroom_id)
     if _classroom is None:
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Classroom not found")
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND, detail="Classroom not found"
+        )
     return ClassroomOut.model_validate(_classroom)

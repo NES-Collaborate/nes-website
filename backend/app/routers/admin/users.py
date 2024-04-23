@@ -25,7 +25,7 @@ async def get_users(
             detail="Usuário não autorizado",
         )
 
-    query = session.query(User).filter(~User.soft_delete)
+    query = session.query(User).filter(~User.softDelete)
     if q:
         query = query.filter(User.name.contains(q))
     if id:
@@ -33,7 +33,9 @@ async def get_users(
 
     results = query.all()
 
-    if current_user.type == "admin" or (current_user.type == "student" and current_user.id == id):
+    if current_user.type == "admin" or (
+        current_user.type == "student" and current_user.id == id
+    ):
         users = [UserOut.model_validate(result) for result in results]
     else:
         users = [UserPoster.model_validate(result) for result in results]
