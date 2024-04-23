@@ -54,7 +54,7 @@ async def create_user(
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail="Usuário não autorizado",
         )
-    _user = UserDao(session).create(user.model_dump())
+    _user = UserDao(session).create_student(user.model_dump())
 
     return {"user": UserOut.model_validate(_user)}
 

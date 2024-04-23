@@ -53,11 +53,11 @@ class Address(BaseModel):
 class Achievement(BaseModel):
     name: str
     type: AchievementType
-    olympic_acronym: str
+    olympicAbbrev: str
     year: int
     medal: MedalType
     link: Optional[str]
-    other_info: Optional[str]
+    otherInfo: Optional[str]
     status: AchievementStatus
 
     class Config:
@@ -77,13 +77,12 @@ class UserBase(BaseModel):
     emails: Optional[List[Email]] = None
     phones: Optional[List[PhoneNumber]] = None
     address: Optional[Address] = None
-    responsible_name: Optional[str] = None
-    responsible_phone: Optional[str] = None
+    responsibleName: Optional[str] = None
+    responsibleNumber: Optional[str] = None
     cpf: str
     scholarship: Optional[float] = 0
     serie: Optional[Serie] = None
     type: UserType
-    classroom: Optional[ClassroomCustomIn]
 
     class Config:
         from_attributes = True
@@ -91,12 +90,12 @@ class UserBase(BaseModel):
 
 class UserIn(UserBase):
     password: str
-    birthdate: str
+    birth: str
 
 
 class UserOut(UserBase):
     id: int
-    birthdate: date
+    birth: date
 
 
 class UserPoster(BaseModel):

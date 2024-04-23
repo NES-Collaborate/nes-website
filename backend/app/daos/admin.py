@@ -92,7 +92,7 @@ class AdminDao(BaseDao):
 
         created_at = datetime(year, month, 1)
         _payment = ExpenseLog(
-            value=paidTo.student.scolarshipValue,
+            value=paidTo.student.scholarshipValue,
             type="Removal",
             addedBy=addedBy,
             paidTo=paidTo,

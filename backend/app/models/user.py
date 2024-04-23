@@ -73,7 +73,7 @@ class Student(BaseTable):
     serieId: Mapped[Optional[int]] = mapped_column(
         sa.Integer, sa.ForeignKey("series.id")
     )
-    scolarshipValue: Mapped[float]
+    scholarshipValue: Mapped[float]
     achievements: Mapped[List["Achievement"]] = relationship(
         "Achievement", back_populates="student"
     )

@@ -3,7 +3,7 @@ from typing import Any
 
 from app.daos.base import BaseDao
 from app.models.relationships import Enrollment
-from app.models.user import User
+from app.models.user import Student, User
 from fastapi import HTTPException
 from passlib import hash
 
@@ -12,24 +12,28 @@ from .general import GeneralDao
 
 class UserDao(BaseDao):
 
-    def create(self, user_data: dict[str, Any]) -> User | None:
-        user_data.update(
-            birthdate=datetime.strptime(user_data["birthdate"], "%d/%m/%Y").date()
-        )
+    def create_student(self, user_data: dict[str, Any]) -> User | None:
+        user_data.update(birth=datetime.strptime(user_data["birth"], "%d/%m/%Y").date())
         _user = User(
             name=user_data["name"],
             type=user_data["type"],
             cpf=user_data["cpf"],
-            birthdate=user_data["birthdate"],
-            scholarship=user_data["scholarship"],
-            serie=user_data["serie"],
-            responsible_name=user_data["responsible_name"],
-            responsible_phone=user_data["responsible_phone"],
-            classroom_id=user_data.get("classroom", {"id": 0})["id"],
+            birth=user_data["birth"],
         )
 
         _user.password = hash.bcrypt.hash(user_data["password"])
         self.session.add(_user)
+        self.session.commit()
+        self.session.refresh(_user)
+
+        _student = Student(
+            userId=_user.id,
+            scholarshipValue=user_data["scholarship"],
+            responsibleName=user_data["responsibleName"],
+            responsibleNumber=user_data["responsibleNumber"],
+        )
+
+        self.session.add(_student)
         self.session.commit()
 
         for email in user_data["emails"]:
@@ -97,30 +101,30 @@ class UserDao(BaseDao):
                 user_data["photo"]
             )
 
-        if user_data.get("birthdate"):
-            user_data["birthdate"] = datetime.strptime(
-                user_data["birthdate"], "%d/%m/%Y"
+        if user_data.get("birth"):
+            user_data["birth"] = datetime.strptime(
+                user_data["birth"], "%d/%m/%Y"
             ).date()
 
-        if classroom := user_data.get("classroom"):
-            user_data["classroom_id"] = classroom["id"]
-
-        UPDATED_KEYS = [
+        UPDATED_USER_KEYS = [
             "name",
             "type",
             "cpf",
-            "birthdate",
-            "scholarship",
-            "serie",
+            "birth",
             "photo",
-            "responsible_name",
-            "responsible_phone",
-            "classroom_id",
+        ]
+
+        UPDATED_STUDENT_KEYS = [
+            "scholarshipValue",
+            "responsibleName",
+            "responsibleNumber",
         ]
 
         for key, value in user_data.items():
-            if key in UPDATED_KEYS:
+            if key in UPDATED_USER_KEYS:
                 setattr(_user, key, value)
+            if key in UPDATED_STUDENT_KEYS:
+                setattr(_user.student, key, value)
 
         if user_data.get("password"):
             _user.password = hash.bcrypt.hash(user_data["password"])
@@ -140,6 +144,7 @@ class UserDao(BaseDao):
 
         self.session.delete(_user.address)
         self.session.delete(_user.photo)
+        self.session.delete(_user.student)
 
         self.session.delete(_user)
         self.session.commit()
