@@ -2,6 +2,7 @@ from datetime import datetime
 from typing import Any
 
 from app.daos.base import BaseDao
+from app.models.relationships import Enrollment
 from app.models.user import User
 from fastapi import HTTPException
 from passlib import hash
@@ -12,7 +13,9 @@ from .general import GeneralDao
 class UserDao(BaseDao):
 
     def create(self, user_data: dict[str, Any]) -> User | None:
-        user_data.update(birthdate=datetime.strptime(user_data["birthdate"], "%d/%m/%Y").date())
+        user_data.update(
+            birthdate=datetime.strptime(user_data["birthdate"], "%d/%m/%Y").date()
+        )
         _user = User(
             name=user_data["name"],
             type=user_data["type"],
@@ -44,7 +47,7 @@ class UserDao(BaseDao):
         return _user
 
     def get_by_id(self, id: int):
-        _user = self.session.query(User).filter(User.id == id, ~User.soft_delete).first()
+        _user = self.session.query(User).filter(User.id == id, ~User.softDelete).first()
 
         if not _user:
             raise HTTPException(status_code=404, detail="Usuário não encontrado")
@@ -54,7 +57,8 @@ class UserDao(BaseDao):
     def get_by_classroom(self, classroomId: int) -> list[User]:
         _users = (
             self.session.query(User)
-            .filter(User.classroom_id == classroomId, ~User.soft_delete)
+            .join(Enrollment, User.id == Enrollment.userId)
+            .filter(Enrollment.classroomId == classroomId, ~User.softDelete)
             .all()
         )
 
@@ -65,7 +69,9 @@ class UserDao(BaseDao):
 
     def get_by_cpf(self, cpf: str | None):
 
-        _user = self.session.query(User).filter(User.cpf == cpf, ~User.soft_delete).first()
+        _user = (
+            self.session.query(User).filter(User.cpf == cpf, ~User.softDelete).first()
+        )
 
         if not _user:
             raise HTTPException(status_code=404, detail="Usuário não encontrado")
@@ -87,10 +93,14 @@ class UserDao(BaseDao):
             GeneralDao(self.session).update_address(user_data["address"], _user.id)
 
         if user_data.get("photo"):
-            user_data["photo"] = GeneralDao(self.session).create_attachment(user_data["photo"])
+            user_data["photo"] = GeneralDao(self.session).create_attachment(
+                user_data["photo"]
+            )
 
         if user_data.get("birthdate"):
-            user_data["birthdate"] = datetime.strptime(user_data["birthdate"], "%d/%m/%Y").date()
+            user_data["birthdate"] = datetime.strptime(
+                user_data["birthdate"], "%d/%m/%Y"
+            ).date()
 
         if classroom := user_data.get("classroom"):
             user_data["classroom_id"] = classroom["id"]
@@ -136,7 +146,7 @@ class UserDao(BaseDao):
 
     def soft_delete_by_id(self, id: int):
         _user = self.get_by_id(id)
-        _user.soft_delete = True
+        _user.softDelete = True
         self.session.commit()
         self.session.refresh(_user)
         return _user

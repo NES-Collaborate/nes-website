@@ -16,10 +16,15 @@ class AdminDao(BaseDao):
     def get_stats(self) -> dict[str, float]:
 
         _total_removed = (
-            self.session.query(func.sum(ExpenseLog.value)).filter_by(type="Removal").scalar()
+            self.session.query(func.sum(ExpenseLog.value))
+            .filter_by(type="Removal")
+            .scalar()
         )
         _total_deposited = (
-            self.session.query(func.sum(ExpenseLog.value)).filter_by(type="Deposit").scalar() or 0
+            self.session.query(func.sum(ExpenseLog.value))
+            .filter_by(type="Deposit")
+            .scalar()
+            or 0
         )
 
         stats = {
@@ -41,7 +46,9 @@ class AdminDao(BaseDao):
 
         if data.category:
             _category = (
-                self.session.query(ExpenseCategory).filter_by(name=data.category.name).first()
+                self.session.query(ExpenseCategory)
+                .filter_by(name=data.category.name)
+                .first()
             )
             if not _category:
                 _category = ExpenseCategory(
@@ -55,12 +62,14 @@ class AdminDao(BaseDao):
         self.session.refresh(_expense)
         return _expense
 
-    def get_scholarship_payment(self, id: int, year: int, month: int) -> ExpenseLog | None:
+    def get_scholarship_payment(
+        self, id: int, year: int, month: int
+    ) -> ExpenseLog | None:
 
         _result = (
             self.session.query(ExpenseLog)
             .filter(
-                (ExpenseLog.paidTo_id == id)
+                (ExpenseLog.paidToId == id)
                 & (func.extract("month", ExpenseLog.createdAt) == month)
                 & (func.extract("year", ExpenseLog.createdAt) == year)
             )
@@ -69,16 +78,21 @@ class AdminDao(BaseDao):
 
         return _result
 
-    def create_scholarship_payment(self, addedBy: User, paidTo: User, year: int, month: int):
+    def create_scholarship_payment(
+        self, addedBy: User, paidTo: User, year: int, month: int
+    ):
 
         _result = self.get_scholarship_payment(paidTo.id, year, month)
 
         if _result:
             return
 
+        if not paidTo.student:
+            return
+
         created_at = datetime(year, month, 1)
         _payment = ExpenseLog(
-            value=paidTo.scholarship,
+            value=paidTo.student.scolarshipValue,
             type="Removal",
             addedBy=addedBy,
             paidTo=paidTo,
@@ -86,7 +100,11 @@ class AdminDao(BaseDao):
             createdAt=created_at,
         )
 
-        _category = self.session.query(ExpenseCategory).filter_by(name="Pagamento de Bolsa").first()
+        _category = (
+            self.session.query(ExpenseCategory)
+            .filter_by(name="Pagamento de Bolsa")
+            .first()
+        )
         if not _category:
             _category = ExpenseCategory(name="Pagamento de Bolsa")
 
