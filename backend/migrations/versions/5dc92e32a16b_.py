@@ -1,8 +1,8 @@
 """
 
-Revision ID: 080fb63d5975
+Revision ID: 5dc92e32a16b
 Revises: 
-Create Date: 2024-04-23 12:28:30.036868
+Create Date: 2024-04-23 13:23:11.315707
 
 """
 from typing import Sequence, Union
@@ -12,7 +12,7 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision: str = '080fb63d5975'
+revision: str = '5dc92e32a16b'
 down_revision: Union[str, None] = None
 branch_labels: Union[str, Sequence[str], None] = None
 depends_on: Union[str, Sequence[str], None] = None
@@ -88,14 +88,14 @@ def upgrade() -> None:
     op.create_table('properties',
     sa.Column('name', sa.String(), nullable=False),
     sa.Column('type', sa.String(), nullable=False),
-    sa.Column('user_id', sa.Integer(), nullable=True),
+    sa.Column('userId', sa.Integer(), nullable=True),
     sa.Column('loanedAt', sa.DateTime(), nullable=True),
     sa.Column('id', sa.Integer(), nullable=False),
     sa.Column('createdAt', sa.DateTime(), nullable=True),
     sa.Column('updatedAt', sa.DateTime(), nullable=True),
     sa.Column('addedById', sa.Integer(), nullable=True),
     sa.ForeignKeyConstraint(['addedById'], ['users.id'], ),
-    sa.ForeignKeyConstraint(['user_id'], ['users.id'], ),
+    sa.ForeignKeyConstraint(['userId'], ['users.id'], ),
     sa.PrimaryKeyConstraint('id')
     )
     op.create_table('schools',
@@ -220,7 +220,7 @@ def upgrade() -> None:
     op.create_table('students',
     sa.Column('userId', sa.Integer(), nullable=False),
     sa.Column('serieId', sa.Integer(), nullable=True),
-    sa.Column('scolarshipValue', sa.Float(), nullable=False),
+    sa.Column('scholarshipValue', sa.Float(), nullable=False),
     sa.Column('achievementsId', sa.Integer(), nullable=True),
     sa.Column('responsibleName', sa.String(), nullable=False),
     sa.Column('responsibleNumber', sa.String(), nullable=False),
