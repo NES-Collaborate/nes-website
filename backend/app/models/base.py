@@ -2,13 +2,19 @@ from datetime import datetime, timezone
 from typing import Annotated, Optional
 
 import sqlalchemy as sa
+from sqlalchemy.ext.declarative import declared_attr
 from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column, relationship
 
 
 class AddedByMixin(object):
 
-    addedById: Mapped[int] = mapped_column(sa.Integer, sa.ForeignKey("users.id"))
-    addedBy = relationship("User")
+    @declared_attr
+    def addedById(cls):
+        return mapped_column(sa.Integer, sa.ForeignKey("users.id"))
+
+    @declared_attr
+    def addedBy(cls):
+        return relationship("User", foreign_keys=[cls.addedById])
 
 
 class BaseTable(AddedByMixin, DeclarativeBase):

@@ -2,6 +2,7 @@ from typing import Literal
 
 UserType = Literal["admin", "other", "student"]
 Serie = Literal["9º EF", "1º EM", "2º EM", "3º EM"]
+Role = Literal["admin", "teacher", "student", "monitor"]
 AttachType = Literal["File", "Link"]
 AchievementType = Literal["olympic medal", "certificate"]
 AchievementStatus = Literal["ready", "pending", "soft delete"]
