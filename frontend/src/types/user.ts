@@ -30,10 +30,10 @@ export type User = {
   phones?: PhoneNumber[]
   address?: Address
   password?: string
-  responsible_name?: string
-  responsible_phone?: string
+  responsibleName?: string
+  responsiblePhone?: string
   cpf: string
-  birthdate: string
+  birth: string
   scholarship: number
   serie?: Serie | null
   type: UserType

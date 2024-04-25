@@ -33,7 +33,7 @@ const UserForm = ({ user, action, setModalState }: Omit<UserModalProps, "isOpen"
       id: user?.id || 0,
       name: user?.name || "",
       cpf: maskCPF(user?.cpf || ""),
-      birthdate: user?.birthdate || "",
+      birth: user?.birth || "",
       address: {
         city: user?.address?.city || "",
         neighborhood: user?.address?.neighborhood || "",
@@ -42,8 +42,8 @@ const UserForm = ({ user, action, setModalState }: Omit<UserModalProps, "isOpen"
         street: user?.address?.street || "",
         cep: user?.address?.cep || "",
       },
-      responsible_name: user?.responsible_name || "",
-      responsible_phone: maskPhone(user?.responsible_phone || ""),
+      responsibleName: user?.responsibleName || "",
+      responsiblePhone: maskPhone(user?.responsiblePhone || ""),
       serie: user?.serie as Serie,
       scholarship: user?.scholarship || 0,
       type: user?.type || "other",
@@ -129,8 +129,8 @@ const UserForm = ({ user, action, setModalState }: Omit<UserModalProps, "isOpen"
       <InputField
         label="Data de Nascimento"
         mask={maskDate}
-        {...register("birthdate")}
-        errors={errors.birthdate}
+        {...register("birth")}
+        errors={errors.birth}
       />
 
       <SelectField
@@ -223,15 +223,15 @@ const UserForm = ({ user, action, setModalState }: Omit<UserModalProps, "isOpen"
 
           <InputField
             label="Nome do Responsável"
-            {...register("responsible_name")}
-            errors={errors.responsible_name}
+            {...register("responsibleName")}
+            errors={errors.responsibleName}
           />
 
           <InputField
             label="Telefone do Responsável"
             mask={maskPhone}
-            {...register("responsible_phone")}
-            errors={errors.responsible_phone}
+            {...register("responsiblePhone")}
+            errors={errors.responsiblePhone}
           />
 
           <SelectField
