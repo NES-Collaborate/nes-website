@@ -18,7 +18,7 @@ async def get_users(
     q: Optional[str] = None,
     id: Optional[int] = None,
 ):
-    allowed_users = ["admin", "teacher", "student"]
+    allowed_users = ["admin", "other", "student"]
     if not current_user.type in allowed_users:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
@@ -36,7 +36,7 @@ async def get_users(
     if current_user.type == "admin" or (
         current_user.type == "student" and current_user.id == id
     ):
-        users = [UserOut.model_validate(result) for result in results]
+        users = [UserOut.user_validate(result, result.student) for result in results]
     else:
         users = [UserPoster.model_validate(result) for result in results]
     return {"users": users}
@@ -54,9 +54,12 @@ async def create_user(
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail="Usuário não autorizado",
         )
-    _user = UserDao(session).create_student(user.model_dump())
 
-    return {"user": UserOut.model_validate(_user)}
+    create_user_by_type = getattr(UserDao(session), f"create_{user.type}")
+
+    _user = create_user_by_type(user.model_dump())
+
+    return {"user": UserOut.user_validate(_user, _user.student)}
 
 
 @router.put("/{user_id}")
@@ -76,7 +79,7 @@ async def update_user(
     _user = UserDao(session).get_by_id(user_id)
     _user = UserDao(session).update(user.model_dump(), user_id)
 
-    return {"user": UserOut.model_validate(_user)}
+    return {"user": UserOut.user_validate(_user, _user.student)}
 
 
 @router.delete("/{user_id}")

@@ -10,6 +10,7 @@ from app.models.enum import (
     Serie,
     UserType,
 )
+from app.models.user import Student, User
 from pydantic import BaseModel, EmailStr
 
 
@@ -96,6 +97,18 @@ class UserIn(UserBase):
 class UserOut(UserBase):
     id: int
     birth: date
+
+    @classmethod
+    def user_validate(cls, user: User, student: Student | None = None) -> "UserOut":
+
+        user_out = cls.model_validate(user)
+
+        if student:
+            user_out.scholarship = student.scholarshipValue
+            user_out.responsibleName = student.responsibleName
+            user_out.responsibleNumber = student.responsibleNumber
+
+        return user_out
 
 
 class UserPoster(BaseModel):

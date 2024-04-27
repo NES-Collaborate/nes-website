@@ -21,7 +21,7 @@ async def get_token(
 @router.get("/me", status_code=status.HTTP_200_OK)
 async def get_user(current_user: User = Depends(UserService.get_current_user)):
     # return current_user.__dict__
-    return UserOut.model_validate(current_user, from_attributes=True)
+    return UserOut.user_validate(current_user, current_user.student)
 
 
 @router.get("/logout", status_code=status.HTTP_200_OK)

@@ -12,7 +12,8 @@ from .general import GeneralDao
 
 class UserDao(BaseDao):
 
-    def create_student(self, user_data: dict[str, Any]) -> User | None:
+    def _create_user(self, user_data: dict[str, Any]) -> User:
+
         user_data.update(birth=datetime.strptime(user_data["birth"], "%d/%m/%Y").date())
         _user = User(
             name=user_data["name"],
@@ -26,16 +27,6 @@ class UserDao(BaseDao):
         self.session.commit()
         self.session.refresh(_user)
 
-        _student = Student(
-            userId=_user.id,
-            scholarshipValue=user_data["scholarship"],
-            responsibleName=user_data["responsibleName"],
-            responsibleNumber=user_data["responsibleNumber"],
-        )
-
-        self.session.add(_student)
-        self.session.commit()
-
         for email in user_data["emails"]:
             GeneralDao(self.session).create_email(email, _user.id)
 
@@ -46,6 +37,29 @@ class UserDao(BaseDao):
 
         if user_photo := user_data.get("photo"):
             GeneralDao(self.session).create_attachment(user_photo, _user.id)
+
+        self.session.refresh(_user)
+        return _user
+
+    def create_admin(self, user_data: dict[str, Any]) -> User | None:
+        return self._create_user(user_data)
+
+    def create_other(self, user_data: dict[str, Any]) -> User | None:
+        return self._create_user(user_data)
+
+    def create_student(self, user_data: dict[str, Any]) -> User | None:
+
+        _user = self._create_user(user_data)
+
+        _student = Student(
+            userId=_user.id,
+            scholarshipValue=user_data["scholarship"],
+            responsibleName=user_data["responsibleName"],
+            responsibleNumber=user_data["responsibleNumber"],
+        )
+
+        self.session.add(_student)
+        self.session.commit()
 
         self.session.refresh(_user)
         return _user
@@ -82,7 +96,7 @@ class UserDao(BaseDao):
 
         return _user
 
-    def update(self, user_data: dict[str, Any], user_id: int) -> User | None:
+    def update(self, user_data: dict[str, Any], user_id: int) -> User:
         _user = self.get_by_id(user_id)
 
         if user_data.get("emails"):
