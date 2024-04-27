@@ -43,9 +43,9 @@ const UserForm = ({ user, action, setModalState }: Omit<UserModalProps, "isOpen"
         cep: user?.address?.cep || "",
       },
       responsibleName: user?.responsibleName || "",
-      responsiblePhone: maskPhone(user?.responsiblePhone || ""),
+      responsibleNumber: maskPhone(user?.responsibleNumber || ""),
       serie: user?.serie as Serie,
-      scholarship: user?.scholarship || 0,
+      scholarshipValue: user?.scholarshipValue || 0,
       type: user?.type || "other",
       classroom: {
         id: user?.classroom?.id || 0,
@@ -217,8 +217,8 @@ const UserForm = ({ user, action, setModalState }: Omit<UserModalProps, "isOpen"
             helpText="Bolsa do aluno em R$"
             label="Bolsa"
             mask={maskMoney}
-            {...register("scholarship")}
-            errors={errors.scholarship}
+            {...register("scholarshipValue")}
+            errors={errors.scholarshipValue}
           />
 
           <InputField
@@ -230,8 +230,8 @@ const UserForm = ({ user, action, setModalState }: Omit<UserModalProps, "isOpen"
           <InputField
             label="Telefone do Responsável"
             mask={maskPhone}
-            {...register("responsiblePhone")}
-            errors={errors.responsiblePhone}
+            {...register("responsibleNumber")}
+            errors={errors.responsibleNumber}
           />
 
           <SelectField

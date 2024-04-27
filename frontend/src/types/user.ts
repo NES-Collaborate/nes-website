@@ -31,10 +31,10 @@ export type User = {
   address?: Address
   password?: string
   responsibleName?: string
-  responsiblePhone?: string
+  responsibleNumber?: string
   cpf: string
   birth: string
-  scholarship: number
+  scholarshipValue: number
   serie?: Serie | null
   type: UserType
   classroom?: Classroom | null

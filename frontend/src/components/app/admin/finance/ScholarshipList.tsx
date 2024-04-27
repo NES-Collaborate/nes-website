@@ -101,7 +101,7 @@ const ScholarshipList = ({ query }: Props) => {
                 </div>
                 <div className="font-bold">{student.name}</div>
               </th>
-              <th>{toReal(student.scholarship)}</th>
+              <th>{toReal(student.scholarshipValue)}</th>
             </tr>
           ))}
         </tbody>

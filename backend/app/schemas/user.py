@@ -1,6 +1,8 @@
 from datetime import date
 from typing import List, Optional
 
+from pydantic import BaseModel, EmailStr
+
 from app.models.base import char2, str10
 from app.models.enum import (
     AchievementStatus,
@@ -11,7 +13,6 @@ from app.models.enum import (
     UserType,
 )
 from app.models.user import Student, User
-from pydantic import BaseModel, EmailStr
 
 
 class Attach(BaseModel):
@@ -81,7 +82,7 @@ class UserBase(BaseModel):
     responsibleName: Optional[str] = None
     responsibleNumber: Optional[str] = None
     cpf: str
-    scholarship: Optional[float] = 0
+    scholarshipValue: Optional[float] = 0
     serie: Optional[Serie] = None
     type: UserType
 
@@ -104,7 +105,7 @@ class UserOut(UserBase):
         user_out = cls.model_validate(user)
 
         if student:
-            user_out.scholarship = student.scholarshipValue
+            user_out.scholarshipValue = student.scholarshipValue
             user_out.responsibleName = student.responsibleName
             user_out.responsibleNumber = student.responsibleNumber
 
@@ -135,5 +136,5 @@ class UserPayment(BaseModel):
     id: int
     name: str
     photo: Optional[Attach]
-    scholarship: float
+    scholarshipValue: float
     alreadyPaid: Optional[bool] = None

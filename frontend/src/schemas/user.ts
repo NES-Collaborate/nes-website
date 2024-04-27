@@ -110,9 +110,9 @@ const scholarshipSchema = z.preprocess((value) => {
 
 const studentSchema = z.object({
   responsibleName: z.string().min(1, "Nome do responsável deve ser preenchido"),
-  responsiblePhone: z.string().min(1, "Telefone do responsável deve ser preenchido"),
+  responsibleNumber: z.string().min(1, "Telefone do responsável deve ser preenchido"),
   serie: z.enum(SERIES),
-  scholarship: scholarshipSchema,
+  scholarshipValue: scholarshipSchema,
   classroom: z.preprocess(
     (value) => {
       if (typeof value === "string") {

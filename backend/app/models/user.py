@@ -2,7 +2,7 @@ from datetime import date
 from typing import List, Optional, get_args
 
 import sqlalchemy as sa
-from passlib import hash  # type: ignore
+from passlib import hash
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from .base import BaseTable, char2, str10
@@ -176,7 +176,7 @@ class Achievement(BaseTable):
 
 
 class BankAccount(BaseTable):
-    __tablename__ = "bankAccounts"
+    __tablename__ = "bank_accounts"
 
     userId: Mapped[int] = mapped_column(sa.Integer, sa.ForeignKey("users.id"))
     bankNumber: Mapped[int]

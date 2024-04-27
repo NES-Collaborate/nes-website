@@ -19,7 +19,7 @@ async def get_users(
     id: Optional[int] = None,
 ):
     allowed_users = ["admin", "other", "student"]
-    if not current_user.type in allowed_users:
+    if current_user.type not in allowed_users:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail="Usuário não autorizado",
@@ -42,7 +42,7 @@ async def get_users(
     return {"users": users}
 
 
-@router.post("")
+@router.post("", status_code=status.HTTP_201_CREATED)
 async def create_user(
     user: UserIn,
     current_user: User = Depends(UserService.get_current_user),

@@ -21,7 +21,7 @@ class Enrollment(BaseTable):
 
 class ActivityGroup(BaseTable):
 
-    __tablename__ = "activityGroups"
+    __tablename__ = "activity_groups"
 
     classroom_id: Mapped[Optional[int]] = mapped_column(
         sa.Integer, sa.ForeignKey("classrooms.id")

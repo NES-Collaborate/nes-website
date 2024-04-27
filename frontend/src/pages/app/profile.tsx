@@ -124,7 +124,7 @@ const UserProfile = () => {
             </p>
             <p>
               <FaSackDollar className="inline mr-2" />
-              <strong>Bolsa:</strong> {user.scholarship}
+              <strong>Bolsa:</strong> {user.scholarshipValue}
             </p>
             {user.type === "student" && (
               <p>
@@ -199,7 +199,7 @@ const UserProfile = () => {
                 <strong>Nome:</strong> {user.responsibleName}
               </p>
               <p>
-                <strong>Telefone:</strong> {maskPhone(user.responsiblePhone || "")}
+                <strong>Telefone:</strong> {maskPhone(user.responsibleNumber || "")}
               </p>
             </div>
           )}

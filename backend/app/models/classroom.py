@@ -1,7 +1,7 @@
 from datetime import datetime
 from typing import List, Optional, get_args
 
-import sqlalchemy as sa  # type: ignore
+import sqlalchemy as sa
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from .base import BaseTable
@@ -18,9 +18,7 @@ class Classroom(BaseTable):
     name: Mapped[str]
     thumbnail: Mapped["Attach"] = relationship()
     posts: Mapped[List["Post"]] = relationship(back_populates="classroom")
-    activityGroups: Mapped[List["ActivityGroup"]] = relationship(
-        back_populates="classroom"
-    )
+    activityGroups: Mapped[List["ActivityGroup"]] = relationship(back_populates="classroom")
     members: Mapped[List["Enrollment"]] = relationship(back_populates="classroom")
 
 
@@ -34,7 +32,7 @@ class Activity(BaseTable):
     endDate: Mapped[Optional[datetime]]
     maxGrade: Mapped[float]
     activityGroupId: Mapped[Optional[int]] = mapped_column(
-        sa.Integer, sa.ForeignKey("activityGroups.id")
+        sa.Integer, sa.ForeignKey("activity_groups.id")
     )
     activityGroup: Mapped["ActivityGroup"] = relationship(
         "ActivityGroup", back_populates="activities"
@@ -56,22 +54,16 @@ class Post(BaseTable):
 
     __tablename__ = "posts"
 
-    classromId: Mapped[Optional[int]] = mapped_column(
-        sa.Integer, sa.ForeignKey("classrooms.id")
-    )
+    classromId: Mapped[Optional[int]] = mapped_column(sa.Integer, sa.ForeignKey("classrooms.id"))
     classroom: Mapped["Classroom"] = relationship("Classroom", back_populates="posts")
     title: Mapped[str]
     content: Mapped[str]
-    frequency: Mapped[List["Frequency"]] = relationship(
-        "Frequency", back_populates="lecture"
-    )
+    frequency: Mapped[List["Frequency"]] = relationship("Frequency", back_populates="lecture")
     type: Mapped[PostType] = mapped_column(sa.Enum(*get_args(PostType)))
     attachments: Mapped[List["PostAttachment"]] = relationship(
         "PostAttachment", back_populates="post"
     )
-    activity: Mapped[Optional["Activity"]] = relationship(
-        "Activity", back_populates="post"
-    )
+    activity: Mapped[Optional["Activity"]] = relationship("Activity", back_populates="post")
     response: Mapped[Optional["Response"]] = relationship(
         "Response", back_populates="post", foreign_keys="Response.postId"
     )
@@ -79,7 +71,7 @@ class Post(BaseTable):
         "Response", back_populates="activity", foreign_keys="Response.activityId"
     )
 
-    coments: Mapped[List["Comment"]] = relationship("Comment", back_populates="post")
+    comments: Mapped[List["Comment"]] = relationship("Comment", back_populates="post")
     messages: Mapped[List["Message"]] = relationship("Message", back_populates="post")
 
 
@@ -97,10 +89,10 @@ class Frequency(BaseTable):
 
 class PostAttachment(BaseTable):
 
-    __tablename__ = "postattachments"
+    __tablename__ = "post_attachments"
 
-    post_id: Mapped[int] = mapped_column(sa.Integer, sa.ForeignKey("posts.id"))
+    postId: Mapped[int] = mapped_column(sa.Integer, sa.ForeignKey("posts.id"))
     post: Mapped["Post"] = relationship("Post", back_populates="attachments")
     name: Mapped[str]
     type: Mapped[AttachType] = mapped_column(sa.Enum(*get_args(AttachType)))
-    meta_data: Mapped[str]
+    metaData: Mapped[str]

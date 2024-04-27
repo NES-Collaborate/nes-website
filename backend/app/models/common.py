@@ -37,5 +37,5 @@ class Comment(BaseTable):
     __tablename__ = "comments"
 
     content: Mapped[str]
-    post = relationship("Post", back_populates="coments")
+    post = relationship("Post", back_populates="comments")
     postId: Mapped[Optional[int]] = mapped_column(sa.Integer, sa.ForeignKey("posts.id"))
