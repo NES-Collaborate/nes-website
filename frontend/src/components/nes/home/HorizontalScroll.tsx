@@ -1,6 +1,8 @@
+import ButtonNES from "@/components/ButtonNES"
 import { Notice } from "@/types/constants"
 import { motion, useScroll, useTransform } from "framer-motion"
 import { useRef } from "react"
+import { IoIosArrowDown, IoIosArrowUp } from "react-icons/io"
 import NoticeCard from "./NoticeCard"
 
 type Props = {
@@ -30,6 +32,19 @@ const HorizontalScroll = ({ notices }: Props) => {
             )
           })}
         </motion.div>
+        <div className="join join-vertical sticky right-4 h-full flex justify-end pb-4">
+          <ButtonNES type="navigation" style="fill" className="btn join-item" href="#">
+            <IoIosArrowUp className="text-3xl" />
+          </ButtonNES>
+          <ButtonNES
+            type="navigation"
+            style="fill"
+            className="btn join-item"
+            href="#ProjectMission"
+          >
+            <IoIosArrowDown className="text-3xl" />
+          </ButtonNES>
+        </div>
       </div>
     </section>
   )
