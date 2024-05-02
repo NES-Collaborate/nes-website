@@ -30,7 +30,7 @@ class ExpenseLog(BaseTable):
     paidTo: Mapped[Optional["User"]] = relationship(foreign_keys=[paidToId])
 
     def to_json(self):
-        type_mapper = {"Deposit": "Entrada", "Removal": "Saida"}
+        type_mapper = {"deposit": "entrada", "removal": "saida"}
         data = {
             "Valor": self.value,
             "Usuario": f"{self.addedBy.name} ({self.addedBy.id})",
