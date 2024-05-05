@@ -92,7 +92,7 @@ const ExpenseLogDetailsModal = ({ isOpen, toggle, logs, expenseId }: Props) => {
               )}
               <div
                 className={`text-xl ${
-                  expense.type === "Removal" ? "text-error" : "text-success"
+                  expense.type === "removal" ? "text-error" : "text-success"
                 }`}
               >
                 <p>

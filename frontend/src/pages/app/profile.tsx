@@ -120,11 +120,11 @@ const UserProfile = () => {
             </p>
             <p>
               <FaCalendarAlt className="inline mr-2" />
-              <strong>Nascimento:</strong> {user.birthdate}
+              <strong>Nascimento:</strong> {user.birth}
             </p>
             <p>
               <FaSackDollar className="inline mr-2" />
-              <strong>Bolsa:</strong> {user.scholarship}
+              <strong>Bolsa:</strong> {user.scholarshipValue}
             </p>
             {user.type === "student" && (
               <p>
@@ -196,10 +196,10 @@ const UserProfile = () => {
                 <FaUserTie className="text-accent" /> Responsável
               </h3>
               <p>
-                <strong>Nome:</strong> {user.responsible_name}
+                <strong>Nome:</strong> {user.responsibleName}
               </p>
               <p>
-                <strong>Telefone:</strong> {maskPhone(user.responsible_phone || "")}
+                <strong>Telefone:</strong> {maskPhone(user.responsibleNumber || "")}
               </p>
             </div>
           )}

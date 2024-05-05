@@ -71,7 +71,7 @@ const ExpenseLogForm = ({ toggle }: Props) => {
         swapOn="Entrada"
         swapOff="Saida"
         onCheck={(checked) => {
-          setValue("type", checked ? "Deposit" : "Removal")
+          setValue("type", checked ? "deposit" : "removal")
         }}
       />
 

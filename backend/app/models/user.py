@@ -2,19 +2,20 @@ from datetime import date
 from typing import List, Optional, get_args
 
 import sqlalchemy as sa
-from passlib import hash  # type: ignore
+from passlib import hash
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from .base import BaseTable, char2, str10
+from .common import Message
 from .enum import (
     AccountType,
     AchievementStatus,
     AchievementType,
     AttachType,
     MedalType,
-    Serie,
     UserType,
 )
+from .relationships import Enrollment
 
 
 class User(BaseTable):
@@ -22,42 +23,65 @@ class User(BaseTable):
     __tablename__ = "users"
 
     name: Mapped[str]
+    photo: Mapped[Optional["Attach"]] = relationship(foreign_keys="[Attach.userId]")
     password: Mapped[str]
     cpf: Mapped[str] = mapped_column(sa.String, unique=True, index=True)
-    birthdate: Mapped[date]
-    scholarship: Mapped[float]
-    responsible_name: Mapped[Optional[str]]
-    responsible_phone: Mapped[Optional[str]]
-    serie: Mapped[Optional[Serie]] = mapped_column(sa.Enum(*get_args(Serie)))
+    birth: Mapped[date]
+    address: Mapped["Address"] = relationship(
+        "Address", foreign_keys="[Address.userId]"
+    )
     type: Mapped[UserType] = mapped_column(sa.Enum(*get_args(UserType)))
-    soft_delete: Mapped[bool] = mapped_column(sa.Boolean, default=False)
-
-    photo: Mapped[Optional["Attach"]] = relationship()
+    softDelete: Mapped[bool] = mapped_column(sa.Boolean, default=False)
 
     emails: Mapped[Optional[List["Email"]]] = relationship(
-        back_populates="user"
+        "Email", foreign_keys="[Email.userId]"
     )
     phones: Mapped[Optional[List["PhoneNumber"]]] = relationship(
-        back_populates="user"
+        "PhoneNumber", foreign_keys="[PhoneNumber.userId]"
     )
-
-    address: Mapped[Optional["Address"]] = relationship()
-    achievements: Mapped[Optional[List["Achievement"]]] = relationship()
-    classroom_id: Mapped[Optional[int]] = mapped_column(
-        sa.Integer, sa.ForeignKey("classrooms.id")
+    student: Mapped[Optional["Student"]] = relationship(
+        "Student", back_populates="user", foreign_keys="[Student.userId]"
     )
-
-    bank_account_id: Mapped[Optional[int]] = mapped_column(
-        sa.Integer, sa.ForeignKey("bank_accounts.id")
+    bankAccount: Mapped[Optional["BankAccount"]] = relationship(
+        "BankAccount", foreign_keys="[BankAccount.userId]"
     )
-    bank_account: Mapped[Optional["BankAccount"]] = relationship(
-        "BankAccount", back_populates="user"
+    classrooms: Mapped[List["Enrollment"]] = relationship(
+        "Enrollment", back_populates="user", foreign_keys="[Enrollment.userId]"
     )
-
-    classroom = relationship("Classroom", back_populates="students")
+    posts = relationship("Post", back_populates="addedBy", uselist=True)
+    received: Mapped[List["Message"]] = relationship(
+        "Message", back_populates="toUser", foreign_keys="[Message.toId]"
+    )
+    sent: Mapped[List["Message"]] = relationship(
+        "Message", back_populates="fromUser", foreign_keys="[Message.fromId]"
+    )
 
     def verify_password(self, password: str | bytes):
         return hash.bcrypt.verify(password, self.password)
+
+
+class Student(BaseTable):
+
+    __tablename__ = "students"
+
+    userId: Mapped[int] = mapped_column(sa.Integer, sa.ForeignKey("users.id"))
+    user: Mapped["User"] = relationship(
+        "User", back_populates="student", foreign_keys=[userId]
+    )
+
+    serie = relationship("Serie", back_populates="student")
+    serieId: Mapped[Optional[int]] = mapped_column(
+        sa.Integer, sa.ForeignKey("series.id")
+    )
+    scholarshipValue: Mapped[float]
+    achievements: Mapped[List["Achievement"]] = relationship(
+        "Achievement", back_populates="student"
+    )
+    achievementsId: Mapped[Optional[int]] = mapped_column(
+        sa.Integer, sa.ForeignKey("achievements.id")
+    )
+    responsibleName: Mapped[str]
+    responsibleNumber: Mapped[str]
 
 
 class Attach(BaseTable):
@@ -67,14 +91,19 @@ class Attach(BaseTable):
     name: Mapped[str]
     location: Mapped[str]
     type: Mapped[AttachType] = mapped_column(sa.Enum(*get_args(AttachType)))
-    user_id: Mapped[Optional[int]] = mapped_column(
-        sa.Integer, sa.ForeignKey("users.id")
-    )
-    achievement_id: Mapped[Optional[int]] = mapped_column(
+
+    userId: Mapped[Optional[int]] = mapped_column(sa.Integer, sa.ForeignKey("users.id"))
+
+    achievementId: Mapped[Optional[int]] = mapped_column(
         sa.Integer, sa.ForeignKey("achievements.id")
     )
-    property_id: Mapped[Optional[int]] = mapped_column(
+
+    propertyId: Mapped[Optional[int]] = mapped_column(
         sa.Integer, sa.ForeignKey("properties.id")
+    )
+
+    classroomId: Mapped[Optional[int]] = mapped_column(
+        sa.Integer, sa.ForeignKey("classrooms.id")
     )
 
 
@@ -83,14 +112,10 @@ class Email(BaseTable):
     __tablename__ = "emails"
 
     value: Mapped[str]
-    user_id: Mapped[Optional[int]] = mapped_column(
-        sa.Integer, sa.ForeignKey("users.id")
-    )
-    school_id: Mapped[Optional[int]] = mapped_column(
+    userId: Mapped[Optional[int]] = mapped_column(sa.Integer, sa.ForeignKey("users.id"))
+    schoolId: Mapped[Optional[int]] = mapped_column(
         sa.Integer, sa.ForeignKey("schools.id")
     )
-
-    user: Mapped["User"] = relationship(back_populates="emails")
 
 
 class PhoneNumber(BaseTable):
@@ -99,14 +124,10 @@ class PhoneNumber(BaseTable):
 
     value: Mapped[str]
     isEmergency: Mapped[bool]
-    user_id: Mapped[Optional[int]] = mapped_column(
-        sa.Integer, sa.ForeignKey("users.id")
-    )
-    school_id: Mapped[Optional[int]] = mapped_column(
+    userId: Mapped[Optional[int]] = mapped_column(sa.Integer, sa.ForeignKey("users.id"))
+    schoolId: Mapped[Optional[int]] = mapped_column(
         sa.Integer, sa.ForeignKey("schools.id")
     )
-
-    user: Mapped["User"] = relationship(back_populates="phones")
 
 
 class Address(BaseTable):
@@ -119,10 +140,8 @@ class Address(BaseTable):
     city: Mapped[str]
     state: Mapped[char2 | None]
     cep: Mapped[str10 | None]
-    user_id: Mapped[Optional[int]] = mapped_column(
-        sa.Integer, sa.ForeignKey("users.id")
-    )
-    school_id: Mapped[Optional[int]] = mapped_column(
+    userId: Mapped[Optional[int]] = mapped_column(sa.Integer, sa.ForeignKey("users.id"))
+    schoolId: Mapped[Optional[int]] = mapped_column(
         sa.Integer, sa.ForeignKey("schools.id")
     )
 
@@ -142,18 +161,16 @@ class Achievement(BaseTable):
     __tablename__ = "achievements"
 
     name: Mapped[str]
-    type: Mapped[AchievementType] = mapped_column(
-        sa.Enum(*get_args(AchievementType))
-    )
-    olympic_acronym: Mapped[str]
+    type: Mapped[AchievementType] = mapped_column(sa.Enum(*get_args(AchievementType)))
+    olympicAbbrev: Mapped[str]
     year: Mapped[int]
     medal: Mapped[MedalType] = mapped_column(sa.Enum(*get_args(MedalType)))
     link: Mapped[Optional[str]]
-    other_info: Mapped[Optional[str]]
+    otherInfo: Mapped[Optional[str]]
     status: Mapped[AchievementStatus] = mapped_column(
         sa.Enum(*get_args(AchievementStatus))
     )
-    user_id: Mapped[int] = mapped_column(sa.Integer, sa.ForeignKey("users.id"))
+    student: Mapped["Student"] = relationship("Student", back_populates="achievements")
 
     images: Mapped[Optional[List["Attach"]]] = relationship()
 
@@ -161,11 +178,9 @@ class Achievement(BaseTable):
 class BankAccount(BaseTable):
     __tablename__ = "bank_accounts"
 
-    bank_number: Mapped[int]
-    agency_number: Mapped[int]
-    account_number: Mapped[int]
-    account_type: Mapped[AccountType] = mapped_column(
-        sa.Enum(*get_args(AccountType))
-    )
+    userId: Mapped[int] = mapped_column(sa.Integer, sa.ForeignKey("users.id"))
+    bankNumber: Mapped[int]
+    agencyNumber: Mapped[int]
+    accountNumber: Mapped[int]
+    accountType: Mapped[AccountType] = mapped_column(sa.Enum(*get_args(AccountType)))
     pix: Mapped[str]
-    user = relationship("User", back_populates="bank_account")

@@ -1,23 +1,10 @@
 from datetime import date, datetime
 from typing import Optional
 
+from app.models.enum import PostType
 from pydantic import BaseModel
 
-from app.models.enum import PostType
-
 from .user import UserPoster
-
-
-class SubjectBase(BaseModel):
-    name: str
-
-    class Config:
-        from_attributes = True
-
-
-class SubjectOut(SubjectBase):
-
-    id: int
 
 
 class ClassroomBase(BaseModel):
@@ -48,8 +35,7 @@ class PostBase(BaseModel):
     endsOn: Optional[date]
     maxGrade: Optional[float]
     penalty: Optional[Penalty]
-    weight: float
-    subject: SubjectOut
+    weight: float = 1
 
     class Config:
         from_attributes = True

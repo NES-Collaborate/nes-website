@@ -1,33 +1,32 @@
 from datetime import datetime
 from typing import Any
 
-from app.daos.base import BaseDao
-from app.models.user import User
 from fastapi import HTTPException
 from passlib import hash
+
+from app.daos.base import BaseDao
+from app.models.relationships import Enrollment
+from app.models.user import Student, User
 
 from .general import GeneralDao
 
 
 class UserDao(BaseDao):
 
-    def create(self, user_data: dict[str, Any]) -> User | None:
-        user_data.update(birthdate=datetime.strptime(user_data["birthdate"], "%d/%m/%Y").date())
+    def _create_user(self, user_data: dict[str, Any]) -> User:
+
+        user_data.update(birth=datetime.strptime(user_data["birth"], "%d/%m/%Y").date())
         _user = User(
             name=user_data["name"],
             type=user_data["type"],
             cpf=user_data["cpf"],
-            birthdate=user_data["birthdate"],
-            scholarship=user_data["scholarship"],
-            serie=user_data["serie"],
-            responsible_name=user_data["responsible_name"],
-            responsible_phone=user_data["responsible_phone"],
-            classroom_id=user_data.get("classroom", {"id": 0})["id"],
+            birth=user_data["birth"],
         )
 
         _user.password = hash.bcrypt.hash(user_data["password"])
         self.session.add(_user)
         self.session.commit()
+        self.session.refresh(_user)
 
         for email in user_data["emails"]:
             GeneralDao(self.session).create_email(email, _user.id)
@@ -43,8 +42,31 @@ class UserDao(BaseDao):
         self.session.refresh(_user)
         return _user
 
+    def create_admin(self, user_data: dict[str, Any]) -> User | None:
+        return self._create_user(user_data)
+
+    def create_other(self, user_data: dict[str, Any]) -> User | None:
+        return self._create_user(user_data)
+
+    def create_student(self, user_data: dict[str, Any]) -> User | None:
+
+        _user = self._create_user(user_data)
+
+        _student = Student(
+            userId=_user.id,
+            scholarshipValue=user_data["scholarshipValue"],
+            responsibleName=user_data["responsibleName"],
+            responsibleNumber=user_data["responsibleNumber"],
+        )
+
+        self.session.add(_student)
+        self.session.commit()
+
+        self.session.refresh(_user)
+        return _user
+
     def get_by_id(self, id: int):
-        _user = self.session.query(User).filter(User.id == id, ~User.soft_delete).first()
+        _user = self.session.query(User).filter(User.id == id, ~User.softDelete).first()
 
         if not _user:
             raise HTTPException(status_code=404, detail="Usuário não encontrado")
@@ -54,7 +76,8 @@ class UserDao(BaseDao):
     def get_by_classroom(self, classroomId: int) -> list[User]:
         _users = (
             self.session.query(User)
-            .filter(User.classroom_id == classroomId, ~User.soft_delete)
+            .join(Enrollment, User.id == Enrollment.userId)
+            .filter(Enrollment.classroomId == classroomId, ~User.softDelete)
             .all()
         )
 
@@ -65,14 +88,14 @@ class UserDao(BaseDao):
 
     def get_by_cpf(self, cpf: str | None):
 
-        _user = self.session.query(User).filter(User.cpf == cpf, ~User.soft_delete).first()
+        _user = self.session.query(User).filter(User.cpf == cpf, ~User.softDelete).first()
 
         if not _user:
             raise HTTPException(status_code=404, detail="Usuário não encontrado")
 
         return _user
 
-    def update(self, user_data: dict[str, Any], user_id: int) -> User | None:
+    def update(self, user_data: dict[str, Any], user_id: int) -> User:
         _user = self.get_by_id(user_id)
 
         if user_data.get("emails"):
@@ -89,28 +112,28 @@ class UserDao(BaseDao):
         if user_data.get("photo"):
             user_data["photo"] = GeneralDao(self.session).create_attachment(user_data["photo"])
 
-        if user_data.get("birthdate"):
-            user_data["birthdate"] = datetime.strptime(user_data["birthdate"], "%d/%m/%Y").date()
+        if user_data.get("birth"):
+            user_data["birth"] = datetime.strptime(user_data["birth"], "%d/%m/%Y").date()
 
-        if classroom := user_data.get("classroom"):
-            user_data["classroom_id"] = classroom["id"]
-
-        UPDATED_KEYS = [
+        UPDATED_USER_KEYS = [
             "name",
             "type",
             "cpf",
-            "birthdate",
-            "scholarship",
-            "serie",
+            "birth",
             "photo",
-            "responsible_name",
-            "responsible_phone",
-            "classroom_id",
+        ]
+
+        UPDATED_STUDENT_KEYS = [
+            "scholarshipValue",
+            "responsibleName",
+            "responsibleNumber",
         ]
 
         for key, value in user_data.items():
-            if key in UPDATED_KEYS:
+            if key in UPDATED_USER_KEYS:
                 setattr(_user, key, value)
+            if key in UPDATED_STUDENT_KEYS:
+                setattr(_user.student, key, value)
 
         if user_data.get("password"):
             _user.password = hash.bcrypt.hash(user_data["password"])
@@ -130,13 +153,14 @@ class UserDao(BaseDao):
 
         self.session.delete(_user.address)
         self.session.delete(_user.photo)
+        self.session.delete(_user.student)
 
         self.session.delete(_user)
         self.session.commit()
 
     def soft_delete_by_id(self, id: int):
         _user = self.get_by_id(id)
-        _user.soft_delete = True
+        _user.softDelete = True
         self.session.commit()
         self.session.refresh(_user)
         return _user

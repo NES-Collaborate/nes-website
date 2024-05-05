@@ -1,7 +1,7 @@
 from datetime import datetime
 from typing import Optional
 
-import sqlalchemy as sa  # type: ignore
+import sqlalchemy as sa
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from .base import BaseTable
@@ -15,7 +15,6 @@ class Property(BaseTable):
     name: Mapped[str]
     photo: Mapped["Attach"] = relationship()
     type: Mapped[str]
-    user_id: Mapped[Optional[int]] = mapped_column(sa.Integer,
-                                                   sa.ForeignKey("users.id"))
-    loanedTo: Mapped[Optional["User"]] = relationship()
+    userId: Mapped[Optional[int]] = mapped_column(sa.Integer, sa.ForeignKey("users.id"))
+    loanedTo: Mapped[Optional["User"]] = relationship("User", foreign_keys=[userId])
     loanedAt: Mapped[Optional[datetime]]

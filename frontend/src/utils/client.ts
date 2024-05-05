@@ -18,7 +18,7 @@ export const getUserPhotoUrl = (user: User) => {
  */
 export const getAttachmentUrl = (attach: Attach) => {
   if (!attach?.location) return "/img/default-user.png"
-  if (attach.type === "Link") return attach.location
+  if (attach.type === "link") return attach.location
   return `/api/server/attachments/${attach?.id}`
 }
 
@@ -39,8 +39,11 @@ export const uploadAttach = async (attach: any, token: string) => {
       },
     })
     return res.data as Attach
-  } catch {
-    return "Erro ao registrar anexo. Tente novamente mais tarde."
+  } catch (e) {
+    return (
+      (e as any).response.data.detail ??
+      "Erro ao registrar anexo. Tente novamente mais tarde."
+    )
   }
 }
 

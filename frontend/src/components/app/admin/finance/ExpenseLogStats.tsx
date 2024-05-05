@@ -58,7 +58,7 @@ const ExpenseLogStats = () => {
           >
             <IoIosAddCircle size={25} /> Adicionar Registro
           </Button>
-          <Link href={"/app/admin/finance/scholarship"} className="btn btn-primary">
+          <Link href={"/app/admin/finance/scholarshipValue"} className="btn btn-primary">
             <IoMdCash size={25} />
             Pagar Bolsas
           </Link>

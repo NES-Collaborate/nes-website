@@ -7,7 +7,7 @@ export type ExpenseCategory = {
   description?: string
 }
 
-export type ExpenseLogType = "Deposit" | "Removal"
+export type ExpenseLogType = "deposit" | "removal"
 
 export type ExpenseLog = {
   id: number

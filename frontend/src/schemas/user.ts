@@ -5,7 +5,7 @@ import { z } from "zod"
 //   id: z.number().optional(),
 //   name: z.string().optional(),
 //   location: z.string().min(1, "Localização da imagem não pode ser vazia"),
-//   type: z.enum(["File", "Link"]),
+//   type: z.enum(["file", "link"]),
 // })
 
 const emailSchema = z.object({
@@ -92,7 +92,7 @@ const userBaseSchema = z.object({
     .string({ required_error: "CPF deve ser preenchido" })
     .min(1, "CPF deve ser preenchido")
     .regex(/^[0-9]{3}\.[0-9]{3}\.[0-9]{3}-[0-9]{2}$/, "CPF inválido"),
-  birthdate: z
+  birth: z
     .string({ required_error: "Data de nascimento deve ser preenchida" })
     .min(1, "Data de nascimento deve ser preenchida")
     .regex(/^\d{2}\/\d{2}\/\d{4}$/, "Data inválida"),
@@ -109,10 +109,10 @@ const scholarshipSchema = z.preprocess((value) => {
 }, z.number().min(0, "Bolsa não pode ser negativa"))
 
 const studentSchema = z.object({
-  responsible_name: z.string().min(1, "Nome do responsável deve ser preenchido"),
-  responsible_phone: z.string().min(1, "Telefone do responsável deve ser preenchido"),
+  responsibleName: z.string().min(1, "Nome do responsável deve ser preenchido"),
+  responsibleNumber: z.string().min(1, "Telefone do responsável deve ser preenchido"),
   serie: z.enum(SERIES),
-  scholarship: scholarshipSchema,
+  scholarshipValue: scholarshipSchema,
   classroom: z.preprocess(
     (value) => {
       if (typeof value === "string") {

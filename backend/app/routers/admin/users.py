@@ -18,14 +18,14 @@ async def get_users(
     q: Optional[str] = None,
     id: Optional[int] = None,
 ):
-    allowed_users = ["admin", "teacher", "student"]
-    if not current_user.type in allowed_users:
+    allowed_users = ["admin", "other", "student"]
+    if current_user.type not in allowed_users:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail="Usuário não autorizado",
         )
 
-    query = session.query(User).filter(~User.soft_delete)
+    query = session.query(User).filter(~User.softDelete)
     if q:
         query = query.filter(User.name.contains(q))
     if id:
@@ -33,14 +33,16 @@ async def get_users(
 
     results = query.all()
 
-    if current_user.type == "admin" or (current_user.type == "student" and current_user.id == id):
-        users = [UserOut.model_validate(result) for result in results]
+    if current_user.type == "admin" or (
+        current_user.type == "student" and current_user.id == id
+    ):
+        users = [UserOut.user_validate(result, result.student) for result in results]
     else:
         users = [UserPoster.model_validate(result) for result in results]
     return {"users": users}
 
 
-@router.post("")
+@router.post("", status_code=status.HTTP_201_CREATED)
 async def create_user(
     user: UserIn,
     current_user: User = Depends(UserService.get_current_user),
@@ -52,9 +54,12 @@ async def create_user(
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail="Usuário não autorizado",
         )
-    _user = UserDao(session).create(user.model_dump())
 
-    return {"user": UserOut.model_validate(_user)}
+    create_user_by_type = getattr(UserDao(session), f"create_{user.type}")
+
+    _user = create_user_by_type(user.model_dump())
+
+    return {"user": UserOut.user_validate(_user, _user.student)}
 
 
 @router.put("/{user_id}")
@@ -74,7 +79,7 @@ async def update_user(
     _user = UserDao(session).get_by_id(user_id)
     _user = UserDao(session).update(user.model_dump(), user_id)
 
-    return {"user": UserOut.model_validate(_user)}
+    return {"user": UserOut.user_validate(_user, _user.student)}
 
 
 @router.delete("/{user_id}")

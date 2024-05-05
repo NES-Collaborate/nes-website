@@ -11,7 +11,7 @@ export type Classroom = {
 /**
  * Post types
  */
-export type PostType = "Notice" | "ClassMaterial" | "Activity" | "Test"
+export type PostType = "notice" | "class material" | "activity" | "test"
 
 /**
  * Post representation in the database
@@ -39,7 +39,7 @@ export type Post = {
 /**
  * Attach types
  */
-export type AttachType = "File" | "Link"
+export type AttachType = "file" | "link"
 
 /**
  * Attach Representation
