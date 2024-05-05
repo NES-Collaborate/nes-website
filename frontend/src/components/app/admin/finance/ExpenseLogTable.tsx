@@ -40,8 +40,8 @@ const ExpenseLogTable = ({ logs, setProof }: Props) => {
               <td>{toLocalDate(exp.createdAt)}</td>
               <td
                 className={clsx("font-semibold", {
-                  "text-error": exp.type === "Removal",
-                  "text-success": exp.type === "Deposit",
+                  "text-error": exp.type === "removal",
+                  "text-success": exp.type === "deposit",
                 })}
               >
                 R$ {exp.value}

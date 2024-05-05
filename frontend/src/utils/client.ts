@@ -18,7 +18,7 @@ export const getUserPhotoUrl = (user: User) => {
  */
 export const getAttachmentUrl = (attach: Attach) => {
   if (!attach?.location) return "/img/default-user.png"
-  if (attach.type === "Link") return attach.location
+  if (attach.type === "link") return attach.location
   return `/api/server/attachments/${attach?.id}`
 }
 

@@ -4,8 +4,8 @@ import { ExpenseLogType } from "@/types/finance"
  * Translation for expense log types that will be used in API's queries.
  */
 export const EXPENSE_LOG_QUERY_TYPES: Record<ExpenseLogType | "all", string> = {
-  Deposit: "Entrada",
-  Removal: "Saída",
+  deposit: "Entrada",
+  removal: "Saída",
   all: "Todos",
 }
 
@@ -45,8 +45,8 @@ export const BREADCRUMB_NAMES: Record<string, string> = {
  * Translatiosns of the `PostType`s
  */
 export const POST_TYPE_TRANSLATIONS = {
-  Notice: "Aviso",
-  ClassMaterial: "Material de Aula",
-  Test: "Prova",
-  Activity: "Atividade",
+  notice: "Aviso",
+  "class material": "Material de Aula",
+  test: "Prova",
+  activity: "Atividade",
 }

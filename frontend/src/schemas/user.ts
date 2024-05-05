@@ -5,7 +5,7 @@ import { z } from "zod"
 //   id: z.number().optional(),
 //   name: z.string().optional(),
 //   location: z.string().min(1, "Localização da imagem não pode ser vazia"),
-//   type: z.enum(["File", "Link"]),
+//   type: z.enum(["file", "link"]),
 // })
 
 const emailSchema = z.object({

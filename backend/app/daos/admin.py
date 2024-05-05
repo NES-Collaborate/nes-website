@@ -17,12 +17,12 @@ class AdminDao(BaseDao):
 
         _total_removed = (
             self.session.query(func.sum(ExpenseLog.value))
-            .filter_by(type="Removal")
+            .filter_by(type="removal")
             .scalar()
         )
         _total_deposited = (
             self.session.query(func.sum(ExpenseLog.value))
-            .filter_by(type="Deposit")
+            .filter_by(type="deposit")
             .scalar()
             or 0
         )
@@ -93,7 +93,7 @@ class AdminDao(BaseDao):
         created_at = datetime(year, month, 1)
         _payment = ExpenseLog(
             value=paidTo.student.scholarshipValue,
-            type="Removal",
+            type="removal",
             addedBy=addedBy,
             paidTo=paidTo,
             comment=f"Pagamento de {month}-{year}",

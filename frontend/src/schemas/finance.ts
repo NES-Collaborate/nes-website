@@ -14,7 +14,7 @@ export const expenseLogSchema = z.object({
     .transform((value) => {
       return { id: 0, name: value.trim(), description: "" }
     }),
-  type: z.enum(["Removal", "Deposit"]).default("Removal"),
+  type: z.enum(["removal", "deposit"]).default("removal"),
   comment: z.string().optional(),
   proof: z
     .custom<FileList>()
