@@ -39,8 +39,11 @@ export const uploadAttach = async (attach: any, token: string) => {
       },
     })
     return res.data as Attach
-  } catch {
-    return "Erro ao registrar anexo. Tente novamente mais tarde."
+  } catch (e) {
+    return (
+      (e as any).response.data.detail ??
+      "Erro ao registrar anexo. Tente novamente mais tarde."
+    )
   }
 }
 
