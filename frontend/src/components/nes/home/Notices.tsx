@@ -15,7 +15,6 @@ const Notices = () => {
 
   return (
     <div className="w-full flex flex-col items-center mb-4">
-      <h1 className="text-primary text-2xl stroke-1 my-8">Notícias</h1>
       <div className="flex flex-nowrap gap-3 w-11/12">
         {isLoading && (
           <div className="w-full">
