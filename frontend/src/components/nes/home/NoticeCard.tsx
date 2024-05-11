@@ -14,7 +14,7 @@ const NoticeCard = ({ notice }: Props) => {
   return (
     <>
       <a href={notice.url} target="_blank">
-        <div className="card card-compact w-96 bg-base-100 shadow-xl hover:bg-zinc-500/75">
+        <div className="card card-compact w-96 bg-base-100 shadow-xl hover:bg-zinc-500/75 h-96">
           <figure>
             <Image src={notice.image} alt={notice.title} width={500} height={500} />
           </figure>

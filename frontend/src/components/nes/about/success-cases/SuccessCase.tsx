@@ -3,17 +3,18 @@ import Image from "next/image"
 import { useEffect, useState } from "react"
 
 type Props = {
+  id: number
   imagePath: string
   name: string
   city: string
   results: string
   difficulties: string
   phrase: string
-  type?: "reverse"
 }
 
 /**
  * A card showing a success case
+ * @param {number} id Identify a unique success case
  * @param {string} imagePath Path to the image file
  * @param {string} name Name of the person
  * @param {string} city Place where it lives
@@ -23,26 +24,26 @@ type Props = {
  * @returns {JSX.Element} SuccessCase
  */
 const SuccessCase = ({
+  id,
   imagePath,
   name,
   city,
   results,
   difficulties,
   phrase,
-  type,
 }: Props): JSX.Element => {
   const [direction, setDirection] = useState("")
 
   useEffect(() => {
-    if (type === "reverse") {
+    if (id % 2 === 0) {
       setDirection(`md:flex-row-reverse`)
     } else {
       setDirection(`md:flex-row`)
     }
-  }, [type])
+  }, [id])
 
   return (
-    <div className="hero bg-base-200 mb-4 p-2 rounded-lg">
+    <div className="hero bg-base-200 mb-4 p-2 rounded-lg !w-max max-w-full">
       <div
         className={clsx(
           direction,

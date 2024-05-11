@@ -19,10 +19,6 @@ const Home = () => {
 
         <Brief />
 
-        <Link href="/nes/subscription" className="my-4">
-          <Logo type="bannerProcessoSeletivo" size={500} className="mx-auto w-4/5" />
-        </Link>
-
         <Notices />
 
         <MoreInfos />

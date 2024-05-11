@@ -7,7 +7,9 @@ import ButtonNES from "@/components/ButtonNES"
 const MoreInfos = () => {
   return (
     <div className="w-full flex flex-col items-center mb-4">
-      <h1 className="text-primary text-2xl stroke-1 my-8">Missão do Projeto</h1>
+      <h1 className="text-primary text-2xl stroke-1 my-8" id="ProjectMission">
+        Missão do Projeto
+      </h1>
       <p className="text-base italic font-mono text-center w-3/4 mb-4">
         CRIAR UM CENTRO DE EXCELÊNCIA NA FORMAÇÃO DE TALENTOS PARA AS ÁREAS DE EXATAS
       </p>
