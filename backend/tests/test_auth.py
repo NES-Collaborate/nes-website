@@ -1,5 +1,5 @@
 from fastapi.testclient import TestClient
-
+from .utils import login_and_get_token
 
 # Teste para verificar se a API de login retorna um status 200 para credenciais válidas
 def test_login_success(client: TestClient):
@@ -28,14 +28,8 @@ def test_logout(client: TestClient):
 # Teste para verificar se o busca de um user por cpf retorna um status 200
 def test_get_user_success(client: TestClient):
     # Passo 1: Login e obtenção do token
-    login_response = client.post(
-        "/api/login", data={"username": "00000000000", "password": "admin"}
-    )
-    assert login_response.status_code == 200
-    token = login_response.json()[
-        "access_token"
-    ]  # Ajuste de acordo com a estrutura da sua resposta
-
+    
+    token = login_and_get_token(client, "00000000000", "admin")
     # Passo 2: Acessar a rota /me com o token de autenticação
     headers = {"Authorization": f"Bearer {token}"}
     response = client.get("/api/me", headers=headers)
