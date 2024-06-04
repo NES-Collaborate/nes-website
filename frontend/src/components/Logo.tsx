@@ -18,6 +18,7 @@ type Props = {
   size?: number
   alt?: string
   className?: string
+  onClick?: React.MouseEventHandler<HTMLImageElement>
 }
 
 /**
@@ -26,9 +27,10 @@ type Props = {
  * @param {number} size Size of the image (px, the width will be calculated based on the height)
  * @param {string} alt Alternative text
  * @param {string} className Class name
+ * @param {React.MouseEventHandler<HTMLImageElement>} onClick Function to call when click
  * @returns {Image} Image component
  */
-const Logo = ({ type, size, alt = "Logo", className = "" }: Props) => {
+const Logo = ({ type, size, alt = "Logo", className = "", onClick }: Props) => {
   const { theme } = useTheme()
 
   const realType = () => {
@@ -47,6 +49,7 @@ const Logo = ({ type, size, alt = "Logo", className = "" }: Props) => {
       src={logo.src}
       height={finalHeight}
       width={finalWidth}
+      onClick={onClick}
     />
   )
 }
