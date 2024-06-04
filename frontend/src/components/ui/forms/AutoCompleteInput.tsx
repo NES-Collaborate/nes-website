@@ -4,7 +4,7 @@ import { InputHTMLAttributes, forwardRef, useEffect, useRef, useState } from "re
 import { Tooltip } from "react-daisyui"
 import { FiInfo } from "react-icons/fi"
 
-type Suggestion = {
+export type Suggestion = {
   label: string
   value: string
 }
@@ -22,15 +22,18 @@ type AutoCompleteInputProps = {
   name?: InputHTMLAttributes<HTMLInputElement>["name"]
 }
 
-const AutoCompleteInputBase = ({
-  label,
-  helpText,
-  errors,
-  renderSuggestion = (s) => s.label,
-  onSuggestionSelect,
-  fetchSuggestions,
-  ...rest
-}: AutoCompleteInputProps, ref: any) => {
+const AutoCompleteInputBase = (
+  {
+    label,
+    helpText,
+    errors,
+    renderSuggestion = (s) => s.label,
+    onSuggestionSelect,
+    fetchSuggestions,
+    ...rest
+  }: AutoCompleteInputProps,
+  ref: any
+) => {
   const [loading, setLoading] = useState(false)
   const [suggestions, setSuggestions] = useState<Suggestion[]>([])
   const [query, setQuery] = useState("")
@@ -72,14 +75,12 @@ const AutoCompleteInputBase = ({
   const handleOnChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setQuery(event.target.value)
     setActiveIndex(-1)
+    setSelectedSuggestion(null)
   }
 
   const handleSelectSuggestion = (suggestion: Suggestion) => {
     if (!suggestion) return
-    if (inputRef.current) {
-      inputRef.current.value = suggestion.label
-    }
-    setQuery(suggestion.label)
+    setQuery(suggestion.value)
     onSuggestionSelect(suggestion)
     setSelectedSuggestion(suggestion)
     setSuggestions([])
@@ -119,6 +120,7 @@ const AutoCompleteInputBase = ({
         {...rest}
         onChange={handleOnChange}
         onKeyDown={handleKeyDown}
+        value={query}
       />
 
       {errors?.message && (

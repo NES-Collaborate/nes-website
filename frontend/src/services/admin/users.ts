@@ -1,3 +1,4 @@
+import { Suggestion } from "@/components/ui/forms/AutoCompleteInput"
 import { User, UserFormDataBackend } from "@/types/user"
 import { AxiosInstance } from "axios"
 
@@ -14,6 +15,15 @@ export const fetchUsers = async (
   })
   return res.data.users
 }
+
+export const fetchUserSuggestions = async (
+  client: AxiosInstance,
+  query: string
+): Promise<Suggestion[]> =>
+  (await fetchUsers(client, query)).map((u) => ({
+    label: u.name,
+    value: u.id.toString(),
+  }))
 
 export const createUser = async (
   client: AxiosInstance,

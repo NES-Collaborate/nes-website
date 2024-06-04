@@ -6,6 +6,7 @@ import { User } from "./user"
 export type Classroom = {
   id: number
   name: string
+  members: { userId: number; role: string }[] // TODO: replace this by Enrollment type
 }
 
 /**
