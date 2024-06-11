@@ -18,8 +18,16 @@ class Classroom(BaseTable):
     name: Mapped[str]
     thumbnail: Mapped["Attach"] = relationship()
     posts: Mapped[List["Post"]] = relationship(back_populates="classroom")
-    activityGroups: Mapped[List["ActivityGroup"]] = relationship(back_populates="classroom")
+    activityGroups: Mapped[List["ActivityGroup"]] = relationship(
+        back_populates="classroom"
+    )
     members: Mapped[List["Enrollment"]] = relationship(back_populates="classroom")
+
+    @property
+    def teachers(self):
+        return map(
+            lambda m: m.user, filter(lambda m: m.role == "teacher", self.members)
+        )
 
 
 class Activity(BaseTable):
@@ -54,16 +62,22 @@ class Post(BaseTable):
 
     __tablename__ = "posts"
 
-    classromId: Mapped[Optional[int]] = mapped_column(sa.Integer, sa.ForeignKey("classrooms.id"))
+    classromId: Mapped[Optional[int]] = mapped_column(
+        sa.Integer, sa.ForeignKey("classrooms.id")
+    )
     classroom: Mapped["Classroom"] = relationship("Classroom", back_populates="posts")
     title: Mapped[str]
     content: Mapped[str]
-    frequency: Mapped[List["Frequency"]] = relationship("Frequency", back_populates="lecture")
+    frequency: Mapped[List["Frequency"]] = relationship(
+        "Frequency", back_populates="lecture"
+    )
     type: Mapped[PostType] = mapped_column(sa.Enum(*get_args(PostType)))
     attachments: Mapped[List["PostAttachment"]] = relationship(
         "PostAttachment", back_populates="post"
     )
-    activity: Mapped[Optional["Activity"]] = relationship("Activity", back_populates="post")
+    activity: Mapped[Optional["Activity"]] = relationship(
+        "Activity", back_populates="post"
+    )
     response: Mapped[Optional["Response"]] = relationship(
         "Response", back_populates="post", foreign_keys="Response.postId"
     )

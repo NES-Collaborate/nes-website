@@ -10,7 +10,7 @@ from .user import UserPoster
 
 class EnrollmentBase(BaseModel):
     userId: int
-    classroomId: Optional[int]
+    classroomId: Optional[int] = None
     role: Role
 
     class Config:
@@ -34,7 +34,7 @@ class TeacherOut(BaseModel):
 class ClassroomOut(ClassroomBase):
 
     id: int
-    teachers: list[TeacherOut]
+    teachers: list[TeacherOut] = []
 
 
 class Penalty(BaseModel):

@@ -46,7 +46,7 @@ async def get_classrooms(
     return classrooms
 
 
-@router.post("/classrooms", status_code=status.HTTP_201_CREATED)
+@router.post("/classrooms", status_code=status.HTTP_201_CREATED, response_model=ClassroomOut)
 async def create_classroom(
     classroom: ClassroomBase,
     current_user: User = Depends(UserService.get_current_user),
@@ -58,7 +58,7 @@ async def create_classroom(
         )
 
     _classroom = AdminDao(session).create_classroom(classroom)
-    return ClassroomOut.model_validate(_classroom)
+    return _classroom
 
 
 @router.put("/classrooms/{classroom_id}", status_code=status.HTTP_200_OK)

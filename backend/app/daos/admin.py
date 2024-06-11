@@ -2,11 +2,13 @@ from datetime import datetime
 
 from app.models.classroom import Classroom
 from app.models.expense import ExpenseCategory, ExpenseLog
+from app.models.relationships import Enrollment
 from app.models.user import Attach, User
 from app.schemas.classroom import ClassroomBase
 from app.schemas.expense import ExpenseLogIn
 from fastapi import HTTPException, status
 from sqlalchemy import func
+
 
 from .base import BaseDao
 
@@ -146,6 +148,14 @@ class AdminDao(BaseDao):
     def create_classroom(self, classroom: ClassroomBase):
         _classroom = Classroom(name=classroom.name)
         self.session.add(_classroom)
+        self.session.commit()
+
+        self.session.bulk_save_objects(
+            Enrollment(
+                userId=member.userId, classroomId=_classroom.id, role=member.role
+            )
+            for member in classroom.members
+        )
         self.session.commit()
         return _classroom
 
