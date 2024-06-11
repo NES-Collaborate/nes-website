@@ -51,7 +51,11 @@ export const ClassroomModal = ({ isOpen, setIsOpen, classroom }: Props) => {
   }
 
   const handleUserSelect = (suggestion: Suggestion, index: number) => {
-    update(index, { userId: parseInt(suggestion.value), role: "teacher" })
+    update(index, {
+      userId: parseInt(suggestion.value),
+      role: "teacher",
+      name: suggestion.label,
+    })
   }
 
   return (
@@ -89,6 +93,14 @@ export const ClassroomModal = ({ isOpen, setIsOpen, classroom }: Props) => {
                     onSuggestionSelect={(suggestion) =>
                       handleUserSelect(suggestion, index)
                     }
+                    defaultValue={
+                      field.userId
+                        ? {
+                            label: field.name,
+                            value: field.userId.toString(),
+                          }
+                        : null
+                    }
                     errors={errors?.members?.[index]?.userId}
                   />
                   <button
@@ -103,7 +115,7 @@ export const ClassroomModal = ({ isOpen, setIsOpen, classroom }: Props) => {
               <button
                 type="button"
                 className="btn btn-sm btn-secondary flex items-center gap-1"
-                onClick={() => append({ userId: 0, role: "teacher" })}
+                onClick={() => append({ userId: 0, role: "teacher", name: "" })}
               >
                 <FaPlus />
                 Adicionar Professor

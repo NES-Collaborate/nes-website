@@ -1,6 +1,7 @@
 import { z } from "zod"
 
 export const enrollmentSchema = z.object({
+  name: z.string(),
   userId: z.number(),
   role: z.string().default("teacher"),
 })

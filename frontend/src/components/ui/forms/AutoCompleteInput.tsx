@@ -18,6 +18,7 @@ type AutoCompleteInputProps = {
   fetchSuggestions: (query: string) => Promise<Suggestion[]>
   renderSuggestion?: (suggestion: Suggestion) => React.ReactNode
   onSuggestionSelect: (suggestion: Suggestion) => void
+  defaultValue?: Suggestion | null
   type?: InputHTMLAttributes<HTMLInputElement>["type"]
   name?: InputHTMLAttributes<HTMLInputElement>["name"]
 }
@@ -30,16 +31,19 @@ const AutoCompleteInputBase = (
     renderSuggestion = (s) => s.label,
     onSuggestionSelect,
     fetchSuggestions,
+    defaultValue = null,
     ...rest
   }: AutoCompleteInputProps,
   ref: any
 ) => {
   const [loading, setLoading] = useState(false)
   const [suggestions, setSuggestions] = useState<Suggestion[]>([])
-  const [query, setQuery] = useState("")
+  const [query, setQuery] = useState(defaultValue?.label || "")
   const [activeIndex, setActiveIndex] = useState(-1)
   const inputRef = useRef<HTMLInputElement>(null)
-  const [selectedSuggestion, setSelectedSuggestion] = useState<Suggestion | null>(null)
+  const [selectedSuggestion, setSelectedSuggestion] = useState<Suggestion | null>(
+    defaultValue
+  )
 
   useEffect(() => {
     if (!query) {
@@ -49,8 +53,6 @@ const AutoCompleteInputBase = (
       return
     }
     if (selectedSuggestion) return
-
-    if (query && activeIndex !== -1) return
 
     const fetchSug = async () => {
       setLoading(true)
@@ -70,7 +72,7 @@ const AutoCompleteInputBase = (
     const handler = setTimeout(fetchSug, debounceDelay)
 
     return () => clearTimeout(handler)
-  }, [query, fetchSuggestions, activeIndex, selectedSuggestion])
+  }, [query, fetchSuggestions, selectedSuggestion])
 
   const handleOnChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setQuery(event.target.value)
@@ -80,7 +82,7 @@ const AutoCompleteInputBase = (
 
   const handleSelectSuggestion = (suggestion: Suggestion) => {
     if (!suggestion) return
-    setQuery(suggestion.value)
+    setQuery(suggestion.label)
     onSuggestionSelect(suggestion)
     setSelectedSuggestion(suggestion)
     setSuggestions([])
@@ -99,6 +101,10 @@ const AutoCompleteInputBase = (
       handleSelectSuggestion(suggestions[activeIndex])
       event.preventDefault()
     }
+  }
+
+  const handleBlur = () => {
+    setTimeout(() => setSuggestions([]), 100)
   }
 
   return (
@@ -120,6 +126,7 @@ const AutoCompleteInputBase = (
         {...rest}
         onChange={handleOnChange}
         onKeyDown={handleKeyDown}
+        onBlur={handleBlur}
         value={query}
       />
 
