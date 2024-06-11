@@ -5,8 +5,9 @@ class Settings:
     ALGORITHM: str = "HS256"
     UPLOADS_PATH: str = "uploads"
     DEFAULT_PASS: str = "default"
-    ORIGINS: list[str] = [
+    ORIGINS: list[str] = [ 
         "http://localhost:3000",
+        "http://localhost",
     ]
 
 

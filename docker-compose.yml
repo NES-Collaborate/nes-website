@@ -1,0 +1,60 @@
+version: '3.8'
+
+services:
+  backend:
+    container_name: nes-backend
+    image: python:3.12-slim
+    volumes:
+      - ./backend:/app
+    working_dir: /app
+    environment:
+      DATABASE_URL: sqlite:///./db.sqlite
+    ports:
+      - "8000:8000"
+    networks:
+      - nes-network
+    command: >
+      sh -c "
+      pip install --no-cache-dir -r requirements.txt &&
+      apt-get update && apt-get install -y make &&
+      make init-db &&
+      make run
+      "
+
+  frontend:
+    container_name: nes-frontend
+    image: node:18
+    volumes:
+      - ./frontend:/app
+    working_dir: /app
+    ports:
+      - "3000:3000"
+    depends_on:
+      - backend
+    networks:
+      - nes-network
+    command: >
+      sh -c "
+      npm install &&
+      npm run build &&
+      npm start
+      "
+
+  nginx:
+    container_name: nes-proxy
+    image: nginx:1.25.3-alpine
+    restart: unless-stopped
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./nginx.conf:/etc/nginx/conf.d/default.conf
+    depends_on:
+      - frontend
+      - backend
+    networks:
+      - nes-network
+
+networks:
+  nes-network:
+    driver: bridge
