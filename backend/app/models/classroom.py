@@ -25,9 +25,7 @@ class Classroom(BaseTable):
 
     @property
     def teachers(self):
-        return map(
-            lambda m: m.user, filter(lambda m: m.role == "teacher", self.members)
-        )
+        return [m.user for m in self.members if m.role == "teacher"]
 
 
 class Activity(BaseTable):
