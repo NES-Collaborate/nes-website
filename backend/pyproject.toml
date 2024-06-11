@@ -2,7 +2,7 @@
 name = "backend"
 version = "0.1.0"
 description = "A backend for the NES Website project"
-authors = ["sr-pato <felipe.adeildo@proton.me>"]
+authors = ["felipeadeildo <felipe.adeildo@proton.me>"]
 readme = ""
 
 [tool.poetry.dependencies]
@@ -46,6 +46,8 @@ requests = "^2.31.0"
 [tool.poetry.group.dev.dependencies]
 isort = "^5.13.2"
 yapf = "^0.40.2"
+ipython = "^8.25.0"
+httpx = "^0.27.0"
 
 [build-system]
 requires = ["poetry-core"]
