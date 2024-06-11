@@ -4,7 +4,7 @@ import { InputHTMLAttributes, forwardRef, useEffect, useRef, useState } from "re
 import { Tooltip } from "react-daisyui"
 import { FiInfo } from "react-icons/fi"
 
-type Suggestion = {
+export type Suggestion = {
   label: string
   value: string
 }
@@ -18,25 +18,32 @@ type AutoCompleteInputProps = {
   fetchSuggestions: (query: string) => Promise<Suggestion[]>
   renderSuggestion?: (suggestion: Suggestion) => React.ReactNode
   onSuggestionSelect: (suggestion: Suggestion) => void
+  defaultValue?: Suggestion | null
   type?: InputHTMLAttributes<HTMLInputElement>["type"]
   name?: InputHTMLAttributes<HTMLInputElement>["name"]
 }
 
-const AutoCompleteInputBase = ({
-  label,
-  helpText,
-  errors,
-  renderSuggestion = (s) => s.label,
-  onSuggestionSelect,
-  fetchSuggestions,
-  ...rest
-}: AutoCompleteInputProps, ref: any) => {
+const AutoCompleteInputBase = (
+  {
+    label,
+    helpText,
+    errors,
+    renderSuggestion = (s) => s.label,
+    onSuggestionSelect,
+    fetchSuggestions,
+    defaultValue = null,
+    ...rest
+  }: AutoCompleteInputProps,
+  ref: any
+) => {
   const [loading, setLoading] = useState(false)
   const [suggestions, setSuggestions] = useState<Suggestion[]>([])
-  const [query, setQuery] = useState("")
+  const [query, setQuery] = useState(defaultValue?.label || "")
   const [activeIndex, setActiveIndex] = useState(-1)
   const inputRef = useRef<HTMLInputElement>(null)
-  const [selectedSuggestion, setSelectedSuggestion] = useState<Suggestion | null>(null)
+  const [selectedSuggestion, setSelectedSuggestion] = useState<Suggestion | null>(
+    defaultValue
+  )
 
   useEffect(() => {
     if (!query) {
@@ -46,8 +53,6 @@ const AutoCompleteInputBase = ({
       return
     }
     if (selectedSuggestion) return
-
-    if (query && activeIndex !== -1) return
 
     const fetchSug = async () => {
       setLoading(true)
@@ -67,18 +72,16 @@ const AutoCompleteInputBase = ({
     const handler = setTimeout(fetchSug, debounceDelay)
 
     return () => clearTimeout(handler)
-  }, [query, fetchSuggestions, activeIndex, selectedSuggestion])
+  }, [query, fetchSuggestions, selectedSuggestion])
 
   const handleOnChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setQuery(event.target.value)
     setActiveIndex(-1)
+    setSelectedSuggestion(null)
   }
 
   const handleSelectSuggestion = (suggestion: Suggestion) => {
     if (!suggestion) return
-    if (inputRef.current) {
-      inputRef.current.value = suggestion.label
-    }
     setQuery(suggestion.label)
     onSuggestionSelect(suggestion)
     setSelectedSuggestion(suggestion)
@@ -100,6 +103,10 @@ const AutoCompleteInputBase = ({
     }
   }
 
+  const handleBlur = () => {
+    setTimeout(() => setSuggestions([]), 100)
+  }
+
   return (
     <div className="form-control relative w-full max-w-lg">
       <label className="label">
@@ -119,6 +126,8 @@ const AutoCompleteInputBase = ({
         {...rest}
         onChange={handleOnChange}
         onKeyDown={handleKeyDown}
+        onBlur={handleBlur}
+        value={query}
       />
 
       {errors?.message && (

@@ -1,23 +1,40 @@
 from datetime import date, datetime
 from typing import Optional
 
-from app.models.enum import PostType
 from pydantic import BaseModel
+
+from app.models.enum import PostType, Role
 
 from .user import UserPoster
 
 
-class ClassroomBase(BaseModel):
-
-    name: str
+class EnrollmentBase(BaseModel):
+    userId: int
+    classroomId: Optional[int]
+    role: Role
 
     class Config:
         from_attributes = True
 
 
+class ClassroomBase(BaseModel):
+
+    name: str
+    members: list[EnrollmentBase] = []
+
+    class Config:
+        from_attributes = True
+
+
+class TeacherOut(BaseModel):
+    id: int
+    name: str
+
+
 class ClassroomOut(ClassroomBase):
 
     id: int
+    teachers: list[TeacherOut]
 
 
 class Penalty(BaseModel):

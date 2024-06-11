@@ -1,8 +1,12 @@
+import { useBackend } from "@/contexts/backend"
 import { useClassroomMutation } from "@/hooks/teacher/classrooms"
 import { ClassroomFormData, classroomSchema } from "@/schemas/classroom"
+import { fetchUserSuggestions } from "@/services/admin/users"
 import { Classroom } from "@/types/entities"
 import { zodResolver } from "@hookform/resolvers/zod"
-import { SubmitHandler, useForm } from "react-hook-form"
+import { SubmitHandler, useFieldArray, useForm } from "react-hook-form"
+import { FaPlus } from "react-icons/fa"
+import { AutoCompleteInput, Suggestion } from "../ui/forms/AutoCompleteInput"
 import { InputField } from "../ui/forms/InputField"
 
 type Props = {
@@ -15,10 +19,23 @@ export const ClassroomModal = ({ isOpen, setIsOpen, classroom }: Props) => {
   const {
     register,
     handleSubmit,
+    control,
+    setValue,
     formState: { errors },
   } = useForm<ClassroomFormData>({
     resolver: zodResolver(classroomSchema),
-    values: { name: classroom?.name || "", id: classroom?.id || 0 },
+    defaultValues: {
+      name: classroom?.name || "",
+      id: classroom?.id || 0,
+      members: classroom?.members || [{ userId: 0, role: "teacher" }],
+    },
+  })
+
+  const { backend } = useBackend()
+
+  const { fields, append, remove, update } = useFieldArray({
+    control,
+    name: "members",
   })
 
   const { createMutation, updateMutation } = useClassroomMutation()
@@ -27,10 +44,18 @@ export const ClassroomModal = ({ isOpen, setIsOpen, classroom }: Props) => {
     if (classroom) {
       await updateMutation.mutateAsync(data as Classroom)
     } else {
-      await createMutation.mutateAsync({ name: data.name })
+      await createMutation.mutateAsync(data)
     }
 
     setIsOpen(false)
+  }
+
+  const handleUserSelect = (suggestion: Suggestion, index: number) => {
+    update(index, {
+      userId: parseInt(suggestion.value),
+      role: "teacher",
+      name: suggestion.label,
+    })
   }
 
   return (
@@ -58,6 +83,44 @@ export const ClassroomModal = ({ isOpen, setIsOpen, classroom }: Props) => {
             <input type="hidden" {...register("id")} />
 
             <InputField label="Nome" {...register("name")} errors={errors.name} />
+
+            <div className="flex flex-col gap-2">
+              {fields.map((field, index) => (
+                <div key={field.id} className="flex items-end gap-1">
+                  <AutoCompleteInput
+                    label="Professor"
+                    fetchSuggestions={(query) => fetchUserSuggestions(backend, query)}
+                    onSuggestionSelect={(suggestion) =>
+                      handleUserSelect(suggestion, index)
+                    }
+                    defaultValue={
+                      field.userId
+                        ? {
+                            label: field.name,
+                            value: field.userId.toString(),
+                          }
+                        : null
+                    }
+                    errors={errors?.members?.[index]?.userId}
+                  />
+                  <button
+                    type="button"
+                    className="btn btn-sm btn-error"
+                    onClick={() => remove(index)}
+                  >
+                    x
+                  </button>
+                </div>
+              ))}
+              <button
+                type="button"
+                className="btn btn-sm btn-secondary flex items-center gap-1"
+                onClick={() => append({ userId: 0, role: "teacher", name: "" })}
+              >
+                <FaPlus />
+                Adicionar Professor
+              </button>
+            </div>
 
             <div className="modal-action">
               <button type="submit" className="btn btn-primary">

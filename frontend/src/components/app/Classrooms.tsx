@@ -29,7 +29,7 @@ const Classrooms = () => {
   return (
     <>
       <div className="text-center my-2">
-        <h1 className="text-3xl font-bold">Turmas</h1>
+        <h1 className="text-xl text-center font-bold">Turmas</h1>
         {error && (
           <div className="my-4 mx-2 lg:mx-4">
             <Alert status="error" icon={<MdErrorOutline />}>
@@ -78,8 +78,8 @@ const Classrooms = () => {
       )}
 
       <Tooltip message="Criar turma" className="fixed bottom-5 right-5">
-        <button className="btn btn-accent" onClick={toggleCreateModal}>
-          <FaChalkboardTeacher size={22} />
+        <button className="btn btn-accent btn-sm" onClick={toggleCreateModal}>
+          <FaChalkboardTeacher size={20} />
         </button>
       </Tooltip>
 

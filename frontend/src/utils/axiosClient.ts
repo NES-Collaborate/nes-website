@@ -5,7 +5,8 @@ export const axiosApi = axios.create({
 })
 
 export const axiosServer = axios.create({
-  baseURL: `/api/server`,
+  baseURL:
+    process.env.NODE_ENV === "development" ? "http://localhost:8000/api" : "/api/server",
   headers: {
     "Content-Type": "application/json",
   },

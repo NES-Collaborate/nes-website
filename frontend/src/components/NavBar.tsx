@@ -26,19 +26,19 @@ const NavBar = ({ toggleDrawerVisibility }: Props) => {
   return (
     <div className="navbar bg-base-100 shadow-md">
       <div className="navbar-start gap-3">
-        <Logo
-          type={windowWidth < 500 ? "circle" : "horizontal"}
-          size={40}
-          className="ml-3"
-        />
+        <Button shape="circle" onClick={toggleDrawerVisibility}>
+          <FaBars />
+        </Button>
       </div>
       <div className="navbar-center">
         <Breadcrumb />
       </div>
       <div className="navbar-end gap-3">
-        <Button shape="circle" onClick={toggleDrawerVisibility}>
-          <FaBars />
-        </Button>
+        <Logo
+          type={windowWidth < 500 ? "circle" : "horizontal"}
+          size={40}
+          className="ml-3"
+        />
       </div>
     </div>
   )
