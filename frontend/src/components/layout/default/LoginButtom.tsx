@@ -1,6 +1,6 @@
+import ButtonNES from "@/components/ButtonNES"
 import { usePathname } from "next/navigation"
 import { IoIosLogIn } from "react-icons/io"
-import ButtonNES from "./ButtonNES"
 
 /**
  * Buttom to redirect user to login page

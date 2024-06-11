@@ -1,5 +1,5 @@
+import Logo from "@/components/layout/default/Logo"
 import Loading from "@/components/Loading"
-import Logo from "@/components/Logo"
 import Brief from "@/components/nes/about/success-cases/Brief"
 import SuccessCase from "@/components/nes/about/success-cases/SuccessCase"
 import Footer from "@/components/nes/Footer"

@@ -97,7 +97,7 @@ export const USER_PAGES: UserPage[] = [
   },
   {
     name: "Turmas",
-    url: "/app/classroom",
+    url: "/classroom",
     icon: FiUsers,
     allowedUserTypes: ["admin", "other"],
   },

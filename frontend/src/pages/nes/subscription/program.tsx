@@ -1,5 +1,5 @@
 import ButtonNES from "@/components/ButtonNES"
-import Logo from "@/components/Logo"
+import Logo from "@/components/layout/default/Logo"
 import Footer from "@/components/nes/Footer"
 import { SELECTIONS_EXAMPLES, Selection } from "@/data/constants"
 import { useRouter } from "next/router"

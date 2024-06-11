@@ -54,7 +54,7 @@ const Classrooms = () => {
                   <h2 className="card-title">{classroom.name}</h2>
                   <div className="card-actions justify-center">
                     <Link
-                      href={`/app/classrooms/${classroom.id}`}
+                      href={`/classroom/${classroom.id}`}
                       className="btn btn-primary"
                     >
                       <FaDoorOpen />

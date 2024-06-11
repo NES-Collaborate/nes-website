@@ -1,7 +1,7 @@
 import { useCallback, useState } from "react"
 import { Drawer } from "react-daisyui"
-import NavBar from "./NavBar"
-import SideBar from "./SideBar"
+import NavBar from "./default/NavBar"
+import SideBar from "./default/SideBar"
 
 type Props = {
   children: React.ReactNode
