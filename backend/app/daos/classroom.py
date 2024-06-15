@@ -17,7 +17,9 @@ class ClassroomDao(BaseDao):
 
         return _classroom
 
-    def get_members_by_id(self, classroomId: int) -> list[User]:
+    def get_members_by_id(
+        self, classroomId: int, page: int, page_size: int
+    ) -> list[User]:
 
         _classroom = self.get_by_id(classroomId)
 
@@ -25,6 +27,8 @@ class ClassroomDao(BaseDao):
             self.session.query(User)
             .join(Enrollment, Enrollment.userId == User.id)
             .filter(Enrollment.classroomId == _classroom.id)
+            .limit(page_size)
+            .offset((page - 1) * page_size)
             .all()
         )
 

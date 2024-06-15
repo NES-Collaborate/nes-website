@@ -1,9 +1,8 @@
 from datetime import date, datetime
-from typing import Optional, List
-
-from pydantic import BaseModel
+from typing import Optional
 
 from app.models.enum import PostType, Role
+from pydantic import BaseModel
 
 from .user import UserPoster
 
@@ -63,40 +62,27 @@ class PostOut(PostBase):
     id: int
     createdAt: datetime
 
+
 class PostResponse(PostOut):
-    
+
     subject: ClassroomOut
 
-class PostPaginateResponse(BaseModel):
-    
-    data: List[PostResponse]
-    total: int 
-    page: int
-    nextPage: Optional[int]
-    prevPage: Optional[int]
-    lastPage: int
 
 class CommentInp(BaseModel):
 
     content: str
 
+
 class Author(BaseModel):
     id: int
     name: str
+
 
 class CommentOut(BaseModel):
     id: int
     content: str
     author: Author
     createdAt: Optional[datetime]
-    class Config: 
-        from_attributes = True
 
-class CommentPaginateResponse(BaseModel):
-    
-    data: List[CommentOut]
-    total: int 
-    page: int
-    nextPage: Optional[int]
-    prevPage: Optional[int]
-    lastPage: int
+    class Config:
+        from_attributes = True
