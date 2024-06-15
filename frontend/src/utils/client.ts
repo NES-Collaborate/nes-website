@@ -1,5 +1,7 @@
 import { Attach } from "@/types/entities"
 import { User } from "@/types/user"
+import clsx, { ClassValue } from "clsx"
+import { twMerge } from "tailwind-merge"
 import { axiosServer } from "./axiosClient"
 
 /**
@@ -153,3 +155,5 @@ export const isDarkTheme = (theme: string) =>
     "dim",
     "sunset",
   ].includes(theme)
+
+export const cn = (...classes: ClassValue[]) => twMerge(clsx(classes))

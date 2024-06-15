@@ -1,4 +1,5 @@
 import { Classroom, Post } from "@/types/entities"
+import { User } from "@/types/user"
 import { AxiosInstance } from "axios"
 
 type PostsPagination = {
@@ -22,11 +23,10 @@ export const fetchClassroomPosts = async (
   return res.data
 }
 
-type ClassroomPage =  {
-  data: Classroom[],
+type ClassroomPage = {
+  data: Classroom[]
   nextPage?: number
 }
-
 
 export const fetchClassrooms = async (
   client: AxiosInstance,
@@ -53,5 +53,33 @@ export const updateClassroom = async (
   classroom: Classroom
 ): Promise<Classroom> => {
   const res = await client.put(`/teacher/classrooms/${classroom.id}`, classroom)
+  return res.data
+}
+
+export const fetchClassroom = async (
+  client: AxiosInstance,
+  classroomId: number
+): Promise<Classroom> => {
+  const res = await client.get(`/classroom/${classroomId}`)
+  return res.data
+}
+
+type MemberPage = {
+  data: User[]
+  nextPage?: number
+}
+
+export const fetchClassroomMembers = async (
+  client: AxiosInstance,
+  classroomId: number,
+  page: number,
+  role?: "admin" | "teacher" | "student"
+): Promise<MemberPage> => {
+  const res = await client.get(`/classroom/${classroomId}/members`, {
+    params: {
+      role,
+      p: page,
+    },
+  })
   return res.data
 }
