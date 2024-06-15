@@ -1,18 +1,18 @@
 from datetime import date
 from typing import List, Optional
 
-from pydantic import BaseModel, EmailStr
-
 from app.models.base import char2, str10
 from app.models.enum import (
     AchievementStatus,
     AchievementType,
     AttachType,
     MedalType,
+    Role,
     Serie,
     UserType,
 )
 from app.models.user import Student, User
+from pydantic import BaseModel, EmailStr
 
 
 class Attach(BaseModel):
@@ -138,3 +138,21 @@ class UserPayment(BaseModel):
     photo: Optional[Attach]
     scholarshipValue: float
     alreadyPaid: Optional[bool] = None
+
+
+class UserId(BaseModel):
+    userId: int
+    role: Role
+
+    class Config:
+        from_attributes = True
+
+
+class MemberEdit(BaseModel):
+
+    name: Optional[str]
+    email: Optional[str]
+    photo: Optional[str]
+
+    class Config:
+        from_attributes = True
