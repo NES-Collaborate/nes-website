@@ -1,7 +1,8 @@
-from app.routers.api_router import api_router
-from app.services.settings import settings
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+
+from app.routers.api_router import api_router
+from app.services.settings import settings
 
 app = FastAPI(title="GAP Project")
 
@@ -12,6 +13,5 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
-
 
 app.include_router(api_router)

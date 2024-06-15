@@ -1,5 +1,6 @@
-from app.routers.admin import classroom, finance, property, users
 from fastapi import APIRouter
+
+from app.routers.admin import classroom, finance, property, users
 
 router = APIRouter(prefix="/admin", tags=["admin"])
 

@@ -1,16 +1,15 @@
 from typing import Optional
 
-from app.daos.classroom import ClassroomDao
+from fastapi import APIRouter, Depends, HTTPException, Query, status
+from sqlalchemy.orm import Session
+
 from app.daos.general import GeneralDao
 from app.daos.post import PostDao
 from app.models.user import User
 from app.schemas.classroom import Author, CommentInp, CommentOut, PostResponse
-from app.schemas.user import UserPoster
 from app.services.db import get_session
 from app.services.decorators import paginated_response
 from app.services.user import UserService
-from fastapi import APIRouter, Depends, HTTPException, Query, status
-from sqlalchemy.orm import Session
 
 router = APIRouter(prefix="/student", tags=["student"])
 
@@ -25,13 +24,15 @@ async def get_all_posts(
     s: Optional[int] = None,
     q: Optional[str] = None,
 ):
-
     if current_user.type != "student":
         raise HTTPException(
-            status_code=status.HTTP_401_UNAUTHORIZED, detail="Usuário não autorizado"
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Usuário não autorizado",
         )
 
-    classroom_ids = [enrollment.classroomId for enrollment in current_user.classrooms]
+    classroom_ids = [
+        enrollment.classroomId for enrollment in current_user.classrooms
+    ]
     dao = PostDao(session)
     posts, _ = dao.get_posts(classroom_ids, p, pp, s, q)
 
@@ -47,10 +48,10 @@ async def get_all_comment(
     current_user: User = Depends(UserService.get_current_user),
     session: Session = Depends(get_session),
 ):
-
     if current_user.type != "student":
         raise HTTPException(
-            status_code=status.HTTP_401_UNAUTHORIZED, detail="Usuário não autorizado"
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Usuário não autorizado",
         )
 
     dao = GeneralDao(session)
@@ -79,7 +80,8 @@ async def add_comment(
 ):
     if current_user.type != "student":
         raise HTTPException(
-            status_code=status.HTTP_401_UNAUTHORIZED, detail="Usuário não autorizado"
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Usuário não autorizado",
         )
 
     author = Author(name=current_user.name, id=current_user.id)
@@ -89,13 +91,18 @@ async def add_comment(
     )
 
     response = CommentOut(
-        id=comment_id, content=comment_content, author=author, createdAt=createdAt
+        id=comment_id,
+        content=comment_content,
+        author=author,
+        createdAt=createdAt,
     )
 
     return response
 
 
-@router.put("/posts/{postId}/comments/{commentId}", status_code=status.HTTP_200_OK)
+@router.put(
+    "/posts/{postId}/comments/{commentId}", status_code=status.HTTP_200_OK
+)
 async def update_comment(
     postId: int,
     commentId: int,
@@ -103,10 +110,10 @@ async def update_comment(
     current_user: User = Depends(UserService.get_current_user),
     session: Session = Depends(get_session),
 ):
-
     if current_user.type != "student":
         raise HTTPException(
-            status_code=status.HTTP_401_UNAUTHORIZED, detail="Usuário não autorizado"
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Usuário não autorizado",
         )
 
     dao = GeneralDao(session)
@@ -115,23 +122,28 @@ async def update_comment(
     )
 
     response = CommentOut(
-        id=comment_id, content=comment_content, author=author, createdAt=createdAt
+        id=comment_id,
+        content=comment_content,
+        author=author,
+        createdAt=createdAt,
     )
 
     return response
 
 
-@router.delete("/posts/{postId}/comments/{commentId}", status_code=status.HTTP_200_OK)
+@router.delete(
+    "/posts/{postId}/comments/{commentId}", status_code=status.HTTP_200_OK
+)
 async def delete_comment(
     postId: int,
     commentId: int,
     current_user: User = Depends(UserService.get_current_user),
     session: Session = Depends(get_session),
 ):
-
     if current_user.type != "student":
         raise HTTPException(
-            status_code=status.HTTP_401_UNAUTHORIZED, detail="Usuário não autorizado"
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Usuário não autorizado",
         )
 
     dao = GeneralDao(session)
@@ -139,26 +151,3 @@ async def delete_comment(
     dao.delete_comment(commentId=commentId, postId=postId)
 
     return {"message": "Comentário deletado com sucesso."}
-
-
-@router.get(
-    "/classroom/{classroomId}/members",
-    status_code=status.HTTP_200_OK,
-)
-@paginated_response
-async def get_members_classroom(
-    classroomId: int,
-    current_user: User = Depends(UserService.get_current_user),
-    p: int = Query(1, ge=1),
-    pp: int = Query(10, ge=10, le=50),
-    session: Session = Depends(get_session),
-):
-
-    if current_user.type != "student":
-        raise HTTPException(
-            status_code=status.HTTP_401_UNAUTHORIZED, detail="Usuário não autorizado"
-        )
-
-    _members = ClassroomDao(session).get_members_by_id(classroomId, p, pp)
-
-    return [UserPoster.model_validate(member) for member in _members]

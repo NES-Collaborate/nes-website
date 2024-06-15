@@ -7,7 +7,6 @@ from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column, relationship
 
 
 class AddedByMixin(object):
-
     @declared_attr
     def addedById(cls):
         return mapped_column(sa.Integer, sa.ForeignKey("users.id"))
@@ -18,7 +17,6 @@ class AddedByMixin(object):
 
 
 class BaseTable(AddedByMixin, DeclarativeBase):
-
     id: Mapped[int] = mapped_column(sa.Integer, primary_key=True)
     createdAt: Mapped[Optional[datetime]] = mapped_column(
         sa.DateTime, default=lambda: datetime.now(timezone.utc)

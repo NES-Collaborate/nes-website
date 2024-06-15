@@ -1,6 +1,7 @@
-from app.routers import auth, classroom, general, teacher, students
-from app.routers.admin import admin_router
 from fastapi import APIRouter
+
+from app.routers import auth, classroom, general, students, teacher
+from app.routers.admin import admin_router
 
 api_router = APIRouter(prefix="/api", tags=["api"])
 

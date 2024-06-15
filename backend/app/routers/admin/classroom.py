@@ -1,11 +1,12 @@
+from fastapi import APIRouter, Depends, HTTPException, status
+from sqlalchemy.orm import Session
+
 from app.daos.classroom import ClassroomDao
 from app.daos.user import UserDao
 from app.models.user import User
 from app.schemas.user import MemberEdit, UserId, UserPoster
 from app.services.db import get_session
 from app.services.user import UserService
-from fastapi import APIRouter, Depends, HTTPException, status
-from sqlalchemy.orm import Session
 
 router = APIRouter(prefix="/classroom", tags=["classroom"])
 
@@ -19,7 +20,8 @@ async def add_classroom_members(
 ):
     if current_user.type != "admin":
         raise HTTPException(
-            status_code=status.HTTP_401_UNAUTHORIZED, detail="Usuário não autorizado"
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Usuário não autorizado",
         )
 
     _classroom = ClassroomDao(session).get_by_id(classroomId)
@@ -34,7 +36,9 @@ async def add_classroom_members(
     }
 
 
-@router.put("/{classroomId}/members/{memberId}", status_code=status.HTTP_200_OK)
+@router.put(
+    "/{classroomId}/members/{memberId}", status_code=status.HTTP_200_OK
+)
 async def update_classroom_member(
     classroomId: int,
     memberId: int,
@@ -44,7 +48,8 @@ async def update_classroom_member(
 ):
     if current_user.type != "admin":
         raise HTTPException(
-            status_code=status.HTTP_401_UNAUTHORIZED, detail="Usuário não autorizado"
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Usuário não autorizado",
         )
 
     if not ClassroomDao(session).is_member(memberId, classroomId):
@@ -61,7 +66,9 @@ async def update_classroom_member(
     }
 
 
-@router.delete("/{classroomId}/members/{memberId}", status_code=status.HTTP_200_OK)
+@router.delete(
+    "/{classroomId}/members/{memberId}", status_code=status.HTTP_200_OK
+)
 async def delete_classroom_member(
     classroomId: int,
     memberId: int,
@@ -70,7 +77,8 @@ async def delete_classroom_member(
 ):
     if current_user.type != "admin":
         raise HTTPException(
-            status_code=status.HTTP_401_UNAUTHORIZED, detail="Usuário não autorizado"
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Usuário não autorizado",
         )
 
     if not ClassroomDao(session).is_member(memberId, classroomId):
@@ -79,6 +87,8 @@ async def delete_classroom_member(
             detail="Usuário não é membro da turma",
         )
 
-    ClassroomDao(session).delete_enrollment(userId=memberId, classroomId=classroomId)
+    ClassroomDao(session).delete_enrollment(
+        userId=memberId, classroomId=classroomId
+    )
 
     return {"message": "Membro deletado com sucesso."}

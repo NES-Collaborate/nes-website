@@ -1,6 +1,9 @@
 from io import BytesIO
 
 import pandas as pd
+from fastapi import APIRouter, Depends, HTTPException, Response, status
+from sqlalchemy.orm import Session, aliased
+
 from app.daos.admin import AdminDao
 from app.daos.user import UserDao
 from app.models.expense import ExpenseCategory, ExpenseLog
@@ -9,8 +12,6 @@ from app.schemas.expense import ExpenseLogIn, ExpenseLogOut, ScholarshipPayment
 from app.schemas.user import UserPayment
 from app.services.db import get_session
 from app.services.user import UserService
-from fastapi import APIRouter, Depends, HTTPException, Response, status
-from sqlalchemy.orm import Session, aliased
 
 router = APIRouter(prefix="/finance", tags=["finance"])
 
@@ -20,7 +21,6 @@ async def get_stats(
     current_user: User = Depends(UserService.get_current_user),
     session: Session = Depends(get_session),
 ):
-
     if current_user.type != "admin":
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
@@ -40,7 +40,6 @@ async def get_finances(
     current_user: User = Depends(UserService.get_current_user),
     session: Session = Depends(get_session),
 ):
-
     if current_user.type != "admin":
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
@@ -58,19 +57,25 @@ async def get_finances(
     conditions = [
         ExpenseCategory.name.contains(category.strip()),
         ExpenseLog.comment.contains(comment.strip()),
-        ExpenseLog.type.contains(type.strip() if type.lower() != "all" else ""),
+        ExpenseLog.type.contains(
+            type.strip() if type.lower() != "all" else ""
+        ),
         User.name.contains(addedBy.strip()),
         ~User.softDelete,
     ]
 
     paidTo = paidTo.strip()
     if paidTo:
-        results = results.outerjoin(paidToUsers, paidToUsers.id == ExpenseLog.paidToId)
+        results = results.outerjoin(
+            paidToUsers, paidToUsers.id == ExpenseLog.paidToId
+        )
         conditions.append(paidToUsers.name.contains(paidTo.strip()))
 
     results = results.filter(*conditions)
 
-    expenses = [ExpenseLogOut.model_validate(result) for result in results.all()]
+    expenses = [
+        ExpenseLogOut.model_validate(result) for result in results.all()
+    ]
     return {"logs": expenses}
 
 
@@ -84,7 +89,6 @@ async def download_finances(
     current_user: User = Depends(UserService.get_current_user),
     session: Session = Depends(get_session),
 ):
-
     if current_user.type != "admin":
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
@@ -102,14 +106,18 @@ async def download_finances(
     conditions = [
         ExpenseCategory.name.contains(category.strip()),
         ExpenseLog.comment.contains(comment.strip()),
-        ExpenseLog.type.contains(type.strip() if type.lower() != "all" else ""),
+        ExpenseLog.type.contains(
+            type.strip() if type.lower() != "all" else ""
+        ),
         User.name.contains(addedBy.strip()),
         ~User.softDelete,
     ]
 
     paidTo = paidTo.strip()
     if paidTo:
-        results = results.outerjoin(paidToUsers, paidToUsers.id == ExpenseLog.paidToId)
+        results = results.outerjoin(
+            paidToUsers, paidToUsers.id == ExpenseLog.paidToId
+        )
         conditions.append(paidToUsers.name.contains(paidTo))
 
     results = results.filter(*conditions)
@@ -123,7 +131,9 @@ async def download_finances(
 
     return Response(
         buffer.getvalue(),
-        headers={"Content-Disposition": f'attachment; filename="Finanças NES.xlsx"'},
+        headers={
+            "Content-Disposition": f'attachment; filename="Finanças NES.xlsx"'
+        },
         media_type="application/vnd.ms-excel",
     )
 
@@ -136,7 +146,6 @@ async def get_students(
     current_user: User = Depends(UserService.get_current_user),
     session: Session = Depends(get_session),
 ):
-
     if current_user.type != "admin":
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
@@ -164,7 +173,6 @@ async def pay_students(
     current_user: User = Depends(UserService.get_current_user),
     session: Session = Depends(get_session),
 ):
-
     if current_user.type != "admin":
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
@@ -185,7 +193,6 @@ async def create_finance(
     current_user: User = Depends(UserService.get_current_user),
     session: Session = Depends(get_session),
 ):
-
     if current_user.type != "admin":
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,

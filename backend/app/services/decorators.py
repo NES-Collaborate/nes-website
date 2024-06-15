@@ -5,7 +5,6 @@ F = TypeVar("F", bound=Callable[..., Any])
 
 
 def paginated_response(function: F) -> F:
-
     @wraps(function)
     async def wrapper(*args: Any, **kwargs: Any) -> Any:
         response = await function(*args, **kwargs)

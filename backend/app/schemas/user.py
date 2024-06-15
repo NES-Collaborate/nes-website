@@ -1,6 +1,8 @@
 from datetime import date
 from typing import List, Optional
 
+from pydantic import BaseModel, EmailStr
+
 from app.models.base import char2, str10
 from app.models.enum import (
     AchievementStatus,
@@ -12,7 +14,6 @@ from app.models.enum import (
     UserType,
 )
 from app.models.user import Student, User
-from pydantic import BaseModel, EmailStr
 
 
 class Attach(BaseModel):
@@ -100,8 +101,9 @@ class UserOut(UserBase):
     birth: date
 
     @classmethod
-    def user_validate(cls, user: User, student: Student | None = None) -> "UserOut":
-
+    def user_validate(
+        cls, user: User, student: Student | None = None
+    ) -> "UserOut":
         user_out = cls.model_validate(user)
 
         if student:
@@ -132,7 +134,6 @@ class UserMinimal(BaseModel):
 
 
 class UserPayment(BaseModel):
-
     id: int
     name: str
     photo: Optional[Attach]
@@ -149,7 +150,6 @@ class UserId(BaseModel):
 
 
 class MemberEdit(BaseModel):
-
     name: Optional[str]
     email: Optional[str]
     photo: Optional[str]

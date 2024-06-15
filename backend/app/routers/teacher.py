@@ -1,3 +1,6 @@
+from fastapi import APIRouter, Depends, HTTPException, Query, status
+from sqlalchemy.orm import Session, joinedload
+
 from app.daos.admin import AdminDao
 from app.models.classroom import Classroom
 from app.models.relationships import Enrollment
@@ -6,8 +9,6 @@ from app.schemas.classroom import ClassroomBase, ClassroomOut, TeacherOut
 from app.services.db import get_session
 from app.services.decorators import paginated_response
 from app.services.user import UserService
-from fastapi import APIRouter, Depends, HTTPException, Query, status
-from sqlalchemy.orm import Session, joinedload
 
 router = APIRouter(prefix="/teacher", tags=["teacher"])
 
@@ -22,7 +23,8 @@ async def get_classrooms(
 ):
     if current_user.type not in ["other", "admin"]:
         raise HTTPException(
-            status_code=status.HTTP_401_UNAUTHORIZED, detail="Usuário não autorizado"
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Usuário não autorizado",
         )
 
     if current_user.type == "admin":
@@ -46,14 +48,18 @@ async def get_classrooms(
             if enrollment.role == "teacher"
         ]
         classrooms.append(
-            ClassroomOut(id=classroom.id, name=classroom.name, teachers=teachers)
+            ClassroomOut(
+                id=classroom.id, name=classroom.name, teachers=teachers
+            )
         )
 
     return classrooms
 
 
 @router.post(
-    "/classrooms", status_code=status.HTTP_201_CREATED, response_model=ClassroomOut
+    "/classrooms",
+    status_code=status.HTTP_201_CREATED,
+    response_model=ClassroomOut,
 )
 async def create_classroom(
     classroom: ClassroomBase,
@@ -62,7 +68,8 @@ async def create_classroom(
 ):
     if current_user.type not in ["other", "admin"]:
         raise HTTPException(
-            status_code=status.HTTP_401_UNAUTHORIZED, detail="Usuário não autorizado"
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Usuário não autorizado",
         )
 
     _classroom = AdminDao(session).create_classroom(classroom)
@@ -78,7 +85,8 @@ async def update_classroom(
 ):
     if current_user.type not in ["other", "admin"]:
         raise HTTPException(
-            status_code=status.HTTP_401_UNAUTHORIZED, detail="Usuário não autorizado"
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Usuário não autorizado",
         )
 
     _classroom = AdminDao(session).update_classroom(classroom, classroom_id)
