@@ -96,12 +96,6 @@ export const USER_PAGES: UserPage[] = [
     allowedUserTypes: ["admin", "other", "student"],
   },
   {
-    name: "Turmas",
-    url: "/classroom",
-    icon: FiUsers,
-    allowedUserTypes: ["admin", "other"],
-  },
-  {
     name: "Matérias",
     url: "/app/subject",
     icon: FiBook,
