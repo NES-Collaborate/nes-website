@@ -22,7 +22,9 @@ const Page: NextPageWithLayout = () => {
       <Head classroom={classroom} />
       {/* alguns filtros para as postagens (pesquisar, ordenar, bla bla bla) */}
 
-      {/* postagens */}
+      <p className="flex items-center justify-center h-full">
+        As postagens aparecerão aqui.
+      </p>
 
       <BottomMenu classrooom={classroom} />
     </>

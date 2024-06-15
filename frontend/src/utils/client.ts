@@ -9,7 +9,7 @@ import { axiosServer } from "./axiosClient"
  * @param user The user instance
  * @returns string
  */
-export const getUserPhotoUrl = (user: User) => {
+export const getUserPhotoUrl = (user: User | null) => {
   return getAttachmentUrl(user?.photo || ({} as Attach))
 }
 
