@@ -22,8 +22,21 @@ export const fetchClassroomPosts = async (
   return res.data
 }
 
-export const fetchClassrooms = async (client: AxiosInstance): Promise<Classroom[]> => {
-  const res = await client.get("/teacher/classrooms")
+type ClassroomPage =  {
+  data: Classroom[],
+  nextPage?: number
+}
+
+
+export const fetchClassrooms = async (
+  client: AxiosInstance,
+  pageParam: number
+): Promise<ClassroomPage> => {
+  const res = await client.get("/teacher/classrooms", {
+    params: {
+      p: pageParam,
+    },
+  })
   return res.data
 }
 

@@ -1,20 +1,22 @@
 import { useBackend } from "@/contexts/backend"
 import { createClassroom, fetchClassrooms, updateClassroom } from "@/services/classroom"
 import { Classroom } from "@/types/entities"
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
+import { useInfiniteQuery, useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 
 export const useClassrooms = () => {
   const { backend, isLogged } = useBackend()
 
-  return useQuery<Classroom[]>({
+  return useInfiniteQuery({
     queryKey: ["classrooms"],
-    queryFn: () => fetchClassrooms(backend),
+    queryFn: ({ pageParam }) => fetchClassrooms(backend, pageParam),
+    initialPageParam: 1,
+    getNextPageParam: (lastPage) => lastPage.nextPage,
     enabled: isLogged,
   })
 }
 
 export const useClassroomMutation = () => {
-  const { backend, isLogged } = useBackend()
+  const { backend } = useBackend()
   const queryClient = useQueryClient()
 
   const createMutation = useMutation({
