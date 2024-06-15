@@ -1,9 +1,10 @@
-import ClassroomLayout from "@/components/layout/Classroom"
-import LayoutDefault from "@/components/layout/Default"
+import LayoutDefault from "@/components/layout/Layout"
 import { ReactElement } from "react"
 
-export const defaultLayout = (page: ReactElement) => <LayoutDefault>{page}</LayoutDefault>
+export const defaultLayout = (page: ReactElement) => (
+  <LayoutDefault type="default">{page}</LayoutDefault>
+)
 
 export const classroomLayout = (page: ReactElement) => (
-  <ClassroomLayout>{page}</ClassroomLayout>
+  <LayoutDefault type="classroom">{page}</LayoutDefault>
 )
