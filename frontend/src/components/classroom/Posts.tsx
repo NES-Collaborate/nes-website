@@ -1,11 +1,10 @@
 import { useClassroomPosts } from "@/hooks/classroom"
 import { Classroom } from "@/types/entities"
 import { useEffect, useRef, useState } from "react"
-import { Button, Input, Tooltip } from "react-daisyui"
-import { FaSearch } from "react-icons/fa"
 import { useInView } from "react-intersection-observer"
 import Loading from "../Loading"
 import PostCard from "./PostCard"
+import PostsFilter from "./PostsFilter"
 
 type Props = {
   classroom?: Classroom
@@ -26,35 +25,14 @@ const Posts = ({ classroom }: Props) => {
     }
   }, [fetchNextPage, hasNextPage, inView, isFetchingNextPage])
 
-  const reloadPosts = () => {
+  useEffect(() => {
     setQuery(inputRef.current?.value ?? "")
     refetch()
-  }
+  }, [query, classroom?.id, refetch])
 
   return (
     <div className="container mx-auto px-4 mt-1">
-      <div className="join flex justify-center mb-8 gap-1">
-        <Input
-          ref={inputRef}
-          size="sm"
-          placeholder="Pesquisar"
-          className="w-3/4 lg:w-2/4 join-item"
-          onKeyDown={(e) => {
-            if (e.key === "Enter") reloadPosts()
-          }}
-        />
-        <Tooltip message="Pesquisar">
-          <Button
-            onClick={reloadPosts}
-            size="sm"
-            color="primary"
-            disabled={isFetching}
-            className="join-item"
-          >
-            <FaSearch />
-          </Button>
-        </Tooltip>
-      </div>
+      <PostsFilter query={[query, setQuery]} isFetching={isFetching} />
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
         {data?.pages.map((page) =>
