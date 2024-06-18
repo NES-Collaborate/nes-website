@@ -46,7 +46,7 @@ const Classrooms = () => {
         <div className="flex justify-center items-center">
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
             {!data?.pages[0].data.length && (
-              <p className="text-xl text-center my-4">
+              <p className="text-xl text-center my-4 col-span-full">
                 Nenhuma turma criada até o momento.
               </p>
             )}
