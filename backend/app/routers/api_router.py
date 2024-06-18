@@ -1,13 +1,19 @@
+import importlib
+
 from fastapi import APIRouter
 
-from app.routers import auth, classroom, general, students, teacher
-from app.routers.admin import admin_router
+routers = [
+    "auth",
+    "classroom",
+    "admin",
+    "general",
+    "comment",
+    "post",
+]
 
-api_router = APIRouter(prefix="/api", tags=["api"])
+api_router = APIRouter(prefix="/api")
 
-api_router.include_router(auth.router)
-api_router.include_router(classroom.router)
-api_router.include_router(teacher.router)
-api_router.include_router(admin_router.router)
-api_router.include_router(general.router)
-api_router.include_router(students.router)
+
+for api_route in routers:
+    api = importlib.import_module(f"app.routers.{api_route}")
+    api_router.include_router(api.router)

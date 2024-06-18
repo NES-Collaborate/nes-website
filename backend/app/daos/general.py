@@ -127,13 +127,11 @@ class GeneralDao(BaseDao):
 
         return new_comment.content, new_comment.id, createdAt
 
-    def update_comment(
-        self, comment: CommentInp, postId: int, comment_id: int
-    ) -> Tuple[str, int, Optional[datetime], Author]:
+    def update_comment(self, comment: CommentInp, comment_id: int) -> Comment:
         db_comment = (
             self.session.query(Comment)
             .options(joinedload(Comment.addedBy))
-            .filter_by(id=comment_id, postId=postId)
+            .filter_by(id=comment_id)
             .first()
         )
 
@@ -144,11 +142,10 @@ class GeneralDao(BaseDao):
 
         db_comment.content = comment.content
         db_comment.updatedAt = datetime.now(timezone.utc)
-        author = Author(name=db_comment.addedBy.name, id=db_comment.addedBy.id)
         self.session.commit()
         self.session.refresh(db_comment)
 
-        return db_comment.content, db_comment.id, db_comment.createdAt, author
+        return db_comment
 
     def delete_comment(self, postId: int, commentId: int) -> None:
         db_comment = (

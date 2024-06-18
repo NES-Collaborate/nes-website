@@ -75,7 +75,7 @@ class Author(BaseModel):
 class CommentOut(BaseModel):
     id: int
     content: str
-    author: Author
+    addedBy: Author
     createdAt: Optional[datetime]
 
     class Config:

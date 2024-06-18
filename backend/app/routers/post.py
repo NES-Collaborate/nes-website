@@ -3,43 +3,26 @@ from typing import Optional
 from fastapi import APIRouter, Depends, HTTPException, Query, status
 from sqlalchemy.orm import Session
 
+from app.daos.admin import AdminDao
 from app.daos.general import GeneralDao
 from app.daos.post import PostDao
 from app.models.user import User
-from app.schemas.classroom import Author, CommentInp, CommentOut, PostResponse
+from app.schemas.classroom import (
+    Author,
+    ClassroomBase,
+    ClassroomOut,
+    CommentInp,
+    CommentOut,
+    PostResponse,
+)
 from app.services.db import get_session
 from app.services.decorators import paginated_response
 from app.services.user import UserService
 
-router = APIRouter(prefix="/student", tags=["student"])
+router = APIRouter(prefix="/post", tags=["post"])
 
 
-@router.get("/posts", status_code=status.HTTP_200_OK)
-@paginated_response
-async def get_all_posts(
-    current_user: User = Depends(UserService.get_current_user),
-    session: Session = Depends(get_session),
-    p: int = Query(1, ge=1),
-    pp: int = Query(10, ge=10, le=50),
-    s: Optional[int] = None,
-    q: Optional[str] = None,
-):
-    if current_user.type != "student":
-        raise HTTPException(
-            status_code=status.HTTP_401_UNAUTHORIZED,
-            detail="Usuário não autorizado",
-        )
-
-    classroom_ids = [
-        enrollment.classroomId for enrollment in current_user.classrooms
-    ]
-    dao = PostDao(session)
-    posts, _ = dao.get_posts(classroom_ids, p, pp, s, q)
-
-    return [PostResponse.model_validate(post) for post in posts]
-
-
-@router.get("/posts/{postId}/comments", status_code=status.HTTP_200_OK)
+@router.get("/{postId}/comment", status_code=status.HTTP_200_OK)
 @paginated_response
 async def get_all_comment(
     postId: int,
@@ -62,7 +45,7 @@ async def get_all_comment(
         CommentOut(
             id=comment.id,
             content=comment.content,
-            author=Author(name=comment.addedBy.name, id=comment.addedBy.id),
+            addedBy=Author(name=comment.addedBy.name, id=comment.addedBy.id),
             createdAt=comment.createdAt,
         )
         for comment in comments
@@ -71,7 +54,7 @@ async def get_all_comment(
     return [CommentOut.model_validate(comment) for comment in comments_out]
 
 
-@router.post("/posts/{postId}/comments", status_code=status.HTTP_201_CREATED)
+@router.post("/{postId}/comment", status_code=status.HTTP_201_CREATED)
 async def add_comment(
     postId: int,
     comment: CommentInp,
@@ -93,61 +76,60 @@ async def add_comment(
     response = CommentOut(
         id=comment_id,
         content=comment_content,
-        author=author,
+        addedBy=author,
         createdAt=createdAt,
     )
 
     return response
 
 
-@router.put(
-    "/posts/{postId}/comments/{commentId}", status_code=status.HTTP_200_OK
-)
-async def update_comment(
-    postId: int,
-    commentId: int,
-    comment: CommentInp,
+@router.get("", status_code=status.HTTP_200_OK)
+@paginated_response
+async def get_all_posts(
+    current_user: User = Depends(UserService.get_current_user),
+    session: Session = Depends(get_session),
+    p: int = Query(1, ge=1),
+    pp: int = Query(10, ge=10, le=50),
+    s: Optional[int] = None,
+    q: Optional[str] = None,
+    classroomId: Optional[int] = None,
+):
+    classroom_ids = (
+        [classroomId]
+        if classroomId
+        else [enrollment.classroomId for enrollment in current_user.classrooms]
+    )
+
+    # TODO: get the members of each classroom and verify if the current user is a member of.
+
+    dao = PostDao(session)
+    posts, _ = dao.get_posts(classroom_ids, p, pp, s, q)
+
+    return [PostResponse.model_validate(post) for post in posts]
+
+
+@router.put("/classrooms/{classroom_id}", status_code=status.HTTP_200_OK)
+async def update_classroom(
+    classroom_id: int,
+    classroom: ClassroomBase,
     current_user: User = Depends(UserService.get_current_user),
     session: Session = Depends(get_session),
 ):
-    if current_user.type != "student":
+    if current_user.type not in ["other", "admin"]:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail="Usuário não autorizado",
         )
 
-    dao = GeneralDao(session)
-    comment_content, comment_id, createdAt, author = dao.update_comment(
-        comment=comment, postId=postId, comment_id=commentId
-    )
-
-    response = CommentOut(
-        id=comment_id,
-        content=comment_content,
-        author=author,
-        createdAt=createdAt,
-    )
-
-    return response
-
-
-@router.delete(
-    "/posts/{postId}/comments/{commentId}", status_code=status.HTTP_200_OK
-)
-async def delete_comment(
-    postId: int,
-    commentId: int,
-    current_user: User = Depends(UserService.get_current_user),
-    session: Session = Depends(get_session),
-):
-    if current_user.type != "student":
+    _classroom = AdminDao(session).update_classroom(classroom, classroom_id)
+    if _classroom is None:
         raise HTTPException(
-            status_code=status.HTTP_401_UNAUTHORIZED,
-            detail="Usuário não autorizado",
+            status_code=status.HTTP_404_NOT_FOUND, detail="Classroom not found"
         )
-
-    dao = GeneralDao(session)
-
-    dao.delete_comment(commentId=commentId, postId=postId)
-
-    return {"message": "Comentário deletado com sucesso."}
+    return ClassroomOut.model_validate(_classroom)
+    _classroom = AdminDao(session).update_classroom(classroom, classroom_id)
+    if _classroom is None:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND, detail="Classroom not found"
+        )
+    return ClassroomOut.model_validate(_classroom)

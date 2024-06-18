@@ -75,7 +75,7 @@ class UserService:
             )
 
             _user = user.UserDao(session).get_by_cpf(payload.get("sub"))
-        except:
+        except:  # noqa: E722
             raise HTTPException(
                 status_code=status.HTTP_401_UNAUTHORIZED,
                 detail="Não foi possível validar as credenciais",
