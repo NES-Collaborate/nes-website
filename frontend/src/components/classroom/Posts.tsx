@@ -1,4 +1,5 @@
 import { useClassroomPosts } from "@/hooks/classroom"
+import { Classroom } from "@/types/entities"
 import { useEffect, useRef, useState } from "react"
 import { Button, Input, Tooltip } from "react-daisyui"
 import { FaSearch } from "react-icons/fa"
@@ -6,14 +7,18 @@ import { useInView } from "react-intersection-observer"
 import Loading from "../Loading"
 import PostCard from "./PostCard"
 
-const Posts = () => {
+type Props = {
+  classroom?: Classroom
+}
+
+const Posts = ({ classroom }: Props) => {
   const { ref, inView } = useInView()
   const [query, setQuery] = useState("")
 
   const inputRef = useRef<HTMLInputElement>(null)
 
   const { data, refetch, fetchNextPage, isFetching, isFetchingNextPage, hasNextPage } =
-    useClassroomPosts(query)
+    useClassroomPosts({ classroomId: classroom?.id, query })
 
   useEffect(() => {
     if (inView && hasNextPage && !isFetchingNextPage) {
@@ -27,12 +32,11 @@ const Posts = () => {
   }
 
   return (
-    <div className="container mx-auto px-4 py-8">
-      <h1 className="text-3xl font-bold text-center mt-2 mb-4">Postagens</h1>
-
-      <div className="join flex justify-center mb-8 mt-4 gap-1">
+    <div className="container mx-auto px-4 mt-1">
+      <div className="join flex justify-center mb-8 gap-1">
         <Input
           ref={inputRef}
+          size="sm"
           placeholder="Pesquisar"
           className="w-3/4 lg:w-2/4 join-item"
           onKeyDown={(e) => {
@@ -42,6 +46,7 @@ const Posts = () => {
         <Tooltip message="Pesquisar">
           <Button
             onClick={reloadPosts}
+            size="sm"
             color="primary"
             disabled={isFetching}
             className="join-item"

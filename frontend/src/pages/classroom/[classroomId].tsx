@@ -6,6 +6,7 @@ import { classroomLayout } from "@/utils/layouts"
 import { useRouter } from "next/router"
 import { useEffect, useState } from "react"
 import { NextPageWithLayout } from "../_app"
+import Posts from "@/components/classroom/Posts"
 
 const Page: NextPageWithLayout = () => {
   const router = useRouter()
@@ -22,9 +23,7 @@ const Page: NextPageWithLayout = () => {
       <Head classroom={classroom} />
       {/* alguns filtros para as postagens (pesquisar, ordenar, bla bla bla) */}
 
-      <p className="flex items-center justify-center h-full">
-        As postagens aparecerão aqui.
-      </p>
+      <Posts classroom={classroom} />
 
       <BottomMenu classrooom={classroom} />
     </>
