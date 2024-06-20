@@ -4,9 +4,20 @@ import Link from "next/link"
 const PAGES = [
   {
     name: "Gestão da Landing Page",
-    path: "/app/admin/lp",
     description:
       "Algumas funcionalidades para modificar a página inicial da aplicação que sera mostrada aos visitantes, novos alunos, possíveis doadores, etc.",
+    subpages: [
+      {
+        name: "Gestão de Notícias",
+        path: "/app/admin/notices",
+        description: "Permite gerenciar as notícias da landing page.",
+      },
+      {
+        name: "Gestão de Casos de Sucesso",
+        path: "/app/admin/success-cases",
+        description: "Permite gerenciar os casos de sucesso da landing page.",
+      },
+    ],
   },
   {
     name: "Gestão de Bens",
@@ -33,18 +44,35 @@ const Admin = () => {
     <>
       <h1 className="text-3xl text-center my-3">Administração</h1>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 justify-items-center">
+      <div className="flex flex-wrap flex-row justify-center mt-4">
         {PAGES.map((page, i) => (
-          <div className="card w-96 bg-base-200 shadow-xl hover:bg-base-300" key={i}>
-            <div className="card-body">
-              <h2 className="card-title">{page.name}</h2>
-              <p>{page.description}</p>
-              <div className="card-actions justify-end">
-                <Link href={page.path} className="btn btn-primary">
-                  Ir
-                </Link>
+          <div className="w-11/12" key={i}>
+            {page.subpages ? (
+              <div className="collapse collapse-arrow bg-base-200 hover:bg-base-300">
+                <input type="checkbox" />
+                <div className="collapse-title text-xl font-medium">{page.name}</div>
+                <div className="collapse-content">
+                  {page.subpages.map((subpage, j) => (
+                    <Link
+                      href={subpage.path}
+                      className="title text-xl font-medium p-4 tooltip w-full text-start mt-4 bg-base-200 hover:bg-base-300 rounded-2xl"
+                      data-tip={subpage.description}
+                      key={j}
+                    >
+                      {subpage.name}
+                    </Link>
+                  ))}
+                </div>
               </div>
-            </div>
+            ) : (
+              <Link
+                href={page.path}
+                className="title text-xl font-medium p-4 tooltip w-full text-start mt-4 bg-base-200 hover:bg-base-300 rounded-2xl"
+                data-tip={page.description}
+              >
+                {page.name}
+              </Link>
+            )}
           </div>
         ))}
       </div>
