@@ -1,5 +1,10 @@
+import { PostFormData, postSchema } from "@/schemas/post"
 import { Classroom } from "@/types/entities"
+import { zodResolver } from "@hookform/resolvers/zod"
 import { useState } from "react"
+import { useForm } from "react-hook-form"
+import PostForm from "./PostForm"
+import PostPreview from "./PostPreview"
 
 type Props = {
   classroom?: Classroom
@@ -7,6 +12,10 @@ type Props = {
 
 const CreatePostTabs = ({ classroom }: Props) => {
   const [activeTab, setActiveTab] = useState<"form" | "preview">("form")
+
+  const form = useForm<PostFormData>({
+    resolver: zodResolver(postSchema),
+  })
 
   return (
     <div role="tablist" className="tabs tabs-boxed">
@@ -19,8 +28,8 @@ const CreatePostTabs = ({ classroom }: Props) => {
         onClick={() => setActiveTab("form")}
         checked={activeTab === "form"}
       />
-      <div role="tabpanel" className="tab-content p-10 h-56">
-        Formulário
+      <div role="tabpanel" className="tab-content">
+        <PostForm form={form} />
       </div>
 
       <input
@@ -33,8 +42,8 @@ const CreatePostTabs = ({ classroom }: Props) => {
         checked={activeTab === "preview"}
       />
 
-      <div role="tabpanel" className="tab-content p-10 h-56">
-        Pré-visualização do conteúdo escrito no formulário com renderização do markdown.
+      <div role="tabpanel" className="tab-content">
+        <PostPreview post={form.getValues()} />
       </div>
     </div>
   )

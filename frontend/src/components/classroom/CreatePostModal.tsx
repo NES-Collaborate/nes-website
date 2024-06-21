@@ -11,7 +11,7 @@ type Props = {
 
 const CreatePostModal = ({ isOpen, setIsOpen, classroom }: Props) => {
   return (
-    <Modal open={isOpen} className="w-full max-w-xl px-0.5 pb-0" responsive>
+    <Modal open={isOpen} className="w-full max-w-5xl px-0.5 pb-0">
       <Button
         onClick={() => setIsOpen(false)}
         className="absolute right-2 top-2"
