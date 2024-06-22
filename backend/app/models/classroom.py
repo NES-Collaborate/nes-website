@@ -74,7 +74,9 @@ class Post(BaseTable):
     frequency: Mapped[List["Frequency"]] = relationship(
         "Frequency", back_populates="lecture"
     )
-    type: Mapped[PostType] = mapped_column(sa.Enum(*get_args(PostType)))
+    type: Mapped[PostType] = mapped_column(
+        sa.Enum(*get_args(PostType), name="post_type")
+    )
     attachments: Mapped[List["PostAttachment"]] = relationship(
         "PostAttachment", back_populates="post"
     )
@@ -110,7 +112,7 @@ class Frequency(BaseTable):
         sa.Integer, sa.ForeignKey("posts.id")
     )
     status: Mapped[FrequencyStatus] = mapped_column(
-        sa.Enum(*get_args(FrequencyStatus))
+        sa.Enum(*get_args(FrequencyStatus), name="frequency_status")
     )
     justification: Mapped[Optional[str]]
 
@@ -121,5 +123,7 @@ class PostAttachment(BaseTable):
     postId: Mapped[int] = mapped_column(sa.Integer, sa.ForeignKey("posts.id"))
     post: Mapped["Post"] = relationship("Post", back_populates="attachments")
     name: Mapped[str]
-    type: Mapped[AttachType] = mapped_column(sa.Enum(*get_args(AttachType)))
+    type: Mapped[AttachType] = mapped_column(
+        sa.Enum(*get_args(AttachType), name="attach_type")
+    )
     metaData: Mapped[str]

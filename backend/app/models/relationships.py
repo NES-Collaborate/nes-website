@@ -20,7 +20,7 @@ class Enrollment(BaseTable):
     classroom = relationship(
         "Classroom", back_populates="members", foreign_keys=[classroomId]
     )
-    role: Mapped[Role] = mapped_column(sa.Enum(*get_args(Role)))
+    role: Mapped[Role] = mapped_column(sa.Enum(*get_args(Role), name="role"))
 
 
 class ActivityGroup(BaseTable):

@@ -31,7 +31,9 @@ class User(BaseTable):
     address: Mapped["Address"] = relationship(
         "Address", foreign_keys="[Address.userId]"
     )
-    type: Mapped[UserType] = mapped_column(sa.Enum(*get_args(UserType)))
+    type: Mapped[UserType] = mapped_column(
+        sa.Enum(*get_args(UserType), name="user_type")
+    )
     softDelete: Mapped[bool] = mapped_column(sa.Boolean, default=False)
 
     emails: Mapped[Optional[List["Email"]]] = relationship(
@@ -89,7 +91,9 @@ class Attach(BaseTable):
 
     name: Mapped[str]
     location: Mapped[str]
-    type: Mapped[AttachType] = mapped_column(sa.Enum(*get_args(AttachType)))
+    type: Mapped[AttachType] = mapped_column(
+        sa.Enum(*get_args(AttachType), name="attach_type")
+    )
 
     userId: Mapped[Optional[int]] = mapped_column(
         sa.Integer, sa.ForeignKey("users.id")
@@ -164,15 +168,17 @@ class Achievement(BaseTable):
 
     name: Mapped[str]
     type: Mapped[AchievementType] = mapped_column(
-        sa.Enum(*get_args(AchievementType))
+        sa.Enum(*get_args(AchievementType), name="achievement_type")
     )
     olympicAbbrev: Mapped[str]
     year: Mapped[int]
-    medal: Mapped[MedalType] = mapped_column(sa.Enum(*get_args(MedalType)))
+    medal: Mapped[MedalType] = mapped_column(
+        sa.Enum(*get_args(MedalType), name="medal_type")
+    )
     link: Mapped[Optional[str]]
     otherInfo: Mapped[Optional[str]]
     status: Mapped[AchievementStatus] = mapped_column(
-        sa.Enum(*get_args(AchievementStatus))
+        sa.Enum(*get_args(AchievementStatus), name="achievement_status")
     )
     student: Mapped["Student"] = relationship(
         "Student", back_populates="achievements"
@@ -189,6 +195,6 @@ class BankAccount(BaseTable):
     agencyNumber: Mapped[int]
     accountNumber: Mapped[int]
     accountType: Mapped[AccountType] = mapped_column(
-        sa.Enum(*get_args(AccountType))
+        sa.Enum(*get_args(AccountType), name="account_type")
     )
     pix: Mapped[str]

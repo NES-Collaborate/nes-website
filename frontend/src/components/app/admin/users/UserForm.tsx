@@ -59,7 +59,8 @@ const UserForm = ({ user, action, setModalState }: Omit<UserModalProps, "isOpen"
 
   const userType = watch("type")
 
-  const { data: classrooms } = useClassrooms()
+  const { data } = useClassrooms()
+  const classrooms = data?.pages.flatMap((page) => page.data) ?? []
 
   const [emails, setEmails] = useState<EmailFormData[]>([])
   const [phoneNumbers, setPhoneNumbers] = useState<PhoneNumberFormData[]>([])
@@ -247,7 +248,7 @@ const UserForm = ({ user, action, setModalState }: Omit<UserModalProps, "isOpen"
 
           <SelectField
             label="Turma"
-            options={(classrooms || []).map(({ id, name }) => ({
+            options={classrooms.map(({ id, name }) => ({
               value: id.toString(),
               label: name,
             }))}

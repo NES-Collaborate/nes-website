@@ -18,7 +18,9 @@ const ScholarshipParams = ({ query, setQuery }: Props) => {
     })
   }, [currentDate, setQuery])
 
-  const { data: classrooms = [], isLoading } = useClassrooms()
+  const { data, isLoading } = useClassrooms()
+
+  const classrooms = data?.pages.flatMap((page) => page.data) ?? []
 
   return (
     <div className="join flex justify-center">

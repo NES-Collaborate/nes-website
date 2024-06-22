@@ -19,7 +19,7 @@ class ExpenseLog(BaseTable):
         sa.Integer, sa.ForeignKey("attatches.id")
     )
     type: Mapped[ExpenseLogType] = mapped_column(
-        sa.Enum(*get_args(ExpenseLogType))
+        sa.Enum(*get_args(ExpenseLogType), name="expense_log_type")
     )
     comment: Mapped[Optional[str]]
     paidToId: Mapped[Optional[int]] = mapped_column(
