@@ -35,7 +35,7 @@ const Head = ({ classroom }: Props) => {
 
         <div className="flex justify-end">
           {teachers.map((teacher) => (
-            <MinimalUserPresentation user={teacher} key={teacher.id} />
+            <MinimalUserPresentation type="small" user={teacher} key={teacher.id} />
           ))}
         </div>
       </div>

@@ -1,14 +1,20 @@
 import { User } from "@/types/user"
-import { getUserPhotoUrl } from "@/utils/client"
+import { cn, getUserPhotoUrl } from "@/utils/client"
 import Image from "next/image"
 
 type UserProps = {
   user: User
+  type: "small" | "full"
 }
 
-const MinimalUserPresentation: React.FC<UserProps> = ({ user }) => {
+const MinimalUserPresentation: React.FC<UserProps> = ({ user, type }) => {
   return (
-    <div className="flex items-center space-x-2 p-1 bg-base-200 rounded-lg">
+    <div
+      className={cn(
+        type === "full" ? "p-3" : "p-1",
+        "flex items-center space-x-2 bg-base-200 rounded-lg"
+      )}
+    >
       <Image
         src={getUserPhotoUrl(user)}
         alt={user.name}
@@ -17,7 +23,9 @@ const MinimalUserPresentation: React.FC<UserProps> = ({ user }) => {
         height={24}
       />
 
-      <span className="text-xs font-semibold">{user.name}</span>
+      <span className={type === "full" ? "font-sm font-normal" : "font-sm font-semibold"}>
+        {user.name}
+      </span>
     </div>
   )
 }
