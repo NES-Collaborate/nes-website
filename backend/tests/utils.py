@@ -2,17 +2,14 @@ import pytest
 from fastapi.testclient import TestClient
 
 
+
+
 def login_and_get_token(client: TestClient, username: str, password: str):
-    response = client.post(
-        "/api/login", data={"username": username, "password": password}
-    )
+    response = client.post("/api/login",
+                           data={
+                               "username": username,
+                               "password": password
+                           })
     assert response.status_code == 200
-    token = response.json()[
-        "access_token"
-    ]  # Ajuste de acordo com a estrutura da sua resposta
+    token = response.json()["access_token"]
     return token
-
-
-@pytest.fixture
-def auth_token(client: TestClient):
-    return login_and_get_token(client, "00000000000", "admin")
