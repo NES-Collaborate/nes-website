@@ -106,3 +106,53 @@ async def delete_user(
     UserDao(session).soft_delete_by_id(_user.id)
 
     return {"message": f"Usuário com id {user_id} deletado"}
+
+@router.delete("/delete-hard/{user_cpf}")
+async def hard_delete_user(
+    user_cpf: str,
+    current_user: User = Depends(UserService.get_current_user),
+    session: Session = Depends(get_session),
+)-> dict[str, str]:
+    """
+    Deleta permanentemente um usuário pelo CPF.
+
+    Este endpoint permite que um administrador delete permanentemente um usuário do sistema pelo CPF.
+
+    Parâmetros:
+    - user_cpf (str): O CPF do usuário a ser deletado.
+    - current_user (User, opcional): O usuário atual que está fazendo a requisição. Recuperado do token.
+    - session (Session, opcional): A sessão do banco de dados.
+
+    Retorna:
+    - dict: Uma mensagem de confirmação indicando que o usuário foi deletado.
+
+    Exceções:
+    - HTTPException: Se o usuário atual não for um administrador (401 Não Autorizado).
+    - HTTPException: Se o usuário tentar deletar a si mesmo (401 Não Autorizado).
+    - HTTPException: Se o usuário não for encontrado (404 Não Encontrado).
+    """
+
+    if current_user.type != "admin":
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Usuário não autorizado",
+        )
+
+    if user_cpf == current_user.cpf:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Você não pode apagar você mesmo....",
+        )
+
+    user_dao = UserDao(session)
+    _user = user_dao.get_by_cpf(user_cpf)
+
+    if not _user:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Usuário não encontrado",
+        )
+
+    user_dao.delete_by_id(_user.id)
+
+    return {"message": f"Usuário com cpf {user_cpf} deletado permanentemente"}
