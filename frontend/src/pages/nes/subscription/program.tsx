@@ -1,10 +1,14 @@
-import ButtonNES from "@/components/ButtonNES"
 import Logo from "@/components/layout/default/Logo"
 import Footer from "@/components/nes/Footer"
 import Table from "@/components/nes/subscription/Table"
 import { SELECTIONS_EXAMPLES, Selection } from "@/data/constants"
+import Link from "next/link"
 import { useRouter } from "next/router"
 import { useEffect, useState } from "react"
+import { AiOutlineForm } from "react-icons/ai"
+import { FaBookOpen, FaTableList } from "react-icons/fa6"
+import { GrFormSchedule } from "react-icons/gr"
+import { RxHamburgerMenu } from "react-icons/rx"
 
 const Home = () => {
   const router = useRouter()
@@ -26,66 +30,59 @@ const Home = () => {
   return (
     <div className="min-height flex flex-col">
       <div className="flex-1">
-        <div className="flex flex-wrap w-full justify-evenly mb-4 mt-10">
-          <ButtonNES
-            type="navigation"
-            style="fill"
-            className="btn-lg w-2/5 my-4 !pl-4"
-            href="#subscription"
+        {/* Botões de navegação */}
+        <div className="dropdown dropdown-hover dropdown-top dropdown-end fixed bottom-4 right-4">
+          <div tabIndex={0} role="button" className="btn border-primary">
+            <RxHamburgerMenu className="text-primary size-6" />
+          </div>
+          <ul
+            tabIndex={0}
+            className="dropdown-content menu bg-base-100 rounded-box z-[1] w-52 p-2 shadow"
           >
-            Inscrições
-          </ButtonNES>
-          <ButtonNES
-            type="navigation"
-            style="fill"
-            className="btn-lg w-2/5 my-4 !pl-4"
-            href="#schedule"
-          >
-            Cronograma
-          </ButtonNES>
-          <ButtonNES
-            type="navigation"
-            style="fill"
-            className="btn-lg w-2/5 my-4 !pl-4"
-            href="#results"
-          >
-            Resultados
-          </ButtonNES>
-          <ButtonNES
-            type="navigation"
-            style="fill"
-            className="btn-lg w-2/5 my-4 !pl-4"
-            href="#program"
-          >
-            Ementa
-          </ButtonNES>
+            <li>
+              <Link type="navigation" href="#subscription">
+                <AiOutlineForm className="size-4" />
+                Inscrições
+              </Link>
+            </li>
+            <li>
+              <Link type="navigation" href="#schedule">
+                <GrFormSchedule className="size-4" />
+                Cronograma
+              </Link>
+            </li>
+            <li>
+              <Link type="navigation" href="#results">
+                <FaTableList className="size-4" />
+                Resultados
+              </Link>
+            </li>
+            <li>
+              <Link type="navigation" href="#program">
+                <FaBookOpen className="size-4" />
+                Ementa
+              </Link>
+            </li>
+          </ul>
         </div>
 
         {/* Inscrições */}
-        <div className="mb-4 overflow-hidden flex justify-center mt-10" id="subscription">
-          <Logo
-            type="bannerInscricoes"
-            className="w-11/12 max-h-72 object-cover object-center"
-            alt="Banner do NES"
-          />
-        </div>
-
-        <div className="w-full flex flex-col items-center">
-          <h1 className="text-primary text-3xl stroke-1 mb-4 text-center">
-            Faça a sua inscrição no Processo Seletivo {selection?.year}!
+        <a
+          href={selection?.subscriptionUrl}
+          target="_blank"
+          className="w-full flex flex-col items-center"
+        >
+          <div className="mb-4 overflow-hidden flex justify-center" id="subscription">
+            <Logo
+              type="bannerInscricoes"
+              className="w-11/12 max-h-72 object-cover object-center"
+              alt="Banner do NES"
+            />
+          </div>
+          <h1 className="w-11/12 text-primary text-3xl mb-4 text-center underline hover:text-secondary">
+            Clique aqui para se inscrever no Processo Seletivo {selection?.year}!
           </h1>
-        </div>
-
-        <div className="flex flex-wrap mt-2 justify-center">
-          <iframe
-            width="100%"
-            height="100%"
-            src={selection?.iframeSrc}
-            title={selection?.year}
-            className="min-h-96 sm:max-w-2xl mb-4"
-            allowFullScreen
-          ></iframe>
-        </div>
+        </a>
 
         {/* Cronograma */}
         <div
@@ -130,22 +127,20 @@ const Home = () => {
         <Table />
 
         {/* Ementa */}
-        <div className="w-full flex flex-col items-center mt-10" id="program">
+        <a
+          href={selection?.programUrl}
+          target="_blank"
+          className="w-full flex flex-col items-center mt-10"
+          id="program"
+        >
           <h1 className="text-primary text-3xl stroke-1 mb-4 text-center">
             Ementa {selection?.year}!
           </h1>
-        </div>
 
-        <div className="flex flex-wrap mt-2 justify-center">
-          <iframe
-            width="100%"
-            height="100%"
-            src={selection?.program}
-            title={selection?.year}
-            className="min-h-96 sm:max-w-2xl mb-4"
-            allowFullScreen
-          ></iframe>
-        </div>
+          <h1 className="w-11/12 text-primary text-3xl mb-4 text-center underline hover:text-secondary">
+            Clique aqui para ver a ementa do NES!
+          </h1>
+        </a>
       </div>
 
       <Footer />
