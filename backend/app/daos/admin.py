@@ -1,22 +1,20 @@
 from datetime import datetime
 
+from fastapi import HTTPException, status
+from sqlalchemy import func
+
 from app.models.classroom import Classroom
 from app.models.expense import ExpenseCategory, ExpenseLog
 from app.models.relationships import Enrollment
 from app.models.user import Attach, User
 from app.schemas.classroom import ClassroomBase
 from app.schemas.expense import ExpenseLogIn
-from fastapi import HTTPException, status
-from sqlalchemy import func
-
 
 from .base import BaseDao
 
 
 class AdminDao(BaseDao):
-
     def get_stats(self) -> dict[str, float]:
-
         _total_removed = (
             self.session.query(func.sum(ExpenseLog.value))
             .filter_by(type="removal")
@@ -36,9 +34,11 @@ class AdminDao(BaseDao):
         return stats  # type: ignore [dict[str, int]]
 
     def create_expense(self, data: ExpenseLogIn, addedBy: User) -> ExpenseLog:
-
         _expense = ExpenseLog(
-            value=data.value, type=data.type, comment=data.comment, addedBy=addedBy
+            value=data.value,
+            type=data.type,
+            comment=data.comment,
+            addedBy=addedBy,
         )
 
         if data.proof:
@@ -54,7 +54,8 @@ class AdminDao(BaseDao):
             )
             if not _category:
                 _category = ExpenseCategory(
-                    name=data.category.name, description=data.category.description
+                    name=data.category.name,
+                    description=data.category.description,
                 )
 
             _expense.category = _category
@@ -67,7 +68,6 @@ class AdminDao(BaseDao):
     def get_scholarship_payment(
         self, id: int, year: int, month: int
     ) -> ExpenseLog | None:
-
         _result = (
             self.session.query(ExpenseLog)
             .filter(
@@ -83,7 +83,6 @@ class AdminDao(BaseDao):
     def create_scholarship_payment(
         self, addedBy: User, paidTo: User, year: int, month: int
     ):
-
         _result = self.get_scholarship_payment(paidTo.id, year, month)
 
         if _result:
@@ -116,7 +115,6 @@ class AdminDao(BaseDao):
         self.session.commit()
 
     def update_expense(self, data: ExpenseLogIn, id: int) -> ExpenseLog | None:
-
         _expense = self.session.query(ExpenseLog).get(id)
 
         if _expense is None:
@@ -132,7 +130,9 @@ class AdminDao(BaseDao):
                 _expense.proof = _attach
 
         if data.category:
-            _category = self.session.query(ExpenseCategory).get(data.category.id)
+            _category = self.session.query(ExpenseCategory).get(
+                data.category.id
+            )
             if not _category:
                 raise HTTPException(
                     status_code=status.HTTP_404_NOT_FOUND,
@@ -152,7 +152,9 @@ class AdminDao(BaseDao):
 
         self.session.bulk_save_objects(
             Enrollment(
-                userId=member.userId, classroomId=_classroom.id, role=member.role
+                userId=member.userId,
+                classroomId=_classroom.id,
+                role=member.role,
             )
             for member in classroom.members
         )

@@ -12,10 +12,10 @@ from .general import GeneralDao
 
 
 class UserDao(BaseDao):
-
     def _create_user(self, user_data: dict[str, Any]) -> User:
-
-        user_data.update(birth=datetime.strptime(user_data["birth"], "%d/%m/%Y").date())
+        user_data.update(
+            birth=datetime.strptime(user_data["birth"], "%d/%m/%Y").date()
+        )
         _user = User(
             name=user_data["name"],
             type=user_data["type"],
@@ -52,7 +52,6 @@ class UserDao(BaseDao):
         return self._create_user(user_data)
 
     def create_student(self, user_data: dict[str, Any]) -> User | None:
-
         _user = self._create_user(user_data)
 
         _student = Student(
@@ -69,10 +68,16 @@ class UserDao(BaseDao):
         return _user
 
     def get_by_id(self, id: int):
-        _user = self.session.query(User).filter(User.id == id, ~User.softDelete).first()
+        _user = (
+            self.session.query(User)
+            .filter(User.id == id, ~User.softDelete)
+            .first()
+        )
 
         if not _user:
-            raise HTTPException(status_code=404, detail="Usuário não encontrado")
+            raise HTTPException(
+                status_code=404, detail="Usuário não encontrado"
+            )
 
         return _user
 
@@ -85,16 +90,23 @@ class UserDao(BaseDao):
         )
 
         if not _users:
-            raise HTTPException(status_code=404, detail="Nenum usuário encontrado")
+            raise HTTPException(
+                status_code=404, detail="Nenum usuário encontrado"
+            )
 
         return _users
 
     def get_by_cpf(self, cpf: str | None):
-
-        _user = self.session.query(User).filter(User.cpf == cpf, ~User.softDelete).first()
+        _user = (
+            self.session.query(User)
+            .filter(User.cpf == cpf, ~User.softDelete)
+            .first()
+        )
 
         if not _user:
-            raise HTTPException(status_code=404, detail="Usuário não encontrado")
+            raise HTTPException(
+                status_code=404, detail="Usuário não encontrado"
+            )
 
         return _user
 
@@ -105,18 +117,27 @@ class UserDao(BaseDao):
             for email in user_data["emails"]:
                 GeneralDao(self.session).create_email(email, _user.id)
 
+        if user_data.get("email"):
+            GeneralDao(self.session).create_email(user_data["email"], _user.id)
+
         if user_data.get("phones"):
             for phone in user_data["phones"]:
                 GeneralDao(self.session).create_phone_number(phone, _user.id)
 
         if user_data.get("address"):
-            GeneralDao(self.session).update_address(user_data["address"], _user.id)
+            GeneralDao(self.session).update_address(
+                user_data["address"], _user.id
+            )
 
         if user_data.get("photo"):
-            user_data["photo"] = GeneralDao(self.session).create_attachment(user_data["photo"])
+            user_data["photo"] = GeneralDao(self.session).create_attachment(
+                user_data["photo"]
+            )
 
         if user_data.get("birth"):
-            user_data["birth"] = datetime.strptime(user_data["birth"], "%d/%m/%Y").date()
+            user_data["birth"] = datetime.strptime(
+                user_data["birth"], "%d/%m/%Y"
+            ).date()
 
         UPDATED_USER_KEYS = [
             "name",

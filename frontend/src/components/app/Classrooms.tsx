@@ -5,12 +5,13 @@ import { Classroom } from "@/types/entities"
 import Link from "next/link"
 import { useState } from "react"
 import { Alert, Tooltip } from "react-daisyui"
-import { FaChalkboardTeacher, FaDoorOpen, FaEdit } from "react-icons/fa"
+import { FaChalkboardTeacher, FaDoorOpen, FaEdit, FaSpinner } from "react-icons/fa"
 import { MdErrorOutline } from "react-icons/md"
 import { ClassroomModal } from "./ClassroomModal"
 
 const Classrooms = () => {
-  const { data: classrooms = [], isFetching, error } = useClassrooms()
+  const { data, isFetching, error, hasNextPage, fetchNextPage, isFetchingNextPage } =
+    useClassrooms()
   const { user } = useSession()
 
   const [openModal, setOpenModal] = useState(false)
@@ -44,38 +45,52 @@ const Classrooms = () => {
       {!isFetching && (
         <div className="flex justify-center items-center">
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-            {!classrooms.length && (
-              <p className="text-xl my-4">Nenhuma turma encontrada</p>
+            {!data?.pages[0].data.length && (
+              <p className="text-xl text-center my-4 col-span-full">
+                Nenhuma turma criada até o momento.
+              </p>
             )}
 
-            {classrooms.map((classroom) => (
-              <div className="card w-96 bg-base-200 shadow-xl" key={classroom.id}>
-                <div className="card-body">
-                  <h2 className="card-title">{classroom.name}</h2>
-                  <div className="card-actions justify-center">
-                    <Link
-                      href={`/app/classrooms/${classroom.id}`}
-                      className="btn btn-primary"
-                    >
-                      <FaDoorOpen />
-                      Acessar
-                    </Link>
-
-                    {user?.type === "admin" && (
-                      <button
-                        onClick={() => toggleEditModal(classroom)}
-                        className="btn btn-secondary"
+            {data?.pages.map((p) =>
+              p.data.map((classroom) => (
+                <div className="card w-96 bg-base-200 shadow-xl" key={classroom.id}>
+                  <div className="card-body">
+                    <h2 className="card-title">{classroom.name}</h2>
+                    <div className="card-actions justify-center">
+                      <Link
+                        href={`/classroom/${classroom.id}`}
+                        className="btn btn-primary"
                       >
-                        <FaEdit /> Editar
-                      </button>
-                    )}
+                        <FaDoorOpen />
+                        Acessar
+                      </Link>
+
+                      {user?.type === "admin" && (
+                        <button
+                          onClick={() => toggleEditModal(classroom)}
+                          className="btn btn-secondary"
+                        >
+                          <FaEdit /> Editar
+                        </button>
+                      )}
+                    </div>
                   </div>
                 </div>
-              </div>
-            ))}
+              ))
+            )}
           </div>
         </div>
       )}
+
+      {data?.pages.length && hasNextPage && (
+        <div className="flex justify-center items-center">
+          <button className="btn btn-primary" onClick={() => fetchNextPage()}>
+            Carregar mais turmas
+          </button>
+        </div>
+      )}
+
+      {isFetchingNextPage && <Loading text="Carregando turmas..." center />}
 
       <Tooltip message="Criar turma" className="fixed bottom-5 right-5">
         <button className="btn btn-accent btn-sm" onClick={toggleCreateModal}>

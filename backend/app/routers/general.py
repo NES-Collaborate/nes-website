@@ -1,12 +1,13 @@
 from pathlib import Path
 
+from fastapi import APIRouter, Depends, File, HTTPException, UploadFile, status
+from fastapi.responses import FileResponse
+from sqlalchemy.orm import Session
+
 from app.models.user import Attach, User
 from app.services.db import get_session
 from app.services.settings import Settings
 from app.services.user import UserService
-from fastapi import APIRouter, Depends, File, HTTPException, UploadFile, status
-from fastapi.responses import FileResponse
-from sqlalchemy.orm import Session
 
 router = APIRouter()
 
@@ -17,7 +18,6 @@ async def upload_file(
     current_user: User = Depends(UserService.get_current_user),
     session: Session = Depends(get_session),
 ):
-
     # TODO: ext validation by mimetype
     filename = Path(data.filename if data.filename else "unknown.jpg")
 
@@ -44,7 +44,11 @@ async def upload_file(
     session.commit()
     session.refresh(_attach)
 
-    return {"id": _attach.id, "location": _attach.location, "type": _attach.type}
+    return {
+        "id": _attach.id,
+        "location": _attach.location,
+        "type": _attach.type,
+    }
 
 
 @router.get("/attachments/{attach_id}", status_code=status.HTTP_200_OK)
@@ -52,7 +56,6 @@ async def get_attachments(
     attach_id: int,
     session: Session = Depends(get_session),
 ):
-
     _attach = session.query(Attach).get(attach_id)
 
     if not _attach:
@@ -71,4 +74,6 @@ async def get_attachments(
             detail="Anexo não encontrado",
         )
 
-    return FileResponse(_path, filename=_attach.name, content_disposition_type="inline")
+    return FileResponse(
+        _path, filename=_attach.name, content_disposition_type="inline"
+    )

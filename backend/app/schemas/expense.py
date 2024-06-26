@@ -1,15 +1,15 @@
 from datetime import datetime
 from typing import Optional
 
+from pydantic import BaseModel
+
 from app.models.enum import ExpenseLogType
 from app.schemas.user import Attach
-from pydantic import BaseModel
 
 from .user import UserMinimal
 
 
 class ExpenseLogCategory(BaseModel):
-
     id: int
     name: str
     description: Optional[str]
@@ -19,7 +19,6 @@ class ExpenseLogCategory(BaseModel):
 
 
 class ExpenseLogBase(BaseModel):
-
     value: float
     category: ExpenseLogCategory
     type: ExpenseLogType
@@ -44,7 +43,6 @@ class ScholarshipPayment(BaseModel):
 
 
 class ExpenseLogOut(ExpenseLogBase):
-
     proof: Optional[Attach]
     addedBy: UserMinimal
     paidTo: Optional[UserMinimal]
@@ -53,7 +51,6 @@ class ExpenseLogOut(ExpenseLogBase):
 
 
 class Balance(BaseModel):
-
     current: float
 
     class Config:

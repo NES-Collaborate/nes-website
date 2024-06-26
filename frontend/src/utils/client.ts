@@ -1,5 +1,7 @@
 import { Attach } from "@/types/entities"
 import { User } from "@/types/user"
+import clsx, { ClassValue } from "clsx"
+import { twMerge } from "tailwind-merge"
 import { axiosServer } from "./axiosClient"
 
 /**
@@ -7,7 +9,7 @@ import { axiosServer } from "./axiosClient"
  * @param user The user instance
  * @returns string
  */
-export const getUserPhotoUrl = (user: User) => {
+export const getUserPhotoUrl = (user: User | null) => {
   return getAttachmentUrl(user?.photo || ({} as Attach))
 }
 
@@ -153,3 +155,5 @@ export const isDarkTheme = (theme: string) =>
     "dim",
     "sunset",
   ].includes(theme)
+
+export const cn = (...classes: ClassValue[]) => twMerge(clsx(classes))

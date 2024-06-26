@@ -9,7 +9,6 @@ from .user import Attach, User
 
 
 class ExpenseLog(BaseTable):
-
     __tablename__ = "expense_logs"
 
     value: Mapped[float]
@@ -19,7 +18,9 @@ class ExpenseLog(BaseTable):
     proofId: Mapped[Optional[int]] = mapped_column(
         sa.Integer, sa.ForeignKey("attatches.id")
     )
-    type: Mapped[ExpenseLogType] = mapped_column(sa.Enum(*get_args(ExpenseLogType)))
+    type: Mapped[ExpenseLogType] = mapped_column(
+        sa.Enum(*get_args(ExpenseLogType))
+    )
     comment: Mapped[Optional[str]]
     paidToId: Mapped[Optional[int]] = mapped_column(
         sa.Integer, sa.ForeignKey("users.id")
@@ -36,7 +37,9 @@ class ExpenseLog(BaseTable):
             "Usuario": f"{self.addedBy.name} ({self.addedBy.id})",
             "Categoria": f"{self.category.name} ({self.category.id})",
             "Comprovante": (
-                f"{self.proof.location} ({self.proof.type})" if self.proof else ""
+                f"{self.proof.location} ({self.proof.type})"
+                if self.proof
+                else ""
             ),
             "Tipo": type_mapper[self.type],
             "Observação": getattr(self, "comment", "Nada"),
@@ -49,7 +52,6 @@ class ExpenseLog(BaseTable):
 
 
 class ExpenseCategory(BaseTable):
-
     __tablename__ = "expense_categories"
 
     name: Mapped[str]

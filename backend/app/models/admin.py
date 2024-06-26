@@ -9,12 +9,15 @@ from .user import Attach, User
 
 
 class Property(BaseTable):
-
     __tablename__ = "properties"
 
     name: Mapped[str]
     photo: Mapped["Attach"] = relationship()
     type: Mapped[str]
-    userId: Mapped[Optional[int]] = mapped_column(sa.Integer, sa.ForeignKey("users.id"))
-    loanedTo: Mapped[Optional["User"]] = relationship("User", foreign_keys=[userId])
+    userId: Mapped[Optional[int]] = mapped_column(
+        sa.Integer, sa.ForeignKey("users.id")
+    )
+    loanedTo: Mapped[Optional["User"]] = relationship(
+        "User", foreign_keys=[userId]
+    )
     loanedAt: Mapped[Optional[datetime]]

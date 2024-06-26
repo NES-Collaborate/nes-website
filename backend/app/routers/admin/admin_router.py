@@ -1,8 +1,9 @@
-from app.routers.admin import finance, property, users
+import importlib
+
 from fastapi import APIRouter
 
 router = APIRouter(prefix="/admin", tags=["admin"])
 
-router.include_router(finance.router)
-router.include_router(property.router)
-router.include_router(users.router)
+for api_route in ["finance", "property", "users", "classroom"]:
+    api = importlib.import_module(f"app.routers.admin.{api_route}")
+    router.include_router(api.router)

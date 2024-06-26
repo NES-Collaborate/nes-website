@@ -1,4 +1,4 @@
-import clsx from "clsx"
+import { cn } from "@/utils/client"
 import { Loading as LoadingDaisyui } from "react-daisyui"
 
 type Props = {
@@ -9,7 +9,7 @@ type Props = {
 
 const Loading = ({ text, center, textClassName }: Props) => {
   return (
-    <div className={clsx("flex gap-3", center && "justify-center items-center")}>
+    <div className={cn("flex gap-3", center && "justify-center items-center")}>
       <LoadingDaisyui /> {text && <span className={textClassName}>{text}</span>}
     </div>
   )

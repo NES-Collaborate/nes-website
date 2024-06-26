@@ -11,8 +11,12 @@ class Enrollment(BaseTable):
     __tablename__ = "enrollments"
 
     userId: Mapped[int] = mapped_column(sa.Integer, sa.ForeignKey("users.id"))
-    classroomId: Mapped[int] = mapped_column(sa.Integer, sa.ForeignKey("classrooms.id"))
-    user = relationship("User", back_populates="classrooms", foreign_keys=[userId])
+    classroomId: Mapped[int] = mapped_column(
+        sa.Integer, sa.ForeignKey("classrooms.id")
+    )
+    user = relationship(
+        "User", back_populates="classrooms", foreign_keys=[userId]
+    )
     classroom = relationship(
         "Classroom", back_populates="members", foreign_keys=[classroomId]
     )
@@ -20,12 +24,13 @@ class Enrollment(BaseTable):
 
 
 class ActivityGroup(BaseTable):
-
     __tablename__ = "activity_groups"
 
     classroom_id: Mapped[Optional[int]] = mapped_column(
         sa.Integer, sa.ForeignKey("classrooms.id")
     )
     classroom = relationship("Classroom", back_populates="activityGroups")
-    activities = relationship("Activity", back_populates="activityGroup", uselist=True)
+    activities = relationship(
+        "Activity", back_populates="activityGroup", uselist=True
+    )
     isRecovery: Mapped[bool]

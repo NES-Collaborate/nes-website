@@ -1,14 +1,15 @@
 from datetime import datetime
 
 import sqlalchemy as sa
+from fastapi import APIRouter, Depends, HTTPException, status
+from sqlalchemy.orm import Session
+
 from app.daos.user import UserDao
 from app.models.admin import Property
 from app.models.user import User
 from app.schemas.admin import PropertyIn, PropertyOut
 from app.services.db import get_session
 from app.services.user import UserService
-from fastapi import APIRouter, Depends, HTTPException, status
-from sqlalchemy.orm import Session
 
 router = APIRouter(prefix="/property", tags=["property"])
 

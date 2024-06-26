@@ -1,4 +1,4 @@
-import Logo from "@/components/Logo"
+import Logo from "@/components/layout/default/Logo"
 import Footer from "@/components/nes/Footer"
 import Brief from "@/components/nes/home/Brief"
 import MoreInfos from "@/components/nes/home/MoreInfos"

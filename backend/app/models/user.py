@@ -19,11 +19,12 @@ from .relationships import Enrollment
 
 
 class User(BaseTable):
-
     __tablename__ = "users"
 
     name: Mapped[str]
-    photo: Mapped[Optional["Attach"]] = relationship(foreign_keys="[Attach.userId]")
+    photo: Mapped[Optional["Attach"]] = relationship(
+        foreign_keys="[Attach.userId]"
+    )
     password: Mapped[str]
     cpf: Mapped[str] = mapped_column(sa.String, unique=True, index=True)
     birth: Mapped[date]
@@ -61,7 +62,6 @@ class User(BaseTable):
 
 
 class Student(BaseTable):
-
     __tablename__ = "students"
 
     userId: Mapped[int] = mapped_column(sa.Integer, sa.ForeignKey("users.id"))
@@ -85,14 +85,15 @@ class Student(BaseTable):
 
 
 class Attach(BaseTable):
-
     __tablename__ = "attatches"
 
     name: Mapped[str]
     location: Mapped[str]
     type: Mapped[AttachType] = mapped_column(sa.Enum(*get_args(AttachType)))
 
-    userId: Mapped[Optional[int]] = mapped_column(sa.Integer, sa.ForeignKey("users.id"))
+    userId: Mapped[Optional[int]] = mapped_column(
+        sa.Integer, sa.ForeignKey("users.id")
+    )
 
     achievementId: Mapped[Optional[int]] = mapped_column(
         sa.Integer, sa.ForeignKey("achievements.id")
@@ -108,30 +109,31 @@ class Attach(BaseTable):
 
 
 class Email(BaseTable):
-
     __tablename__ = "emails"
 
     value: Mapped[str]
-    userId: Mapped[Optional[int]] = mapped_column(sa.Integer, sa.ForeignKey("users.id"))
+    userId: Mapped[Optional[int]] = mapped_column(
+        sa.Integer, sa.ForeignKey("users.id")
+    )
     schoolId: Mapped[Optional[int]] = mapped_column(
         sa.Integer, sa.ForeignKey("schools.id")
     )
 
 
 class PhoneNumber(BaseTable):
-
     __tablename__ = "phone_numbers"
 
     value: Mapped[str]
     isEmergency: Mapped[bool]
-    userId: Mapped[Optional[int]] = mapped_column(sa.Integer, sa.ForeignKey("users.id"))
+    userId: Mapped[Optional[int]] = mapped_column(
+        sa.Integer, sa.ForeignKey("users.id")
+    )
     schoolId: Mapped[Optional[int]] = mapped_column(
         sa.Integer, sa.ForeignKey("schools.id")
     )
 
 
 class Address(BaseTable):
-
     __tablename__ = "addresses"
 
     street: Mapped[str]
@@ -140,14 +142,15 @@ class Address(BaseTable):
     city: Mapped[str]
     state: Mapped[char2 | None]
     cep: Mapped[str10 | None]
-    userId: Mapped[Optional[int]] = mapped_column(sa.Integer, sa.ForeignKey("users.id"))
+    userId: Mapped[Optional[int]] = mapped_column(
+        sa.Integer, sa.ForeignKey("users.id")
+    )
     schoolId: Mapped[Optional[int]] = mapped_column(
         sa.Integer, sa.ForeignKey("schools.id")
     )
 
 
 class School(BaseTable):
-
     __tablename__ = "schools"
 
     name: Mapped[str]
@@ -157,11 +160,12 @@ class School(BaseTable):
 
 
 class Achievement(BaseTable):
-
     __tablename__ = "achievements"
 
     name: Mapped[str]
-    type: Mapped[AchievementType] = mapped_column(sa.Enum(*get_args(AchievementType)))
+    type: Mapped[AchievementType] = mapped_column(
+        sa.Enum(*get_args(AchievementType))
+    )
     olympicAbbrev: Mapped[str]
     year: Mapped[int]
     medal: Mapped[MedalType] = mapped_column(sa.Enum(*get_args(MedalType)))
@@ -170,7 +174,9 @@ class Achievement(BaseTable):
     status: Mapped[AchievementStatus] = mapped_column(
         sa.Enum(*get_args(AchievementStatus))
     )
-    student: Mapped["Student"] = relationship("Student", back_populates="achievements")
+    student: Mapped["Student"] = relationship(
+        "Student", back_populates="achievements"
+    )
 
     images: Mapped[Optional[List["Attach"]]] = relationship()
 
@@ -182,5 +188,7 @@ class BankAccount(BaseTable):
     bankNumber: Mapped[int]
     agencyNumber: Mapped[int]
     accountNumber: Mapped[int]
-    accountType: Mapped[AccountType] = mapped_column(sa.Enum(*get_args(AccountType)))
+    accountType: Mapped[AccountType] = mapped_column(
+        sa.Enum(*get_args(AccountType))
+    )
     pix: Mapped[str]

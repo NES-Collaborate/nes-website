@@ -1,4 +1,5 @@
 import click
+
 from app.models import base
 from app.services.db import create_default_user, engine
 

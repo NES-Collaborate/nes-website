@@ -7,8 +7,10 @@ run:
 format:
 	@echo "Sorting imports with isort..."
 	@isort . --profile black --diff
-	@echo "Formatting with YAPF..."
-	@yapf . -i -r -p -m
+	@echo "Formatting with YRUFF..."
+	@ruff check --select I --fix
+	@ruff format .
+
 
 migrate:
 	@alembic revision --autogenerate -m "$(msg)"

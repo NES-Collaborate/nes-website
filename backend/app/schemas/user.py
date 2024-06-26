@@ -9,6 +9,7 @@ from app.models.enum import (
     AchievementType,
     AttachType,
     MedalType,
+    Role,
     Serie,
     UserType,
 )
@@ -100,8 +101,9 @@ class UserOut(UserBase):
     birth: date
 
     @classmethod
-    def user_validate(cls, user: User, student: Student | None = None) -> "UserOut":
-
+    def user_validate(
+        cls, user: User, student: Student | None = None
+    ) -> "UserOut":
         user_out = cls.model_validate(user)
 
         if student:
@@ -132,9 +134,25 @@ class UserMinimal(BaseModel):
 
 
 class UserPayment(BaseModel):
-
     id: int
     name: str
     photo: Optional[Attach]
     scholarshipValue: float
     alreadyPaid: Optional[bool] = None
+
+
+class UserId(BaseModel):
+    userId: int
+    role: Role
+
+    class Config:
+        from_attributes = True
+
+
+class MemberEdit(BaseModel):
+    name: Optional[str]
+    email: Optional[str]
+    photo: Optional[str]
+
+    class Config:
+        from_attributes = True

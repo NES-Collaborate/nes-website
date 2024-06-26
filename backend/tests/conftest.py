@@ -1,7 +1,8 @@
 import pytest
-from app import app
 from fastapi.testclient import TestClient
 from tests.utils import login_and_get_token
+
+from app import app
 
 
 @pytest.fixture(scope="function")

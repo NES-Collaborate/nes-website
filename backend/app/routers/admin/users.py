@@ -1,12 +1,13 @@
 from typing import Optional
 
+from fastapi import APIRouter, Depends, HTTPException, status
+from sqlalchemy.orm import Session
+
 from app.daos.user import UserDao
 from app.models.user import User
 from app.schemas.user import UserIn, UserOut, UserPoster
 from app.services.db import get_session
 from app.services.user import UserService
-from fastapi import APIRouter, Depends, HTTPException, status
-from sqlalchemy.orm import Session
 
 router = APIRouter(prefix="/users", tags=["users"])
 
@@ -36,7 +37,9 @@ async def get_users(
     if current_user.type == "admin" or (
         current_user.type == "student" and current_user.id == id
     ):
-        users = [UserOut.user_validate(result, result.student) for result in results]
+        users = [
+            UserOut.user_validate(result, result.student) for result in results
+        ]
     else:
         users = [UserPoster.model_validate(result) for result in results]
     return {"users": users}
@@ -48,7 +51,6 @@ async def create_user(
     current_user: User = Depends(UserService.get_current_user),
     session: Session = Depends(get_session),
 ):
-
     if current_user.type != "admin":
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
@@ -69,7 +71,6 @@ async def update_user(
     current_user: User = Depends(UserService.get_current_user),
     session: Session = Depends(get_session),
 ):
-
     if current_user.type != "admin":
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
@@ -88,7 +89,6 @@ async def delete_user(
     current_user: User = Depends(UserService.get_current_user),
     session: Session = Depends(get_session),
 ):
-
     if current_user.type != "admin":
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,

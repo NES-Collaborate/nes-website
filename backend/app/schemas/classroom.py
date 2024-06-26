@@ -18,7 +18,6 @@ class EnrollmentBase(BaseModel):
 
 
 class ClassroomBase(BaseModel):
-
     name: str
     members: list[EnrollmentBase] = []
 
@@ -32,19 +31,16 @@ class TeacherOut(BaseModel):
 
 
 class ClassroomOut(ClassroomBase):
-
     id: int
     teachers: list[TeacherOut] = []
 
 
 class Penalty(BaseModel):
-
     angularCoefficient: float
     linearCoefficient: float
 
 
 class PostBase(BaseModel):
-
     title: str
     content: str
     postBy: UserPoster
@@ -59,6 +55,28 @@ class PostBase(BaseModel):
 
 
 class PostOut(PostBase):
-
     id: int
     createdAt: datetime
+
+
+class PostResponse(PostOut):
+    subject: ClassroomOut
+
+
+class CommentInp(BaseModel):
+    content: str
+
+
+class Author(BaseModel):
+    id: int
+    name: str
+
+
+class CommentOut(BaseModel):
+    id: int
+    content: str
+    addedBy: Author
+    createdAt: Optional[datetime]
+
+    class Config:
+        from_attributes = True

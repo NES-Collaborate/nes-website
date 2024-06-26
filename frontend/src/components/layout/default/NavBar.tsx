@@ -1,19 +1,20 @@
 import { useEffect, useState } from "react"
 import { Button } from "react-daisyui"
 import { FaBars } from "react-icons/fa6"
-import Breadcrumb from "./Breadcrumb"
 import Logo from "./Logo"
 
 type Props = {
   toggleDrawerVisibility: () => void
+  center?: JSX.Element
 }
 
 /**
  * NavBar component for Landing Page
  * @param {function} toggleDrawerVisibility Function to toggle the drawer
+ * @param {JSX.Element} center A center component to be in the middle. Default is a Breadcrumb
  * @returns {JSX.Element} Navbar
  */
-const NavBar = ({ toggleDrawerVisibility }: Props) => {
+const NavBar = ({ toggleDrawerVisibility, center }: Props) => {
   const [windowWidth, setWindowWidth] = useState(1080)
 
   useEffect(() => {
@@ -30,9 +31,7 @@ const NavBar = ({ toggleDrawerVisibility }: Props) => {
           <FaBars />
         </Button>
       </div>
-      <div className="navbar-center">
-        <Breadcrumb />
-      </div>
+      <div className="navbar-center">{center}</div>
       <div className="navbar-end gap-3">
         <Logo
           type={windowWidth < 500 ? "circle" : "horizontal"}
