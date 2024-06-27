@@ -1,6 +1,7 @@
 from datetime import datetime
 from typing import List, Optional, get_args
 
+from sqlalchemy import JSON
 import sqlalchemy as sa
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
@@ -23,6 +24,7 @@ class Classroom(BaseTable):
     members: Mapped[List["Enrollment"]] = relationship(
         back_populates="classroom"
     )
+    video_conference: Mapped[List[str]] = mapped_column(JSON)
 
     @property
     def teachers(self):

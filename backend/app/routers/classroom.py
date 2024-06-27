@@ -101,7 +101,7 @@ async def get_classrooms(
         ]
         classrooms.append(
             ClassroomOut(
-                id=classroom.id, name=classroom.name, teachers=teachers
+                id=classroom.id, name=classroom.name, teachers=teachers, video_conference=classroom.video_conference
             )
         )
 

@@ -1,5 +1,5 @@
 from datetime import date, datetime
-from typing import Optional
+from typing import Optional, List
 
 from pydantic import BaseModel
 
@@ -20,6 +20,7 @@ class EnrollmentBase(BaseModel):
 class ClassroomBase(BaseModel):
     name: str
     members: list[EnrollmentBase] = []
+    video_conference: List[str]
 
     class Config:
         from_attributes = True
@@ -33,7 +34,7 @@ class TeacherOut(BaseModel):
 class ClassroomOut(ClassroomBase):
     id: int
     teachers: list[TeacherOut] = []
-
+    video_conference: List[str]
 
 class Penalty(BaseModel):
     angularCoefficient: float

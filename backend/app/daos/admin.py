@@ -146,7 +146,7 @@ class AdminDao(BaseDao):
         return _expense
 
     def create_classroom(self, classroom: ClassroomBase):
-        _classroom = Classroom(name=classroom.name)
+        _classroom = Classroom(name=classroom.name, video_conference=classroom.video_conference)
         self.session.add(_classroom)
         self.session.commit()
 
