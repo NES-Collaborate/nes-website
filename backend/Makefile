@@ -24,3 +24,8 @@ downgrade:
 init-db:
 	@python cli.py init-db
 	@alembic upgrade head
+
+test-cov: #Executa os testes iguinorando os warnings e gera o relatório de corbetura.
+	@echo "Running tests with coverage..."
+	PYTHONWARNINGS="ignore::DeprecationWarning,ignore::PendingDeprecationWarning,ignore::FutureWarning,ignore::RuntimeWarning,ignore::UserWarning" pytest --cov=./app/routers --cov-report=html:cov_html -vv ./tests
+	@echo "Open the HTML report at: cov_html/index.html"

@@ -1,7 +1,8 @@
 import { useClassroomPosts } from "@/hooks/classroom"
 import { Classroom } from "@/types/entities"
-import { useEffect, useRef, useState } from "react"
+import { useEffect } from "react"
 import { useInView } from "react-intersection-observer"
+import { useDebounceValue } from "usehooks-ts"
 import Loading from "../Loading"
 import PostCard from "./PostCard"
 import PostsFilter from "./PostsFilter"
@@ -12,11 +13,9 @@ type Props = {
 
 const Posts = ({ classroom }: Props) => {
   const { ref, inView } = useInView()
-  const [query, setQuery] = useState("")
+  const [query, setQuery] = useDebounceValue("", 500)
 
-  const inputRef = useRef<HTMLInputElement>(null)
-
-  const { data, refetch, fetchNextPage, isFetching, isFetchingNextPage, hasNextPage } =
+  const { data, fetchNextPage, isFetching, isFetchingNextPage, hasNextPage } =
     useClassroomPosts({ classroomId: classroom?.id, query })
 
   useEffect(() => {
@@ -24,11 +23,6 @@ const Posts = ({ classroom }: Props) => {
       fetchNextPage()
     }
   }, [fetchNextPage, hasNextPage, inView, isFetchingNextPage])
-
-  useEffect(() => {
-    setQuery(inputRef.current?.value ?? "")
-    refetch()
-  }, [query, classroom?.id, refetch])
 
   return (
     <div className="container mx-auto px-4 mt-1">

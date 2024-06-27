@@ -28,13 +28,16 @@ class UserDao(BaseDao):
         self.session.commit()
         self.session.refresh(_user)
 
-        for email in user_data["emails"]:
-            GeneralDao(self.session).create_email(email, _user.id)
+        if user_data.get("emails"):
+            for email in user_data["emails"]:
+                GeneralDao(self.session).create_email(email, _user.id)
 
-        for phone in user_data["phones"]:
-            GeneralDao(self.session).create_phone_number(phone, _user.id)
+        if user_data.get("phones"):
+            for phone in user_data["phones"]:
+                GeneralDao(self.session).create_phone_number(phone, _user.id)
 
-        GeneralDao(self.session).create_address(user_data["address"], _user.id)
+        if user_data.get("address"):
+            GeneralDao(self.session).create_address(user_data["address"], _user.id)
 
         if user_photo := user_data.get("photo"):
             GeneralDao(self.session).create_attachment(user_photo, _user.id)
@@ -165,16 +168,17 @@ class UserDao(BaseDao):
 
     def delete_by_id(self, id: int):
         _user = self.get_by_id(id)
-
-        for email in _user.emails:  # type: ignore
-            self.session.delete(email)
-
-        for phone in _user.phones:  # type: ignore
-            self.session.delete(phone)
-
-        self.session.delete(_user.address)
-        self.session.delete(_user.photo)
-        self.session.delete(_user.student)
+        
+        for collection in ["phones", "emails"]:
+            itens = getattr(_user, collection, None)
+            if itens:
+                for item in itens:
+                    self.session.delete(item)
+        
+        for attribute in ["address", "photo", "student"]:
+            item = getattr(_user, attribute, None)
+            if item:
+                self.session.delete(item)
 
         self.session.delete(_user)
         self.session.commit()
