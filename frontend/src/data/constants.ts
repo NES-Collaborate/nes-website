@@ -153,8 +153,8 @@ export type Student = {
 export type Selection = {
   year: string
   isOpen: boolean
-  iframeSrc: string
-  program: string
+  subscriptionUrl: string
+  programUrl: string
   schedule: Event[]
   results: Student[]
 }
@@ -164,9 +164,9 @@ export const SELECTIONS_EXAMPLES = [
   {
     year: "2024",
     isOpen: true,
-    iframeSrc:
+    subscriptionUrl:
       "https://drive.google.com/file/d/1immcmC25h8rXU43qcLQ1WiMO4OkAjmtQ/preview",
-    program: "https://drive.google.com/file/d/1Jo41-h5zvD42FRNuQThof4_wNWSJsSHT/view",
+    programUrl: "https://drive.google.com/file/d/1Jo41-h5zvD42FRNuQThof4_wNWSJsSHT/view",
     schedule: [
       {
         date: "25/12/2024",
@@ -193,9 +193,9 @@ export const SELECTIONS_EXAMPLES = [
   {
     year: "2023.2",
     isOpen: false,
-    iframeSrc:
+    subscriptionUrl:
       "https://drive.google.com/file/d/1immcmC25h8rXU43qcLQ1WiMO4OkAjmtQ/preview",
-    program: "https://drive.google.com/file/d/1Jo41-h5zvD42FRNuQThof4_wNWSJsSHT/view",
+    programUrl: "https://drive.google.com/file/d/1Jo41-h5zvD42FRNuQThof4_wNWSJsSHT/view",
     schedule: [
       {
         date: "25/12/2023",
@@ -222,9 +222,9 @@ export const SELECTIONS_EXAMPLES = [
   {
     year: "2023.1",
     isOpen: false,
-    iframeSrc:
+    subscriptionUrl:
       "https://drive.google.com/file/d/1immcmC25h8rXU43qcLQ1WiMO4OkAjmtQ/preview",
-    program: "https://drive.google.com/file/d/1Jo41-h5zvD42FRNuQThof4_wNWSJsSHT/view",
+    programUrl: "https://drive.google.com/file/d/1Jo41-h5zvD42FRNuQThof4_wNWSJsSHT/view",
     schedule: [
       {
         date: "Junho de 2023",
