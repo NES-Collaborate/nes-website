@@ -1,6 +1,8 @@
 from functools import wraps
 from typing import Any, Callable, TypeVar
 
+from app.schemas.classroom import ActivityPostOut, PostOut, ResponsePostOut
+
 F = TypeVar("F", bound=Callable[..., Any])
 
 
@@ -25,5 +27,25 @@ def paginated_response(function: F) -> F:
             "prevPage": prev_page,
             "lastPage": last_page,
         }
+
+    return wrapper  # type: ignore
+
+
+def post_type_response(function: F) -> F:
+    @wraps(function)
+    async def wrapper(*args: Any, **kwargs: Any) -> Any:
+        response = await function(*args, **kwargs)
+
+        post_out_model = {
+            "notice": PostOut,
+            "lecture": PostOut,
+            "activity": ActivityPostOut,
+            "test": ActivityPostOut,
+            "response": ResponsePostOut,
+        }
+
+        _type = response.type
+
+        return post_out_model.get(_type, PostOut).model_validate(response)
 
     return wrapper  # type: ignore
