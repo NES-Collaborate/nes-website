@@ -1,8 +1,8 @@
 from datetime import datetime
 from typing import List, Optional, get_args
 
-from sqlalchemy import JSON
 import sqlalchemy as sa
+from sqlalchemy import JSON
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from .base import BaseTable
@@ -17,14 +17,16 @@ class Classroom(BaseTable):
 
     name: Mapped[str]
     thumbnail: Mapped["Attach"] = relationship()
-    posts: Mapped[List["Post"]] = relationship(back_populates="classroom")
+    posts: Mapped[List["Post"]] = relationship(
+        back_populates="classroom", cascade="all, delete"
+    )
     activityGroups: Mapped[List["ActivityGroup"]] = relationship(
         back_populates="classroom"
     )
     members: Mapped[List["Enrollment"]] = relationship(
-        back_populates="classroom"
+        back_populates="classroom", cascade="all, delete"
     )
-    video_conference: Mapped[List[str]] = mapped_column(JSON)
+    video_conference: Mapped[List[str]] = mapped_column(JSON, default="")
 
     @property
     def teachers(self):
@@ -34,9 +36,7 @@ class Classroom(BaseTable):
 class Activity(BaseTable):
     __tablename__ = "activities"
 
-    postId: Mapped[Optional[int]] = mapped_column(
-        sa.Integer, sa.ForeignKey("posts.id")
-    )
+    postId: Mapped[Optional[int]] = mapped_column(sa.Integer, sa.ForeignKey("posts.id"))
     post: Mapped["Post"] = relationship("Post", back_populates="activity")
 
     startDate: Mapped[Optional[datetime]]
@@ -56,64 +56,58 @@ class Activity(BaseTable):
 class Serie(BaseTable):
     __tablename__ = "series"
 
-    student: Mapped[List["Student"]] = relationship(
-        "Student", back_populates="serie"
-    )
+    student: Mapped[List["Student"]] = relationship("Student", back_populates="serie")
     name: Mapped[str]
 
 
 class Post(BaseTable):
     __tablename__ = "posts"
 
-    classromId: Mapped[Optional[int]] = mapped_column(
+    classroomId: Mapped[Optional[int]] = mapped_column(
         sa.Integer, sa.ForeignKey("classrooms.id")
     )
-    classroom: Mapped["Classroom"] = relationship(
-        "Classroom", back_populates="posts"
-    )
+    classroom: Mapped["Classroom"] = relationship("Classroom", back_populates="posts")
     title: Mapped[str]
     content: Mapped[str]
     frequency: Mapped[List["Frequency"]] = relationship(
-        "Frequency", back_populates="lecture"
+        "Frequency", back_populates="lecture", cascade="all, delete"
     )
     type: Mapped[PostType] = mapped_column(sa.Enum(*get_args(PostType)))
     attachments: Mapped[List["PostAttachment"]] = relationship(
-        "PostAttachment", back_populates="post"
+        "PostAttachment", back_populates="post", cascade="all, delete"
     )
     activity: Mapped[Optional["Activity"]] = relationship(
-        "Activity", back_populates="post"
+        "Activity", back_populates="post", cascade="all, delete"
     )
     response: Mapped[Optional["Response"]] = relationship(
-        "Response", back_populates="post", foreign_keys="Response.postId"
+        "Response",
+        back_populates="post",
+        foreign_keys="Response.postId",
+        cascade="all, delete",
     )
     responses: Mapped[List["Response"]] = relationship(
         "Response",
         back_populates="activity",
         foreign_keys="Response.activityId",
+        cascade="all, delete",
     )
 
     comments: Mapped[List["Comment"]] = relationship(
-        "Comment", back_populates="post"
+        "Comment", back_populates="post", cascade="all, delete"
     )
     messages: Mapped[List["Message"]] = relationship(
-        "Message", back_populates="post"
+        "Message", back_populates="post", cascade="all, delete"
     )
 
 
 class Frequency(BaseTable):
     __tablename__ = "frequencies"
 
-    studentId: Mapped[int] = mapped_column(
-        sa.Integer, sa.ForeignKey("users.id")
-    )
+    studentId: Mapped[int] = mapped_column(sa.Integer, sa.ForeignKey("users.id"))
     student: Mapped["User"] = relationship("User", foreign_keys=[studentId])
     lecture: Mapped["Post"] = relationship("Post", back_populates="frequency")
-    postId: Mapped[Optional[int]] = mapped_column(
-        sa.Integer, sa.ForeignKey("posts.id")
-    )
-    status: Mapped[FrequencyStatus] = mapped_column(
-        sa.Enum(*get_args(FrequencyStatus))
-    )
+    postId: Mapped[Optional[int]] = mapped_column(sa.Integer, sa.ForeignKey("posts.id"))
+    status: Mapped[FrequencyStatus] = mapped_column(sa.Enum(*get_args(FrequencyStatus)))
     justification: Mapped[Optional[str]]
 
 
