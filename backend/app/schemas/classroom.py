@@ -1,11 +1,10 @@
-from datetime import date, datetime
-from typing import Optional, List
+from datetime import datetime
+from typing import List, Literal, Optional
 
 from pydantic import BaseModel
 
-from app.models.enum import PostType, Role
-
-from .user import UserPoster
+from app.models.enum import AttachType, FrequencyStatus, PostType, Role
+from app.schemas.user import UserMinimal
 
 
 class EnrollmentBase(BaseModel):
@@ -36,32 +35,98 @@ class ClassroomOut(ClassroomBase):
     teachers: list[TeacherOut] = []
     video_conference: List[str]
 
-class Penalty(BaseModel):
-    angularCoefficient: float
-    linearCoefficient: float
+
+class ActivityGroup(BaseModel):
+    pass
 
 
-class PostBase(BaseModel):
-    title: str
-    content: str
-    postBy: UserPoster
-    type: PostType
-    endsOn: Optional[date]
-    maxGrade: Optional[float]
-    penalty: Optional[Penalty]
-    weight: float = 1
+class Frequency(BaseModel):
+    student: UserMinimal
+    status: FrequencyStatus
+    justification: Optional[str]
+
+
+class PostAttachment(BaseModel):
+    id: int
+    name: str
+    type: AttachType
+    metadata: str
 
     class Config:
         from_attributes = True
 
 
+class PostBase(BaseModel):
+    title: str
+    content: str
+    attachments: Optional[list[int]]
+
+    class Config:
+        from_attributes = True
+
+
+class PostIn(PostBase):
+    type: Literal["notice", "lecture"]
+
+
+class ActivityBase(BaseModel):
+    startDate: Optional[datetime]
+    endDate: Optional[datetime]
+    maxGrade: Optional[float]
+    linearCoefficient: Optional[float]
+    angularCoefficient: Optional[float]
+    weight: float = 1
+
+
+class Activity(ActivityBase):
+    id: int
+    activityGroup: Optional[ActivityGroup]
+
+    class Config:
+        from_attributes = True
+
+
+class ResponseBase(BaseModel):
+    grade: Optional[float]
+
+
+class Response(ResponseBase):
+    id: int
+
+    class Config:
+        from_attributes = True
+
+
+class ActivityPostIn(ActivityBase, PostBase):
+    type: Literal["activity", "test"]
+    activityGroupId: Optional[int]
+
+
 class PostOut(PostBase):
     id: int
+    type: PostType
     createdAt: datetime
+    addedBy: UserMinimal
+    # frequency: list[Frequency]
+    # responses: list[Response]
+    # comments: list[CommentOut]
+
+
+class ActivityPostOut(PostOut):
+    activity: Activity
+
+
+class ResponsePostIn(ResponseBase, PostBase):
+    type: str = "response"
+    activityId: int
+
+
+class ResponsePostOut(PostOut):
+    response: Response
 
 
 class PostResponse(PostOut):
-    subject: ClassroomOut
+    classroom: ClassroomOut
 
 
 class CommentInp(BaseModel):
