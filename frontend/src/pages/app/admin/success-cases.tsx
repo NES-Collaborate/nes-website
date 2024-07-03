@@ -47,7 +47,7 @@ const SuccessCases = () => {
         </div>
       )}
 
-      <div className="overflow-x-auto flex justify-center">
+      <div className="overflow-x-auto flex justify-start">
         {successCases.length > 0 && (
           <Table zebra>
             <Table.Head className="text-center">

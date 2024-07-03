@@ -47,7 +47,7 @@ const Notices = () => {
         </div>
       )}
 
-      <div className="overflow-x-auto flex justify-center">
+      <div className="overflow-x-auto flex justify-start">
         {notices.length > 0 && (
           <Table zebra>
             <Table.Head className="text-center">

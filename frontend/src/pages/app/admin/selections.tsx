@@ -47,7 +47,7 @@ const Selections = () => {
         </div>
       )}
 
-      <div className="overflow-x-auto flex justify-center">
+      <div className="overflow-x-auto flex justify-start">
         {selections.length > 0 && (
           <Table zebra>
             <Table.Head className="text-center">
