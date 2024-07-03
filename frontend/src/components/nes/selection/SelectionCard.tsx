@@ -1,5 +1,4 @@
-import ButtonNES from "@/components/ButtonNES"
-import { Selection } from "@/data/constants"
+import { Selection } from "@/types/constants"
 import clsx from "clsx"
 import Link from "next/link"
 
@@ -15,7 +14,7 @@ const SelectionCard = ({ selection }: Props) => {
   return (
     <Link
       href={{
-        pathname: "/nes/subscription/program",
+        pathname: "/nes/selection/program",
         query: { selectionYear: selection.year },
       }}
       className="collapse-plus"

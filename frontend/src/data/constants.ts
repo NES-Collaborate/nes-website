@@ -11,7 +11,7 @@ import { IoDocumentText } from "react-icons/io5"
  */
 export const LANDING_PAGES: LandingPage[] = [
   { name: "Início", url: "/nes", icon: IoMdHome },
-  { name: "Processo Seletivo", url: "/nes/subscription", icon: FaClipboardList },
+  { name: "Processo Seletivo", url: "/nes/selection", icon: FaClipboardList },
   { name: "Material Gratuito", url: "/nes/material", icon: IoDocumentText },
   { name: "Contatos", url: "/nes/contact", icon: IoIosMail },
   { name: "Doações", url: "/nes/donate", icon: FaHandHoldingHeart },
@@ -129,126 +129,6 @@ export type Material = {
   description: string
   url: string
 }
-
-/**
- * Properties of an event in the schedule of a Selection
- */
-export type Event = {
-  date: string
-  description: string
-}
-
-/**
- * Properties of a student in the results of a Selection
- */
-export type Student = {
-  name: string
-  city: string
-  UF: string
-}
-
-/**
- * Properties of a selection process
- */
-export type Selection = {
-  year: string
-  isOpen: boolean
-  subscriptionUrl: string
-  programUrl: string
-  schedule: Event[]
-  results: Student[]
-}
-
-// Example of Selection
-export const SELECTIONS_EXAMPLES = [
-  {
-    year: "2024",
-    isOpen: true,
-    subscriptionUrl:
-      "https://drive.google.com/file/d/1immcmC25h8rXU43qcLQ1WiMO4OkAjmtQ/preview",
-    programUrl: "https://drive.google.com/file/d/1Jo41-h5zvD42FRNuQThof4_wNWSJsSHT/view",
-    schedule: [
-      {
-        date: "25/12/2024",
-        description: "Natal",
-      },
-      {
-        date: "31/12/2024",
-        description: "Ano Novo",
-      },
-    ],
-    results: [
-      {
-        name: "Irineu da SIlva Cabral Santos Gomes Pereira dos Anjos",
-        city: "Maceió",
-        UF: "AL",
-      },
-      {
-        name: "Irineu",
-        city: "Maceió",
-        UF: "AL",
-      },
-    ],
-  },
-  {
-    year: "2023.2",
-    isOpen: false,
-    subscriptionUrl:
-      "https://drive.google.com/file/d/1immcmC25h8rXU43qcLQ1WiMO4OkAjmtQ/preview",
-    programUrl: "https://drive.google.com/file/d/1Jo41-h5zvD42FRNuQThof4_wNWSJsSHT/view",
-    schedule: [
-      {
-        date: "25/12/2023",
-        description: "Natal",
-      },
-      {
-        date: "31/12/2023",
-        description: "Ano Novo",
-      },
-    ],
-    results: [
-      {
-        name: "Irineu",
-        city: "Maceió",
-        UF: "AL",
-      },
-      {
-        name: "Irineu",
-        city: "Maceió",
-        UF: "AL",
-      },
-    ],
-  },
-  {
-    year: "2023.1",
-    isOpen: false,
-    subscriptionUrl:
-      "https://drive.google.com/file/d/1immcmC25h8rXU43qcLQ1WiMO4OkAjmtQ/preview",
-    programUrl: "https://drive.google.com/file/d/1Jo41-h5zvD42FRNuQThof4_wNWSJsSHT/view",
-    schedule: [
-      {
-        date: "Junho de 2023",
-        description: "São João",
-      },
-      {
-        date: "01/01/2023",
-        description: "Ano Novo",
-      },
-    ],
-    results: [
-      {
-        name: "Irineu",
-        city: "Maceió",
-        UF: "AL",
-      },
-      {
-        name: "Irineu",
-        city: "Maceió",
-        UF: "AL",
-      },
-    ],
-  },
-]
 
 /**
  * Possible series
