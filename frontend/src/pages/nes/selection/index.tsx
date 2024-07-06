@@ -1,6 +1,6 @@
 import Logo from "@/components/layout/default/Logo"
 import Footer from "@/components/nes/Footer"
-import Selections from "@/components/nes/subscription/Selections"
+import Selections from "@/components/nes/selection/Selections"
 
 const Home = () => {
   return (

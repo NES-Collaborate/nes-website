@@ -1,4 +1,6 @@
-import { SELECTIONS_EXAMPLES, Selection, Student } from "@/data/constants"
+import Loading from "@/components/Loading"
+import { useSelections } from "@/hooks/admin/lp"
+import { Selection, Student } from "@/types/constants"
 import { useRouter } from "next/router"
 import { useEffect, useState } from "react"
 
@@ -12,10 +14,14 @@ const Table = () => {
   const [selection, setSelection] = useState<Selection>()
   const [filteredStudents, setFilteredStudents] = useState<Student[] | undefined>([])
 
+  const { data: selections = [], isLoading } = useSelections()
+
+  if (selections.length === 0) {
+    return null
+  }
+
   useEffect(() => {
-    const selected = SELECTIONS_EXAMPLES.find(
-      (selection) => selection.year === selectionYear
-    )
+    const selected = selections.find((selection) => selection.year === selectionYear)
 
     if (selected) {
       setSelection(selected)
@@ -26,7 +32,7 @@ const Table = () => {
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { value } = e.target
 
-    const newFilteredStudents: Student[] | undefined = selection?.results.filter(
+    const newFilteredStudents: Student[] | undefined = selection?.results?.filter(
       (student) =>
         student.name.toLowerCase().includes(value.toLowerCase()) ||
         student.city.toLowerCase().includes(value.toLowerCase()) ||
@@ -38,6 +44,16 @@ const Table = () => {
 
   return (
     <div className="flex flex-col items-center">
+      {isLoading && (
+        <div className="w-full">
+          <Loading
+            text="Carregando processos seletivos..."
+            textClassName="text-lg"
+            center
+          />
+        </div>
+      )}
+
       <label className="form-control w-5/6 mb-8">
         <input
           type="text"

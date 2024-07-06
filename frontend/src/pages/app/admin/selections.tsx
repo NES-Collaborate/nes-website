@@ -1,37 +1,37 @@
 import { ConfirmModal } from "@/components/ConfirmModal"
 import Loading from "@/components/Loading"
 import Toast from "@/components/Toast"
-import SuccessCaseModal from "@/components/app/admin/lp/SuccessCaseModal"
-import { useSuccessCases, useSuccessCasesMutations } from "@/hooks/admin/lp"
+import SelectionModal from "@/components/app/admin/lp/SelectionModal"
+import { useSelectionMutations, useSelections } from "@/hooks/admin/lp"
 import { withAuth } from "@/utils/auth"
+import Link from "next/link"
 import { useState } from "react"
 import { Alert, Button, Table, Tooltip } from "react-daisyui"
 import { FaEdit, FaPlus, FaTrash } from "react-icons/fa"
 import { MdErrorOutline } from "react-icons/md"
 
-const SuccessCases = () => {
+const Selections = () => {
   const [toast, setToast] = useState("")
 
   const [modalAction, setModalAction] = useState<"edit" | "create">("edit")
-  const [targetCaseIndex, setTargetCaseIndex] = useState<number>(-1)
+  const [targetSelectionIndex, setTargetSelectionIndex] = useState<number>(-1)
 
-  const { data: successCases = [], isLoading, error } = useSuccessCases()
-
-  const { deleteMutation } = useSuccessCasesMutations()
+  const { data: selections = [], isLoading, error } = useSelections()
+  const { deleteMutation } = useSelectionMutations()
 
   const openCreateModal = () => {
-    setTargetCaseIndex(-1)
+    setTargetSelectionIndex(-1)
     setModalAction("create")
   }
 
   const openEditModal = (index: number) => {
-    setTargetCaseIndex(index)
+    setTargetSelectionIndex(index)
     setModalAction("edit")
   }
 
   return (
     <>
-      <h1 className="text-2xl text-center my-1">Gestão de Casos de Sucesso</h1>
+      <h1 className="text-2xl text-center my-1">Gestão de Processos Seletivos</h1>
 
       {error && (
         <div className="flex justify-center items-center h-80">
@@ -43,37 +43,62 @@ const SuccessCases = () => {
 
       {isLoading && (
         <div className="flex justify-center items-center h-80">
-          <Loading text="Buscando casos de sucesso..." />
+          <Loading text="Buscando processos seletivos..." />
         </div>
       )}
 
       <div className="overflow-x-auto flex justify-start">
-        {successCases.length > 0 && (
+        {selections.length > 0 && (
           <Table zebra>
             <Table.Head className="text-center">
               <span>ID</span>
-              <span>Nome</span>
-              <span>Cidade - Estado</span>
+              <span>Ano</span>
+              <span>Aberto para Inscrições</span>
+              <span>URL do Formulário de Inscrição</span>
+              <span>URL da Ementa</span>
+              <span>Calendário</span>
               <span>Resultados</span>
-              <span>Dificuldades</span>
-              <span>Frase Pessoal</span>
-              <span>Ações</span>
             </Table.Head>
             <Table.Body className="text-center">
-              {successCases.map((successCase) => (
-                <Table.Row key={successCase.id}>
-                  <span>{successCase.id}</span>
-                  <span>{successCase.name}</span>
-                  <span>{successCase.city}</span>
-                  <span>{successCase.results}</span>
-                  <span>{successCase.difficulties}</span>
-                  <span>{successCase.phrase}</span>
+              {selections.map((selection) => (
+                <Table.Row key={selection.id}>
+                  <span>{selection.id}</span>
+                  <span>{selection.year}</span>
+                  <span>{selection.isOpen ? "Sim" : "Não"}</span>
+                  <span>
+                    <Link
+                      href={selection.subscriptionUrl}
+                      className="link link-accent"
+                      target="_blank"
+                    >
+                      {selection.subscriptionUrl}
+                    </Link>
+                  </span>
+                  <span>
+                    <Link
+                      href={selection.programUrl}
+                      className="link link-accent"
+                      target="_blank"
+                    >
+                      {selection.programUrl}
+                    </Link>
+                  </span>
+                  <span>
+                    {selection.schedule && selection.schedule[0]
+                      ? selection.schedule[0].description
+                      : "N/A"}
+                  </span>
+                  <span>
+                    {selection.results && selection.results[0]
+                      ? selection.results[0].name
+                      : "N/A"}
+                  </span>
                   <span className="flex gap-2 justify-center">
                     <Tooltip message="Editar">
                       <Button
                         color="primary"
                         size="sm"
-                        onClick={() => openEditModal(successCase.id)}
+                        onClick={() => openEditModal(selection.id)}
                       >
                         <FaEdit />
                       </Button>
@@ -81,14 +106,14 @@ const SuccessCases = () => {
 
                     <Tooltip message="Excluir">
                       <ConfirmModal
-                        title="Excluir Caso de Sucesso"
-                        description="Tem certeza que deseja excluir este caso de sucesso?"
+                        title="Excluir Processo Seletivo"
+                        description="Tem certeza que deseja excluir este Processo Seletivo?"
                       >
                         {(show) => (
                           <Button
                             color="error"
                             size="sm"
-                            onClick={show(() => deleteMutation.mutate(successCase.id))}
+                            onClick={show(() => deleteMutation.mutate(selection.id))}
                           >
                             <FaTrash />
                           </Button>
@@ -102,17 +127,17 @@ const SuccessCases = () => {
           </Table>
         )}
 
-        {successCases.length == 0 && !error && (
+        {selections.length == 0 && !error && (
           <div className="flex justify-center items-center h-80">
             <Alert status="info" className="w-full" icon={<MdErrorOutline />}>
-              Nenhum caso de sucesso encontrado. Clique no botão abaixo para criar um :D
+              Nenhum processo seletivo encontrado. Clique no botão abaixo para criar um :D
             </Alert>
           </div>
         )}
       </div>
 
       <Tooltip
-        message="Adicionar Caso de Sucesso"
+        message="Adicionar Processo Seletivo"
         position="left"
         className="fixed bottom-11 right-20"
       >
@@ -127,17 +152,17 @@ const SuccessCases = () => {
 
       <Toast message={toast} setMessage={setToast} vertical="top" />
 
-      <SuccessCaseModal
-        successCases={successCases}
+      <SelectionModal
         action={modalAction}
-        index={targetCaseIndex}
-        setIndex={setTargetCaseIndex}
+        selections={selections}
+        index={targetSelectionIndex}
+        setIndex={setTargetSelectionIndex}
         setToast={setToast}
       />
     </>
   )
 }
 
-export default SuccessCases
+export default Selections
 
 export const getServerSideProps = withAuth({ allowedUsers: ["admin"] })

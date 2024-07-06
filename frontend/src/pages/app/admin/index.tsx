@@ -8,6 +8,7 @@ import {
   FaTools,
   FaUsers,
 } from "react-icons/fa"
+import { FaTableList } from "react-icons/fa6"
 
 const PAGES = [
   {
@@ -27,6 +28,12 @@ const PAGES = [
         path: "/app/admin/success-cases",
         description: "Permite gerenciar os casos de sucesso da landing page.",
         icon: <FaMedal />,
+      },
+      {
+        name: "Processos Seletivos",
+        path: "/app/admin/selections",
+        description: "Permite gerenciar os processos seletivos da landing page.",
+        icon: <FaTableList />,
       },
     ],
   },

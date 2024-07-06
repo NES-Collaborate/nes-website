@@ -1,14 +1,18 @@
 import {
   createNotice,
+  createSelection,
   createSuccessCase,
   deleteNotice,
+  deleteSelection,
   deleteSuccessCase,
   fetchNotices,
+  fetchSelections,
   fetchSuccessCases,
   updateNotice,
+  updateSelection,
   updateSuccessCase,
 } from "@/services/admin/lp"
-import { Notice, SuccessCase } from "@/types/constants"
+import { Notice, Selection, SuccessCase } from "@/types/constants"
 import { axiosApi } from "@/utils/axiosClient"
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 
@@ -86,6 +90,47 @@ export const useSuccessCasesMutations = () => {
     onSuccess: () => {
       queryClient.invalidateQueries({
         queryKey: ["success-cases"],
+      })
+    },
+  })
+
+  return { deleteMutation, editMutation, createMutation }
+}
+
+export const useSelections = () => {
+  return useQuery<Selection[]>({
+    queryKey: ["selections"],
+    queryFn: () => fetchSelections(axiosApi),
+  })
+}
+
+export const useSelectionMutations = () => {
+  const queryClient = useQueryClient()
+
+  const deleteMutation = useMutation({
+    mutationFn: (selectionId: number) => deleteSelection(axiosApi, selectionId),
+    onSuccess: () => {
+      queryClient.invalidateQueries({
+        queryKey: ["selections"],
+      })
+    },
+  })
+
+  const editMutation = useMutation({
+    mutationFn: (selection: Selection) => updateSelection(axiosApi, selection),
+    onSuccess: () => {
+      queryClient.invalidateQueries({
+        queryKey: ["selections"],
+      })
+    },
+  })
+
+  const createMutation = useMutation({
+    mutationFn: (selection: Omit<Selection, "id">) =>
+      createSelection(axiosApi, selection),
+    onSuccess: () => {
+      queryClient.invalidateQueries({
+        queryKey: ["selections"],
       })
     },
   })

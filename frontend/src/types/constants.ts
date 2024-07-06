@@ -22,6 +22,38 @@ export type Notice = {
 }
 
 /**
+ * Properties of an event in the schedule of a Selection
+ */
+export type Event = {
+  id: number
+  date: string
+  description: string
+}
+
+/**
+ * Properties of a student in the results of a Selection
+ */
+export type Student = {
+  id: number
+  name: string
+  city: string
+  UF: string
+}
+
+/**
+ * Properties of a selection process
+ */
+export type Selection = {
+  id: number
+  year: string
+  isOpen: boolean
+  subscriptionUrl: string
+  programUrl: string
+  schedule?: Event[]
+  results?: Student[]
+}
+
+/**
  * Image representation
  */
 export type Image = {
@@ -62,7 +94,6 @@ export type Serie = "9º EF" | "1º EM" | "2º EM" | "3º EM"
  * User Type representation
  */
 export type UserType = "admin" | "other" | "student"
-
 
 export const possibleThemes = [
   "light",

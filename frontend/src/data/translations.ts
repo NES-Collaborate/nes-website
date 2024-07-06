@@ -25,7 +25,7 @@ export const BREADCRUMB_NAMES: Record<string, string> = {
   "learn-more": "Saiba mais",
   contact: "Contatos",
   material: "Material Gratuito",
-  subscription: "Processo Seletivo",
+  selection: "Processo Seletivo",
   program: "Inscrições",
   users: "Usuários",
   "success-cases": "Casos de Sucesso",
