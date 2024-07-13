@@ -156,3 +156,49 @@ async def hard_delete_user(
     user_dao.delete_by_id(_user.id)
 
     return {"message": f"Usuário com cpf {user_cpf} deletado permanentemente"}
+
+    
+
+@router.get("/check_user")
+async def check_user_exists(
+    cpf: str,
+    current_user: User = Depends(UserService.get_current_user),
+    session: Session = Depends(get_session)
+):
+    if current_user.type != "admin":
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Usuário não autorizado",
+        )
+    
+    user = session.query(User).filter(User.cpf == cpf).first()
+    if not user:
+        return {"exists": False, "active": False}
+    
+    return {"exists": True, "active": not user.softDelete}
+
+
+@router.post("/toggle_user")
+async def toggle_user(
+    id: int,
+    current_user: User = Depends(UserService.get_current_user),
+    session: Session = Depends(get_session)
+):
+    if current_user.type != "admin":
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Usuário não autorizado",
+        )
+    
+    user = session.query(User).filter(User.id == id).first()
+    if not user:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Usuário não encontrado",
+        )
+    
+    user.softDelete = not user.softDelete
+    session.commit()
+    
+    status = "ativado" if not user.softDelete else "desativado"
+    return {"message": f"O status do usuário {user.name} foi alterado para {status}"}
